@@ -8,6 +8,7 @@
 #include "FastLogger.h"
 
 std::map<int32, FHitEffectStruct> UHitEffectParser::HitEffectMap;
+std::map<int32, FHitEffectStruct> UHitEffectParser::HitEffectByMoveIDMap;
 
 UHitEffectParser::UHitEffectParser()
 {
@@ -15,7 +16,7 @@ UHitEffectParser::UHitEffectParser()
 
 void UHitEffectParser::ParseData()
 {
-	FString InputFilePath = FPaths::ProjectContentDir() + "DataTable/InputTable.csv";
+	FString InputFilePath = FPaths::ProjectContentDir() + "DataTable/HitEffectTable.csv";
 	std::ifstream InputFile(TCHAR_TO_ANSI(*InputFilePath));
 
 	if (!InputFile.is_open())

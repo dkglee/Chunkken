@@ -5,6 +5,7 @@
 
 #include "InputParser.h"
 #include "CC.h"
+#include "HitEffectParser.h"
 
 UChunkkenGameInstance::UChunkkenGameInstance()
 {
@@ -15,6 +16,8 @@ void UChunkkenGameInstance::Init()
 	Super::Init();
 
 	InputParser = NewObject<UInputParser>();
-	InputParser->ParseInput();
+	InputParser->ParseData();
 
+	HitEffectParser = NewObject<UHitEffectParser>();
+	HitEffectParser->ParseData();
 }

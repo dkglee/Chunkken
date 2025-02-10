@@ -22,4 +22,6 @@ public:
 private:
 	UPROPERTY()
 	class UInputParser* InputParser;
+	UPROPERTY()
+	class UHitEffectParser* HitEffectParser;
 };
