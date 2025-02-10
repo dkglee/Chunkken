@@ -4,8 +4,8 @@
 #include "CC/GameInstance/Public/ChunkkenGameInstance.h"
 
 #include "InputParser.h"
-#include "CC.h"
 #include "HitEffectParser.h"
+#include "StateParser.h"
 
 UChunkkenGameInstance::UChunkkenGameInstance()
 {
@@ -20,4 +20,7 @@ void UChunkkenGameInstance::Init()
 
 	HitEffectParser = NewObject<UHitEffectParser>();
 	HitEffectParser->ParseData();
+
+	StateParser = NewObject<UStateParser>();
+	StateParser->ParseData();
 }

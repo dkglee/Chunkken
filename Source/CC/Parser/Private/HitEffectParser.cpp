@@ -64,4 +64,6 @@ void UHitEffectParser::ParseData()
 		HitEffectMap[HitEffect.HitEffectID] = HitEffect;
 		HitEffectByMoveIDMap[HitEffect.MoveID] = HitEffect;
 	}
+
+	InputFile.close();
 }

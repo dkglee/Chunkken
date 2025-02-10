@@ -54,4 +54,6 @@ void UInputParser::ParseData()
 		InputMap[Index] = 1 << BitIndex;
 		InputNameMap[LineTokens[1].c_str()] = Index;
 	}
+
+	InputFile.close();
 }
