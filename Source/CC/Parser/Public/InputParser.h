@@ -1,10 +1,10 @@
 #pragma once
 
-#include "CoreMinimal.h"
-#include "UObject/Object.h"
-
 #include <map>
 #include <unordered_map>
+
+#include "CoreMinimal.h"
+#include "UObject/Object.h"
 
 #include "InputParser.generated.h"
 
@@ -16,7 +16,7 @@ public:
 	UInputParser();
 	
 	UFUNCTION()
-	void ParseInput();
+	void ParseData();
 
 	static unsigned char GetBitmask(int32 Index)
 	{

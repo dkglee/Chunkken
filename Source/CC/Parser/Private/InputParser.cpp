@@ -13,7 +13,7 @@ UInputParser::UInputParser()
 {
 }
 
-void UInputParser::ParseInput()
+void UInputParser::ParseData()
 {
 	FString InputFilePath = FPaths::ProjectContentDir() + "DataTable/InputTable.csv";
 	std::ifstream InputFile(TCHAR_TO_ANSI(*InputFilePath));
