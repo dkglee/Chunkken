@@ -26,4 +26,6 @@ private:
 	class UHitEffectParser* HitEffectParser;
 	UPROPERTY()
 	class UStateParser* StateParser;
+	UPROPERTY()
+	class UMoveParser* MoveParser;
 };

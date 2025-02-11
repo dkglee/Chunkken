@@ -5,6 +5,7 @@
 
 #include "InputParser.h"
 #include "HitEffectParser.h"
+#include "MoveParser.h"
 #include "StateParser.h"
 
 UChunkkenGameInstance::UChunkkenGameInstance()
@@ -23,4 +24,7 @@ void UChunkkenGameInstance::Init()
 
 	StateParser = NewObject<UStateParser>();
 	StateParser->ParseData();
+
+	MoveParser = NewObject<UMoveParser>();
+	MoveParser->ParserData();
 }

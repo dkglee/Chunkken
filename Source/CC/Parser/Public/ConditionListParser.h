@@ -9,10 +9,10 @@ class UConditionListParser : public UObject
 {
 	GENERATED_BODY()
 public:
-	UConditionListParser();
-
-	UFUNCTION()
-	void ParseData();
+	// UConditionListParser();
+	//
+	// UFUNCTION()
+	// void ParseData();
 
 protected:
 	
