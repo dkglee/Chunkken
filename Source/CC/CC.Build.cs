@@ -17,6 +17,8 @@ public class CC : ModuleRules
 			"CC/Public",
 			"CC/Character/Public",
 			"CC/Parser/Public",
+			"CC/Parser/DataTableStruct/Public",
+			"CC/Utils/Public",
 		});
 
 		// Uncomment if you are using Slate UI

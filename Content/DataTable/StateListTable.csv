@@ -1,0 +1,28 @@
+StateID (PK),StateName,StateGroup,DefaultDuration,AnimationRef,OnEnterAction,OnExitAction,ExtraData,Notes
+1,STANDING_IDLE,Standing,0,StandIdle,"{""resetMoveCounter"":true}",{},"{""walkSpeed"":1.0, ""canInput"":true}",?? ?? ??(??? ??? ??).
+2,WALK_FORWARD,Movement,0,WalkForward,"{""playStepSound"":""footstep""}","{""stopStepSound"":""footstep""}","{""walkSpeed"":1.2, ""canBlock"":true}",?? ?? ?? ??.
+3,WALK_BACKWARD,Movement,0,WalkBackward,"{""playStepSound"":""footstep""}","{""stopStepSound"":""footstep""}","{""walkSpeed"":0.8, ""canBlock"":true}",?? ?? ?? ??(?? ????? ?? ?? ?? ??).
+4,DASH_FORWARD,Movement,10,DashForward,"{""playEffect"":""dashDust""}",{},"{""invincibleFrames"":0, ""canCancelToAttack"":true}",?? ?? ?? ??(?? ??? ? ?? ??).
+5,DASH_BACK,Movement,10,BackDash,"{""playEffect"":""dashDust""}",{},"{""invincibleFrames"":0, ""canCancelToSideStep"":true}",?? ??(???) ??.
+6,CROUCHING_IDLE,Crouching,0,CrouchIdle,"{""lowerHurtbox"":true}",{},"{""walkSpeed"":0.5, ""canLowBlock"":true}",?? ??(?? ?? ??).
+7,CROUCH_WALK,Crouching,0,CrouchWalk,"{""playStepSound"":""footstep""}","{""stopStepSound"":""footstep""}","{""walkSpeed"":0.6, ""canLowBlock"":true}",?? ??? ??(?/? ??).
+8,SIDE_STEP,Movement,8,SideStep,"{""playEffect"":""sidestepDust""}",{},"{""iFrames"":2}",??? ?? ??(?? ?? ??? ??).
+9,JUMP_START,Jump,3,JumpStart,"{""playSound"":""jumpGrunt""}",{},"{""verticalVelocity"":initialValue}",?? ?? ??(???? ? ?? ?? ???).
+10,JUMP_ASCEND,Jump,10,JumpAscend,{},{},"{""verticalVelocity"":decreasing, ""canAttack"":true}",?? ?? ?(?? ?? ?? ??).
+11,JUMP_DESCEND,Jump,10,JumpDescend,{},{},"{""verticalVelocity"":falling, ""canAttack"":true}",?? ?? ?.
+12,LANDING,Jump,3,Landing,"{""playEffect"":""landDust""}",{},"{""landingRecovery"":3}",?? ??(???? ?? ?? ?? ?).
+13,ATTACK_STARTUP,Attack,8,Attack_Startup,"{""playSound"":""lightWhiff""}",{},"{""cancelableFrameStart"":5, ""damage"":5}",?? ?? ??.
+14,ATTACK_ACTIVE,Attack,3,Attack_Active,{},{},"{""hitboxID"":""LightAtkHitbox"", ""damage"":5}",?? ???? ?? ?.
+15,ATTACK_RECOVERY,Attack,10,Attack_Recovery,{},{},"{""recoverTime"":10}",?? ?? ??.
+16,HIT_REACTION_STAND,HitReaction,10,HitStand,"{""applyHitStop"":true}",{},"{""stunType"":""standStun""}",? ?? ????? ?? ?? ??.
+17,HIT_REACTION_CROUCH,HitReaction,10,HitCrouch,"{""applyHitStop"":true}",{},"{""stunType"":""crouchStun""}",???? ????? ?? ??.
+18,HIT_REACTION_AIR,HitReaction,15,HitAir,"{""applyHitStop"":true}",{},"{""stunType"":""airStun""}",?? ??(?? ?? ??).
+19,KNOCKDOWN_FACE_UP,Knockdown,30,KnockdownFaceUp,{},{},"{""canQuickRecover"":true}",??? ?? ??? ??? ??.
+20,KNOCKDOWN_FACE_DOWN,Knockdown,30,KnockdownFaceDown,{},{},"{""canQuickRecover"":true}",??? ??? ??? ??? ??.
+21,GETUP,Knockdown,15,GetUp,"{""playSound"":""getupGrunt""}",{},"{""invincibleFrames"":5}",?? ???? ???? ??.
+22,GUARD_STAND,Guard,0,GuardStand,"{""playSound"":""guard""}",{},"{""canBlockMidHigh"":true, ""chipDamage"":false}",?? ??(??/?? ??).
+23,GUARD_CROUCH,Guard,0,GuardCrouch,"{""playSound"":""guard""}",{},"{""canBlockLow"":true, ""chipDamage"":false}",??? ??(?? ??).
+24,GUARD_IMPACT,Guard,10,GuardImpact,"{""playEffect"":""guardSparks""}",{},"{""blockStun"":10}",??? ???? ??? ?? ??.
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
