@@ -132,3 +132,29 @@ void UMoveParser::ParserData()
 		}
 	}
 }
+
+MoveID UMoveParser::GetMoveID(CharID CharID, uint64 Command)
+{
+	if (MoveIDMap.find(CharID) == MoveIDMap.end())
+	{
+		return -1;
+	}
+	if (MoveIDMap[CharID].find(Command) == MoveIDMap[CharID].end())
+	{
+		return -1;
+	}
+	return MoveIDMap[CharID][Command];
+}
+
+const FMoveDataStruct* UMoveParser::GetMoveData(CharID CharID, MoveID MoveID)
+{
+	if (MoveDataMap.find(MoveID) == MoveDataMap.end())
+	{
+		return nullptr;
+	}
+	if (MoveDataMap[MoveID].find(MoveID) == MoveDataMap[MoveID].end())
+	{
+		return nullptr;
+	}
+	return &(MoveDataMap[MoveID][MoveID]);
+}

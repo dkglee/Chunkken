@@ -19,6 +19,9 @@ public:
 	UFUNCTION()
 	void ParserData();
 
+	static MoveID GetMoveID(CharID CharID, uint64 Command);
+	static const FMoveDataStruct* GetMoveData(CharID CharID, MoveID MoveID);
+
 protected:
 	FString ConvertBitmaskToBinary(uint64 Bitmask);
 	uint64 ParseCommand(std::string LineToken);

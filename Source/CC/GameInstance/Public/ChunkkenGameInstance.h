@@ -28,4 +28,6 @@ private:
 	class UStateParser* StateParser;
 	UPROPERTY()
 	class UMoveParser* MoveParser;
+	UPROPERTY()
+	class UCharacterParser* CharacterParser;
 };

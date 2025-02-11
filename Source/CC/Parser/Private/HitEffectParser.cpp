@@ -8,7 +8,7 @@
 #include "FastLogger.h"
 
 std::map<int32, FHitEffectStruct> UHitEffectParser::HitEffectMap;
-std::map<int32, FHitEffectStruct> UHitEffectParser::HitEffectByMoveIDMap;
+std::map<int32, int32> UHitEffectParser::HitEffetIDMap;
 
 UHitEffectParser::UHitEffectParser()
 {
@@ -62,7 +62,7 @@ void UHitEffectParser::ParseData()
 		HitEffect.HitReaction = HitEffect.HitReaction.ToUpper();
 
 		HitEffectMap[HitEffect.HitEffectID] = HitEffect;
-		HitEffectByMoveIDMap[HitEffect.MoveID] = HitEffect;
+		HitEffetIDMap[HitEffect.MoveID] = HitEffect.HitEffectID;
 	}
 
 	InputFile.close();
