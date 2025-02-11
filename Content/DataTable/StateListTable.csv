@@ -23,6 +23,3 @@ StateID (PK),StateName,StateGroup,DefaultDuration,AnimationRef,OnEnterAction,OnE
 22,GUARD_STAND,Guard,0,GuardStand,"{""playSound"":""guard""}",{},"{""canBlockMidHigh"":true, ""chipDamage"":false}",?? ??(??/?? ??).
 23,GUARD_CROUCH,Guard,0,GuardCrouch,"{""playSound"":""guard""}",{},"{""canBlockLow"":true, ""chipDamage"":false}",??? ??(?? ??).
 24,GUARD_IMPACT,Guard,10,GuardImpact,"{""playEffect"":""guardSparks""}",{},"{""blockStun"":10}",??? ???? ??? ?? ??.
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,

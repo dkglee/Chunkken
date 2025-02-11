@@ -30,4 +30,6 @@ private:
 	class UMoveParser* MoveParser;
 	UPROPERTY()
 	class UCharacterParser* CharacterParser;
+	UPROPERTY()
+	class UComboParser* ComboParser;
 };

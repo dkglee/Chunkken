@@ -4,6 +4,7 @@
 #include "CC/GameInstance/Public/ChunkkenGameInstance.h"
 
 #include "CharacterParser.h"
+#include "ComboParser.h"
 #include "InputParser.h"
 #include "HitEffectParser.h"
 #include "MoveParser.h"
@@ -31,4 +32,7 @@ void UChunkkenGameInstance::Init()
 
 	CharacterParser = NewObject<UCharacterParser>();
 	CharacterParser->ParseData();
+
+	ComboParser = NewObject<UComboParser>();
+	ComboParser->ParseData();
 }
