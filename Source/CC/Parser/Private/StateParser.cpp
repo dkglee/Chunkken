@@ -96,4 +96,10 @@ void UStateParser::ParseData()
     }
 
     InputFile.close();
+
+    for (auto& Pair : StateMap)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("StateID: %d, Name: %s, StateGroup: %s, DefaultDuration: %d, AnimationRef: %s, OnEnterAction: %s, OnExitAction: %s, ExtraData: %s"),
+            Pair.second.StateID, *Pair.second.Name, *Pair.second.StateGroup, Pair.second.DefaultDuration, *Pair.second.AnimationRef, *Pair.second.OnEnterAction, *Pair.second.OnExitAction, *Pair.second.ExtraData);
+    }
 }

@@ -60,6 +60,12 @@ void UCharacterParser::ParseData()
 		CharacterDataMap[CharData.CharID] = CharData;	
 	}
 
+	for (auto& Pair : CharacterDataMap)
+	{
+		FFastLogger::LogConsole(TEXT("CharID: %d, CharName: %s, Title: %s, HP: %d, BaseSpeed: %d, WakeupSpeed: %d"),
+			Pair.second.CharID, *Pair.second.CharName, *Pair.second.Title, Pair.second.HP, Pair.second.BaseSpeed, Pair.second.WakeupSpeed);
+	}
+	
 	InputFile.close();
 }
 

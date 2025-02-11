@@ -66,4 +66,10 @@ void UHitEffectParser::ParseData()
 	}
 
 	InputFile.close();
+
+	for (auto& Pair : HitEffectMap)
+	{
+		FFastLogger::LogConsole(TEXT("HitEffectID: %d, MoveID: %d, Condition: %s, ExtraDamage: %d, Launch: %d, StunFrames: %d, HitReaction: %s"),
+			Pair.second.HitEffectID, Pair.second.MoveID, *Pair.second.Condition, Pair.second.ExtraDamage, Pair.second.Launch, Pair.second.StunFrames, *Pair.second.HitReaction);
+	}
 }
