@@ -41,6 +41,7 @@ void UInputManager::PushOnPressedInput(int32 CharID, int32 InputID, uint64 Frame
 	InputEvent.BitMask = BitMask;
 	InputEvent.FrameIndex = FrameIndex;
 	InputEvent.bLeft = bLeft;
+	InputEvent.bUsed = false;
 
 	StoreInputEvent(InputEvent);
 }
@@ -66,6 +67,7 @@ void UInputManager::PushOnReleasedInput(int32 CharID, int32 InputID, uint64 Fram
 	InputEvent.BitMask = BitMask;
 	InputEvent.FrameIndex = FrameIndex;
 	InputEvent.bLeft = bLeft;
+	InputEvent.bUsed = false;
 
 	UpdateInputEvent(InputEvent);
 }
@@ -118,6 +120,22 @@ int32 UInputManager::GetInputEvenIndex(uint64 FrameIndex)
 			break;
 		}
 	}
-	
 	return Index;
+}
+
+// 바로 실행 해줘야 하는디..!? 항상 이전 입력하고 비교 해야 하는구나..!
+// 애니메이션 몽타주를 그때그때 판단해서 연속적으로 실행해주면 될듯!
+int32 UInputManager::ExtractMoveIdFromInput(const TArray<int32>& Moveset)
+{
+	int32 MoveID = -1;
+
+	// 여태까지 입력된 인풋을 비교해서 MoveID를 추출해야함
+
+	// 현재 들어온 입력을 가지고 무엇을 해야 하는가를 판단해야 함!
+	// 이전에 내가 실행했던 Moveset을 넘겨 받아야 함
+	// 가장 최근에 사용되었던 것을 찾아야 함! CurrentQueueIndex와 bUsed를 적절히 사용
+
+	// 이전에 사용한 것 부터 어떤 입력을 실행할 지 찾아야 함!
+	
+	return MoveID;
 }

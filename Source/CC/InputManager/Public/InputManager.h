@@ -18,6 +18,7 @@ struct FInputEventPerFrame
 	unsigned char BitMask = 0;
 	uint64 FrameIndex = 0;
 	bool bLeft = false;
+	bool bUsed = false;
 };
 
 // 캐릭터당 하나씩 존재하는 인풋 매니저
@@ -38,6 +39,8 @@ public:
 	void PushOnPressedInput(int32 CharID, int32 InputID, uint64 FrameIndex, bool bLeft);
 	UFUNCTION()
 	void PushOnReleasedInput(int32 CharID, int32 InputID, uint64 FrameIndex, bool bLeft);
+	UFUNCTION()
+	int32 ExtractMoveIdFromInput(const TArray<int32>& Moveset);
 private:
 	UFUNCTION()
 	void StoreInputEvent(FInputEventPerFrame InputEvent);
