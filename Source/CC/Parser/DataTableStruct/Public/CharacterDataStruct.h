@@ -1,29 +1,28 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "StateDataStruct.generated.h"
+#include "CharacterDataStruct.generated.h"
 
 USTRUCT(BlueprintType)
-struct FStateDataStruct
+struct FCharacterDataStruct
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 StateID;
+	int32 CharID;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString Name;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 ParentStateID;
+	FString CharName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString StateGroup;
+	FString Title;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 DefaultDuration;
+	int32 HP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString AnimationRef;
+	int32 BaseSpeed;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 WakeupSpeed;
 };

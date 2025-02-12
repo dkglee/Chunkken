@@ -26,4 +26,14 @@ private:
 	class UHitEffectParser* HitEffectParser;
 	UPROPERTY()
 	class UStateParser* StateParser;
+	UPROPERTY()
+	class UMoveParser* MoveParser;
+	UPROPERTY()
+	class UCharacterParser* CharacterParser;
+	UPROPERTY()
+	class UComboParser* ComboParser;
+	UPROPERTY()
+	class UConditionListParser* ConditionListParser;
+	UPROPERTY()
+	class UTransitionParser* TransitionParser;
 };

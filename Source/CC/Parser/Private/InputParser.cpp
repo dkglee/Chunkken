@@ -4,7 +4,7 @@
 #include <sstream>
 #include <vector>
 
-#include "CC/Utils/Public/FastLogger.h"
+#include "FastLogger.h"
 
 std::map<int32, unsigned char> UInputParser::InputMap;
 std::unordered_map<std::string, int32> UInputParser::InputNameMap;

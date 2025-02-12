@@ -18,17 +18,21 @@ public:
 	UFUNCTION()
 	void ParseData();
 
-	static FHitEffectStruct GetHitEffect(int32 HitEffectID)
+	static const FHitEffectStruct* GetHitEffect(int32 HitEffectID)
 	{
-		return HitEffectMap[HitEffectID];
+		if (HitEffectMap.find(HitEffectID) == HitEffectMap.end())
+		{
+			return nullptr;
+		}
+		return &HitEffectMap[HitEffectID];
 	}
 
-	static FHitEffectStruct GetHitEffectByMoveID(int32 MoveID)
+	static int32 GetHitEffectByMoveID(int32 MoveID)
 	{
-		return HitEffectByMoveIDMap[MoveID];
+		return HitEffetIDMap[MoveID];
 	}
 
 protected:
 	static std::map<int32, FHitEffectStruct> HitEffectMap;
-	static std::map<int32, FHitEffectStruct> HitEffectByMoveIDMap;
+	static std::map<int32, int32> HitEffetIDMap;
 };
