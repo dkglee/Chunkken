@@ -16,31 +16,41 @@ UStateParser::UStateParser()
 // CSV 한 줄을 파싱하는 함수
 std::vector<std::string> UStateParser::ParseCSVLine(const std::string& Line)
 {
-    std::vector<std::string> Tokens;
-    std::string CurrentField;
-    bool bInsideQuotes = false;
+    std::vector<std::string> Result;
+    std::string Cell;
+    bool inQuotes = false; // 따옴표 내부인지 여부
 
-    for (size_t i = 0; i < Line.length(); ++i)
-    {
+    for (size_t i = 0; i < Line.length(); i++) {
         char c = Line[i];
 
-        if (c == '"')
-        {
-            bInsideQuotes = !bInsideQuotes;
-        }
-        else if (c == ',' && !bInsideQuotes)
-        {
-            Tokens.push_back(CurrentField);
-            CurrentField.clear();
-        }
-        else
-        {
-            CurrentField += c;
+        if (c == '"') {
+            inQuotes = !inQuotes;
+            Cell += c;
+        } else if (c == ',' && !inQuotes) {
+            Result.push_back(Cell);
+            Cell.clear();
+        } else {
+            Cell += c;
         }
     }
+    Result.push_back(Cell);
+    return Result;
+}
 
-    Tokens.push_back(CurrentField);
-    return Tokens;
+std::string UStateParser::RestoreJson(const std::string& CsvJson)
+{
+    std::string Json = CsvJson;
+
+    // CSV에서는 JSON의 따옴표가 ""로 저장되므로 이를 "로 변경
+    size_t pos = 0;
+    while ((pos = Json.find("\"\"", pos)) != std::string::npos) {
+        Json.replace(pos, 2, "\""); // "" -> "
+        pos += 1; // 다음 위치로 이동
+    }
+
+    // JSON의 시작과 끝에 따옴표가 있으므로 이를 제거
+    Json = Json.substr(1, Json.length() - 2);
+    return Json;
 }
 
 void UStateParser::ParseData()
@@ -58,7 +68,6 @@ void UStateParser::ParseData()
     std::string Line;
     bool bIsFirstLine = true;
 
-    int LineCount = 0;
     while (std::getline(InputFile, Line))
     {
         if (bIsFirstLine)
@@ -69,7 +78,7 @@ void UStateParser::ParseData()
         
         std::vector<std::string> LineTokens = ParseCSVLine(Line);
 
-        if (LineTokens.size() < 8)
+        if (LineTokens.size() != 7)
         {
             UE_LOG(LogTemp, Warning, TEXT("Invalid row with %d columns"), LineTokens.size());
             continue;
@@ -85,21 +94,20 @@ void UStateParser::ParseData()
         State.StateID = std::atoi(LineTokens[0].c_str());
         State.Name = FString(LineTokens[1].c_str()).ToUpper();
         State.StateGroup = FString(LineTokens[2].c_str()).ToUpper();
-        State.DefaultDuration = std::atoi(LineTokens[3].c_str());
-        State.AnimationRef = FString(LineTokens[4].c_str()).ToUpper();
-        State.OnEnterAction = FString(LineTokens[5].c_str());
-        State.OnExitAction = FString(LineTokens[6].c_str());
-        State.ExtraData = FString(LineTokens[7].c_str());
+        State.ParentStateID = std::atoi(LineTokens[3].c_str());
+        State.DefaultDuration = std::atoi(LineTokens[4].c_str());
+        State.AnimationRef = FString(LineTokens[5].c_str()).ToUpper();
         
         StateMap[State.StateID] = State;
-        LineCount++;
     }
 
     InputFile.close();
 
+    // 전체 출력
     for (auto& Pair : StateMap)
     {
-        UE_LOG(LogTemp, Warning, TEXT("StateID: %d, Name: %s, StateGroup: %s, DefaultDuration: %d, AnimationRef: %s, OnEnterAction: %s, OnExitAction: %s, ExtraData: %s"),
-            Pair.second.StateID, *Pair.second.Name, *Pair.second.StateGroup, Pair.second.DefaultDuration, *Pair.second.AnimationRef, *Pair.second.OnEnterAction, *Pair.second.OnExitAction, *Pair.second.ExtraData);
+        FStateDataStruct& State = Pair.second;
+        UE_LOG(LogTemp, Warning, TEXT("StateID: %d, Name: %s, StateGroup: %s, ParentStateID: %d, DefaultDuration: %d, AnimationRef: %s"),
+            State.StateID, *State.Name, *State.StateGroup, State.ParentStateID, State.DefaultDuration, *State.AnimationRef);
     }
 }

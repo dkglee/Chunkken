@@ -28,6 +28,7 @@ public:
 	
 protected:
 	std::vector<std::string> ParseCSVLine(const std::string& Line);
-	
+	std::string RestoreJson(const std::string& CsvJson);
+
 	static std::map<int32, FStateDataStruct> StateMap;
 };

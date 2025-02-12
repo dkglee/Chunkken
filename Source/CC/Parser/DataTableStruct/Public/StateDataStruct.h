@@ -13,6 +13,9 @@ struct FStateDataStruct
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Name;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 ParentStateID;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString StateGroup;
@@ -23,12 +26,4 @@ struct FStateDataStruct
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString AnimationRef;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString OnEnterAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString OnExitAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString ExtraData;
 };

@@ -5,10 +5,12 @@
 
 #include "CharacterParser.h"
 #include "ComboParser.h"
+#include "ConditionListParser.h"
 #include "InputParser.h"
 #include "HitEffectParser.h"
 #include "MoveParser.h"
 #include "StateParser.h"
+#include "TransitionParser.h"
 
 UChunkkenGameInstance::UChunkkenGameInstance()
 {
@@ -35,4 +37,10 @@ void UChunkkenGameInstance::Init()
 
 	ComboParser = NewObject<UComboParser>();
 	ComboParser->ParseData();
+
+	ConditionListParser = NewObject<UConditionListParser>();
+	ConditionListParser->ParseData();
+
+	TransitionParser = NewObject<UTransitionParser>();
+	TransitionParser->ParseData();
 }

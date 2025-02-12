@@ -32,4 +32,8 @@ private:
 	class UCharacterParser* CharacterParser;
 	UPROPERTY()
 	class UComboParser* ComboParser;
+	UPROPERTY()
+	class UConditionListParser* ConditionListParser;
+	UPROPERTY()
+	class UTransitionParser* TransitionParser;
 };

@@ -1,25 +1,32 @@
-StateID (PK),StateName,StateGroup,DefaultDuration,AnimationRef,OnEnterAction,OnExitAction,ExtraData,Notes
-1,STANDING_IDLE,Standing,0,StandIdle,"{""resetMoveCounter"":true}",{},"{""walkSpeed"":1.0, ""canInput"":true}",?? ?? ??(??? ??? ??).
-2,WALK_FORWARD,Movement,0,WalkForward,"{""playStepSound"":""footstep""}","{""stopStepSound"":""footstep""}","{""walkSpeed"":1.2, ""canBlock"":true}",?? ?? ?? ??.
-3,WALK_BACKWARD,Movement,0,WalkBackward,"{""playStepSound"":""footstep""}","{""stopStepSound"":""footstep""}","{""walkSpeed"":0.8, ""canBlock"":true}",?? ?? ?? ??(?? ????? ?? ?? ?? ??).
-4,DASH_FORWARD,Movement,10,DashForward,"{""playEffect"":""dashDust""}",{},"{""invincibleFrames"":0, ""canCancelToAttack"":true}",?? ?? ?? ??(?? ??? ? ?? ??).
-5,DASH_BACK,Movement,10,BackDash,"{""playEffect"":""dashDust""}",{},"{""invincibleFrames"":0, ""canCancelToSideStep"":true}",?? ??(???) ??.
-6,CROUCHING_IDLE,Crouching,0,CrouchIdle,"{""lowerHurtbox"":true}",{},"{""walkSpeed"":0.5, ""canLowBlock"":true}",?? ??(?? ?? ??).
-7,CROUCH_WALK,Crouching,0,CrouchWalk,"{""playStepSound"":""footstep""}","{""stopStepSound"":""footstep""}","{""walkSpeed"":0.6, ""canLowBlock"":true}",?? ??? ??(?/? ??).
-8,SIDE_STEP,Movement,8,SideStep,"{""playEffect"":""sidestepDust""}",{},"{""iFrames"":2}",??? ?? ??(?? ?? ??? ??).
-9,JUMP_START,Jump,3,JumpStart,"{""playSound"":""jumpGrunt""}",{},"{""verticalVelocity"":initialValue}",?? ?? ??(???? ? ?? ?? ???).
-10,JUMP_ASCEND,Jump,10,JumpAscend,{},{},"{""verticalVelocity"":decreasing, ""canAttack"":true}",?? ?? ?(?? ?? ?? ??).
-11,JUMP_DESCEND,Jump,10,JumpDescend,{},{},"{""verticalVelocity"":falling, ""canAttack"":true}",?? ?? ?.
-12,LANDING,Jump,3,Landing,"{""playEffect"":""landDust""}",{},"{""landingRecovery"":3}",?? ??(???? ?? ?? ?? ?).
-13,ATTACK_STARTUP,Attack,8,Attack_Startup,"{""playSound"":""lightWhiff""}",{},"{""cancelableFrameStart"":5, ""damage"":5}",?? ?? ??.
-14,ATTACK_ACTIVE,Attack,3,Attack_Active,{},{},"{""hitboxID"":""LightAtkHitbox"", ""damage"":5}",?? ???? ?? ?.
-15,ATTACK_RECOVERY,Attack,10,Attack_Recovery,{},{},"{""recoverTime"":10}",?? ?? ??.
-16,HIT_REACTION_STAND,HitReaction,10,HitStand,"{""applyHitStop"":true}",{},"{""stunType"":""standStun""}",? ?? ????? ?? ?? ??.
-17,HIT_REACTION_CROUCH,HitReaction,10,HitCrouch,"{""applyHitStop"":true}",{},"{""stunType"":""crouchStun""}",???? ????? ?? ??.
-18,HIT_REACTION_AIR,HitReaction,15,HitAir,"{""applyHitStop"":true}",{},"{""stunType"":""airStun""}",?? ??(?? ?? ??).
-19,KNOCKDOWN_FACE_UP,Knockdown,30,KnockdownFaceUp,{},{},"{""canQuickRecover"":true}",??? ?? ??? ??? ??.
-20,KNOCKDOWN_FACE_DOWN,Knockdown,30,KnockdownFaceDown,{},{},"{""canQuickRecover"":true}",??? ??? ??? ??? ??.
-21,GETUP,Knockdown,15,GetUp,"{""playSound"":""getupGrunt""}",{},"{""invincibleFrames"":5}",?? ???? ???? ??.
-22,GUARD_STAND,Guard,0,GuardStand,"{""playSound"":""guard""}",{},"{""canBlockMidHigh"":true, ""chipDamage"":false}",?? ??(??/?? ??).
-23,GUARD_CROUCH,Guard,0,GuardCrouch,"{""playSound"":""guard""}",{},"{""canBlockLow"":true, ""chipDamage"":false}",??? ??(?? ??).
-24,GUARD_IMPACT,Guard,10,GuardImpact,"{""playEffect"":""guardSparks""}",{},"{""blockStun"":10}",??? ???? ??? ?? ??.
+StateID,StateName,StateGroup,ParentStateID,DefaultDuration,AnimationRef,Notes
+1,STANDING_IDLE,Standing,-1,0,StandIdle,?? ? ?? ??
+100,MOVEMENT,Movement,-1,0,NULL,?? SuperState
+2,WALK_FORWARD,Movement,100,0,WalkForward,?? ??
+3,WALK_BACKWARD,Movement,100,0,WalkBackward,?? ??
+4,DASH_FORWARD,Movement,100,10,DashForward,?? ?? ??
+5,DASH_BACK,Movement,100,10,BackDash,?? ??
+200,CROUCHING,Crouching,-1,0,NULL,?? SuperState
+6,CROUCHING_IDLE,Crouching,200,0,CrouchIdle,?? ??
+7,CROUCH_WALK,Crouching,200,0,CrouchWalk,?? ???? ??
+300,JUMP,Jump,-1,0,NULL,?? SuperState
+9,JUMP_START,Jump,300,3,JumpStart,?? ??
+10,JUMP_ASCEND,Jump,300,10,JumpAscend,?? ??
+11,JUMP_DESCEND,Jump,300,10,JumpDescend,?? ??
+12,LANDING,Jump,300,3,Landing,??
+400,ATTACK,Attack,-1,0,NULL,?? SuperState
+13,ATTACK_STARTUP,Attack,400,8,Attack_Startup,?? ??
+14,ATTACK_ACTIVE,Attack,400,3,Attack_Active,?? ?? ?
+15,ATTACK_RECOVERY,Attack,400,10,Attack_Recovery,?? ??
+500,HIT_REACTION,HitReaction,-1,0,NULL,?? SuperState (Knockdown ??)
+16,HIT_REACTION_NORMAL,HitReaction,500,10,HitStand,?? ??
+17,HIT_REACTION_AIR,HitReaction,500,15,HitAir,?? ??
+18,HIT_REACTION_KNOCKDOWN,HitReaction,500,30,Knockdown,Knockdown (?? ??)
+19,GETUP,HitReaction,500,15,GetUp,?? ? ????
+600,GUARD,Guard,-1,0,NULL,?? SuperState
+22,GUARD_STAND,Guard,600,0,GuardStand,?? ??
+23,GUARD_CROUCH,Guard,600,0,GuardCrouch,??? ??
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
