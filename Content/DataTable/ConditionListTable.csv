@@ -1,0 +1,10 @@
+ConditionID,ConditionName,ConditionChecker,ConditionData,ConditionGroup,Invert,Priority,Notes
+1,ForwardInputDetected,InputConditionChecker,"{""direction"":""f""}",Input,FALSE,0,?? ??? ????? ?.
+2,BackwardInputDetected,InputConditionChecker,"{""direction"":""b""}",Input,FALSE,0,?? ??? ????? ?.
+3,DoubleTapForward,InputConditionChecker,"{""direction"":""f"", ""tapInterval"":10}",Input,FALSE,0,?? ?? ? ?? ? ?? 2? (??)
+4,DoubleTapBackward,InputConditionChecker,"{""direction"":""b"", ""tapInterval"":10}",Input,FALSE,0,?? ?? ? ?? ? ?? 2? (???)
+5,UpInputDetected,InputConditionChecker,"{""direction"":""UP""}",Input,FALSE,0,?? ?? ?? (?? ?)
+6,AttackButtonPressed,InputConditionChecker,"{""buttons"":[""LP"",""RP"",""LK"",""RK""]}",Input,FALSE,0,?? ??(??�?) ?? ??
+7,CrouchInputDetected,InputConditionChecker,"{""direction"":""DOWN""}",Input,FALSE,0,"?? ?? ?? (??, ?? ??)"
+8,FrameOver,FrameConditionChecker,"{""duration"":10}",Frame,FALSE,1,?? ??? 10??? ?? ????? ?.
+9,HitDetected,HitConditionChecker,"{""hitType"":""normal"", ""damageThreshold"":1}",Hit,FALSE,2,?? ?? ?? (?? ??)

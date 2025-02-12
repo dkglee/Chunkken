@@ -1,4 +1,4 @@
-﻿MoveID,CharID,Command,RelativeID,AttackType,Damage,Hits,HitLevel,StartUp,ActiveFrames,Recovery,OnBlock,OnHIt,Notes
+MoveID,CharID,Command,RelativeID,AttackType,Damage,Hits,HitLevel,StartUp,ActiveFrames,Recovery,OnBlock,OnHIt,Notes
 1001,101,LP,0,Punch,5,1,High,10,2,10,1,8,Jab
 1002,101,RP,0,Punch,12,1,High,12,2,14,-1,5,Right Jab
 1003,101,LK,0,None,0,0,None,0,0,0,0,0,Ducking Left
@@ -24,8 +24,8 @@
 1023,101,f+UP+RK,0,Kick,20,1,Middle,23,2,18,-9,D,Jumping Duck Kick
 1024,101,UP+RK,1023,Kick,20,1,Middle,23,2,18,-9,D,Jumping Duck Kick
 1025,101,"RP, LP",0,Punch,26,2,High,12,2,14,-6,6,Vanguard Rush1
-1026,101,"f+DOWN+LP, RP, LP",0,Punch,32,2,High,13,2,10,-2,2,Uppercut Psyche-out Hook
-1027,101,"f+RP, RP",0,Punch,26,2,Middle,21,2,16,-6,11,Conqueror Combination1
+1026,101,f+DOWN+LP|RP|LP,0,Punch,32,2,High,13,2,10,-2,2,Uppercut Psyche-out Hook
+1027,101,f+RP|RP,0,Punch,26,2,Middle,21,2,16,-6,11,Conqueror Combination1
 1028,102,LP,0,Punch,5,1,High,10,2,10,1,8,Jab
 1029,102,RP,0,Punch,12,1,High,12,2,14,-1,5,Right Jab
 1030,102,LK,0,Kick,10,1,High,12,2,14,-1,5,Left Kick
@@ -51,6 +51,6 @@
 1050,102,f+DOWN+LP,0,Punch,9,1,Low,12,2,14,-1,6,Forward Down Left Punch
 1051,102,f+DOWN+RP,0,Punch,14,1,Low,14,2,16,-2,7,Forward Down Right Punch
 1052,102,f+DOWM+RP ,0,Punch,14,1,Low,14,2,16,-2,7,Rusty Knife
-1053,102,"RP,RP,RP,RP",0,Punch,12,4,High,12,2,14,-6,6,Raptor Combo
-1054,102,"f+UPLK,RK,LK",0,Kick,20,3,Middle,16,2,20,-8,9,Hunting Hawk3
+1053,102,RP|RP|RP|RP,0,Punch,12,4,High,12,2,14,-6,6,Raptor Combo
+1054,102,f+UP+LK|RK|LK,0,Kick,20,3,Middle,16,2,20,-8,9,Hunting Hawk3
 ,,,,,,,,,,,,,

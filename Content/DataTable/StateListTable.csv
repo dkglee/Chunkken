@@ -1,0 +1,32 @@
+StateID,StateName,StateGroup,ParentStateID,DefaultDuration,AnimationRef,Notes
+1,STANDING_IDLE,Standing,-1,0,StandIdle,?? ? ?? ??
+100,MOVEMENT,Movement,-1,0,NULL,?? SuperState
+2,WALK_FORWARD,Movement,100,0,WalkForward,?? ??
+3,WALK_BACKWARD,Movement,100,0,WalkBackward,?? ??
+4,DASH_FORWARD,Movement,100,10,DashForward,?? ?? ??
+5,DASH_BACK,Movement,100,10,BackDash,?? ??
+200,CROUCHING,Crouching,-1,0,NULL,?? SuperState
+6,CROUCHING_IDLE,Crouching,200,0,CrouchIdle,?? ??
+7,CROUCH_WALK,Crouching,200,0,CrouchWalk,?? ???? ??
+300,JUMP,Jump,-1,0,NULL,?? SuperState
+9,JUMP_START,Jump,300,3,JumpStart,?? ??
+10,JUMP_ASCEND,Jump,300,10,JumpAscend,?? ??
+11,JUMP_DESCEND,Jump,300,10,JumpDescend,?? ??
+12,LANDING,Jump,300,3,Landing,??
+400,ATTACK,Attack,-1,0,NULL,?? SuperState
+13,ATTACK_STARTUP,Attack,400,8,Attack_Startup,?? ??
+14,ATTACK_ACTIVE,Attack,400,3,Attack_Active,?? ?? ?
+15,ATTACK_RECOVERY,Attack,400,10,Attack_Recovery,?? ??
+500,HIT_REACTION,HitReaction,-1,0,NULL,?? SuperState (Knockdown ??)
+16,HIT_REACTION_NORMAL,HitReaction,500,10,HitStand,?? ??
+17,HIT_REACTION_AIR,HitReaction,500,15,HitAir,?? ??
+18,HIT_REACTION_KNOCKDOWN,HitReaction,500,30,Knockdown,Knockdown (?? ??)
+19,GETUP,HitReaction,500,15,GetUp,?? ? ????
+600,GUARD,Guard,-1,0,NULL,?? SuperState
+22,GUARD_STAND,Guard,600,0,GuardStand,?? ??
+23,GUARD_CROUCH,Guard,600,0,GuardCrouch,??? ??
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
