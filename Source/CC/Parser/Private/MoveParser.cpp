@@ -14,6 +14,7 @@
 
 std::map<CharID, std::map<uint64, MoveID>> UMoveParser::MoveIDMap;
 std::map<CharID, std::map<MoveID, FMoveDataStruct>> UMoveParser::MoveDataMap;
+std::map<MoveID, FMoveDataStruct> UMoveParser::MoveDataMapByMoveID;
 
 UMoveParser::UMoveParser()
 {
@@ -34,7 +35,9 @@ uint64 UMoveParser::ParseCommand(std::string LineToken)
 
 	while (std::getline(CommandStream, Token, '|'))
 	{
-		int32 Bitmask = CalculateBitmask(Token);
+		// 단타 단위로 나뉘어짐
+		uint64 Bitmask = CalculateBitmask(Token);
+		// TODO : 트리로도 저장해야 함.
 		Command |= Bitmask;
 		Command <<= 8;
 	}
@@ -117,11 +120,12 @@ void UMoveParser::ParserData()
 		MoveData.OnHit = std::atoi(LineTokens[12].c_str());
 
 		MoveIDMap[MoveData.CharID][MoveData.Command] = MoveData.MoveID;
-		MoveDataMap[MoveData.MoveID][MoveData.MoveID] = MoveData;
+		MoveDataMap[MoveData.CharID][MoveData.MoveID] = MoveData;
+		MoveDataMapByMoveID[MoveData.MoveID] = MoveData;
 	}
 
 	InputFile.close();
-	
+
 	for (auto& [CharID, MoveData] : MoveDataMap)
 	{
 		for (auto& [MoveID, Data] : MoveData)
@@ -157,4 +161,13 @@ const FMoveDataStruct* UMoveParser::GetMoveData(CharID CharID, MoveID MoveID)
 		return nullptr;
 	}
 	return &(MoveDataMap[MoveID][MoveID]);
+}
+
+const FMoveDataStruct* UMoveParser::GetMoveDataByMoveID(MoveID MoveID)
+{
+	if (MoveDataMapByMoveID.find(MoveID) == MoveDataMapByMoveID.end())
+	{
+		return nullptr;
+	}
+	return &(MoveDataMapByMoveID[MoveID]);;
 }
