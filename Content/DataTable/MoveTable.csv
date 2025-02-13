@@ -23,7 +23,7 @@ MoveID,CharID,Command,RelativeID,AttackType,Damage,Hits,HitLevel,StartUp,ActiveF
 1022,101,UP+LK,1021,Kick,20,1,Low,36,2,21,-12,9,Jump-in Foot Stomp Right Hook1
 1023,101,f+UP+RK,0,Kick,20,1,Middle,23,2,18,-9,D,Jumping Duck Kick
 1024,101,UP+RK,1023,Kick,20,1,Middle,23,2,18,-9,D,Jumping Duck Kick
-1025,101,"RP, LP",0,Punch,26,2,High,12,2,14,-6,6,Vanguard Rush1
+1025,101,RP|LP,0,Punch,26,2,High,12,2,14,-6,6,Vanguard Rush1
 1026,101,f+DOWN+LP|RP|LP,0,Punch,32,2,High,13,2,10,-2,2,Uppercut Psyche-out Hook
 1027,101,f+RP|RP,0,Punch,26,2,Middle,21,2,16,-6,11,Conqueror Combination1
 1028,102,LP,0,Punch,5,1,High,10,2,10,1,8,Jab

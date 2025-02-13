@@ -89,6 +89,27 @@ void UMoveComboParser::ParserData()
 	PrintMoveTree();
 }
 
+bool UMoveComboParser::IsMoveIdInCombo(const TArray<FExecutingMove>& Moveset, int32 MoveID)
+{
+	int32 StartMoveID = Moveset[0].MoveID;
+	if (MoveTree.find(StartMoveID) == MoveTree.end())
+	{
+		return false;
+	}
+	MoveNode* Root = MoveTree[StartMoveID];
+	for (int i = 1; i < Moveset.Num(); i++)
+	{
+		int32 MoveIDInLoop = Moveset[i].MoveID;
+		if (Root->Children.find(MoveIDInLoop) == Root->Children.end())
+		{
+			return false;
+		}
+		Root = Root->Children[MoveIDInLoop];
+	}
+	bool bIsInCombo = Root->Children.contains(MoveID);
+	return bIsInCombo;
+}
+
 void UMoveComboParser::BeginDestroy()
 {
 	ClearMoveTree();

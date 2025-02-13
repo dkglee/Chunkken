@@ -3,6 +3,7 @@
 #include <map>
 
 #include "CoreMinimal.h"
+#include "ExecutingMove.h"
 #include "UObject/Object.h"
 #include "MoveComboParser.generated.h"
 
@@ -22,6 +23,8 @@ public:
 	UFUNCTION()
 	void ParserData();
 
+	static bool IsMoveIdInCombo(const TArray<FExecutingMove>& Moveset, int32 MoveID);
+	
 	virtual void BeginDestroy() override;
 private:
 	void LogMoveTree(MoveNode* Node, const FString& Indent);

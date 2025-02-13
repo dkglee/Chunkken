@@ -2,6 +2,8 @@
 
 #include "InputParser.h"
 #include "CC.h"
+#include "MoveComboParser.h"
+#include "MoveParser.h"
 
 UInputManager::UInputManager()
 {
@@ -42,6 +44,7 @@ void UInputManager::PushOnPressedInput(int32 CharID, int32 InputID, uint64 Frame
 	InputEvent.FrameIndex = FrameIndex;
 	InputEvent.bLeft = bLeft;
 	InputEvent.bUsed = false;
+	InputEvent.bIgnored = false;
 
 	StoreInputEvent(InputEvent);
 }
@@ -68,6 +71,7 @@ void UInputManager::PushOnReleasedInput(int32 CharID, int32 InputID, uint64 Fram
 	InputEvent.FrameIndex = FrameIndex;
 	InputEvent.bLeft = bLeft;
 	InputEvent.bUsed = false;
+	InputEvent.bIgnored = true;
 
 	UpdateInputEvent(InputEvent);
 }
@@ -123,21 +127,131 @@ int32 UInputManager::GetInputEvenIndex(uint64 FrameIndex)
 	return Index;
 }
 
-// 바로 실행 해줘야 하는디..!? 항상 이전 입력하고 비교 해야 하는구나..!
-// 애니메이션 몽타주를 그때그때 판단해서 연속적으로 실행해주면 될듯!
-int32 UInputManager::ExtractMoveIdFromInput(const TArray<int32>& Moveset)
+FExecutingMove UInputManager::ExtractFirstComboInput()
 {
-	int32 MoveID = -1;
-
-	// 여태까지 입력된 인풋을 비교해서 MoveID를 추출해야함
-
-	// 현재 들어온 입력을 가지고 무엇을 해야 하는가를 판단해야 함!
-	// 이전에 내가 실행했던 Moveset을 넘겨 받아야 함
-	// 가장 최근에 사용되었던 것을 찾아야 함! CurrentQueueIndex와 bUsed를 적절히 사용
-
-	// 이전에 사용한 것 부터 어떤 입력을 실행할 지 찾아야 함!
+	FExecutingMove ExecutingMove;
 	
+	int32 CurrentIndex = CurrentQueueIndex - 1;
+	if (CurrentIndex < 0)
+	{
+		CurrentIndex = MAX_INPUT_QUEUE - 1;
+	}
+	int32 PrevIndex = CurrentIndex - 1;
+	if (PrevIndex < 0)
+	{
+		PrevIndex = MAX_INPUT_QUEUE - 1;
+	}
+
+	FInputEventPerFrame& CurrentInput = InputQueue[CurrentIndex];
+	FInputEventPerFrame& PrevInput = InputQueue[PrevIndex];
+	CurrentInput.bUsed = true;
 	
+	ExecutingMove.MoveID = -1;
+	ExecutingMove.FrameIndex = CurrentInput.FrameIndex;
+	ExecutingMove.bIgnore = false;
+
+	// 이전의 비트를 들고와서 현재의 비트들이 계속해서 눌려져 있는지 확인해야 함. (공격 부분만 검증)
+	// 1이라면? 이전에 눌려져 있었다는 것임.
+	// 그럼 해당 부분을 꺼주면 됨
+	unsigned char AttackBitMask = 0xF0;
+	unsigned char CurrentBitMask = CurrentInput.BitMask & AttackBitMask;
+	unsigned char PrevBitMask = PrevInput.BitMask & AttackBitMask;
+	unsigned char NewBitMask = CurrentBitMask & PrevBitMask;
+	unsigned char ResultBitMask = CurrentInput.BitMask ^ NewBitMask;
+
+	// 이러면 이번 프레임에 새로 눌린 공격 입력들을 추출할 수 있음!
+	// 해당 비트로 MoveID가 있는지 조회해야 함
+	int32 MoveID = UMoveParser::GetMoveID(CurrentInput.CharID, ResultBitMask);
+	ExecutingMove.MoveID = MoveID;
 	
-	return MoveID;
+	return ExecutingMove;
+}
+
+FExecutingMove UInputManager::ExtractComboInput(const TArray<FExecutingMove>& Moveset)
+{
+	FExecutingMove ExecutingMove;
+	
+	int32 CurrentIndex = CurrentQueueIndex - 1;
+	if (CurrentIndex < 0)
+	{
+		CurrentIndex = MAX_INPUT_QUEUE - 1;
+	}
+	int32 PrevIndex = CurrentIndex - 1;
+	if (PrevIndex < 0)
+	{
+		PrevIndex = MAX_INPUT_QUEUE - 1;
+	}
+
+	FInputEventPerFrame& CurrentInput = InputQueue[CurrentIndex];
+	FInputEventPerFrame& PrevInput = InputQueue[PrevIndex];
+	CurrentInput.bUsed = true;
+	
+	ExecutingMove.FrameIndex = CurrentInput.FrameIndex;
+	ExecutingMove.bIgnore = false;
+
+	// 이전의 비트를 들고와서 현재의 비트들이 계속해서 눌려져 있는지 확인해야 함. (공격 부분만 검증)
+	// 1이라면? 이전에 눌려져 있었다는 것임.
+	// 그럼 해당 부분을 꺼주면 됨
+	unsigned char CurrentBitMask = CurrentInput.BitMask;
+	unsigned char PrevBitMask = PrevInput.BitMask;
+	unsigned char NewBitMask = CurrentBitMask & PrevBitMask;
+	unsigned char ResultBitMask = CurrentInput.BitMask ^ NewBitMask;
+	
+	int32 MoveID = UMoveParser::GetMoveID(CurrentInput.CharID, ResultBitMask);
+	ExecutingMove.MoveID = MoveID;
+
+	// 가장 최근에 눌린 공격 입력을 받아 프레임을 계산 후 무시 여부를 판단해야 함.
+	int32 FirstFrameIndex = Moveset[0].FrameIndex;
+	int32 FrameStartUp = 0;
+	for (int i = 0; i < Moveset.Num(); i++)
+	{
+		const FMoveDataStruct* MoveData = UMoveParser::GetMoveDataByMoveID(Moveset[i].MoveID);
+		FrameStartUp = MoveData->StartUp;
+	}
+	
+	// MoveID가 -1이고 해당 입력이 콤보 인정 기간안에 실행되지 못했다면 무시해야 함.
+	// 또한 콤보가 끝났다면 무시해야 함.
+	int32 FrameDifference = CurrentInput.FrameIndex - (FirstFrameIndex + FrameStartUp);
+	if (FrameDifference > 0 || MoveID == -1 || Moveset.Last().bCombDone == true)
+	{
+		ExecutingMove.bIgnore = true;
+		return ExecutingMove;
+	}
+
+	// 콤보 안에 드는지 확인해야 함!
+	bool bIsInCombo = UMoveComboParser::IsMoveIdInCombo(Moveset, MoveID);
+	if (!bIsInCombo)
+	{
+		ExecutingMove.bIgnore = true;
+		ExecutingMove.bCombDone = true;
+	}
+	
+	return ExecutingMove;
+}
+
+FExecutingMove UInputManager::ExtractMoveIdFromInput(TArray<FExecutingMove>& Moveset)
+{
+	FExecutingMove ExecutingMove;
+
+	if (Moveset.Num() == 0)
+	{
+		ExecutingMove = ExtractFirstComboInput();
+	}
+	else
+	{
+		ExecutingMove = ExtractComboInput(Moveset);
+	}
+	
+	if (ExecutingMove.MoveID != -1 && !ExecutingMove.bIgnore)
+	{
+		Moveset.Add(ExecutingMove);
+	}
+	
+	// 콤보가 끝났다면 콤보 리스트에 업데이트 해줘야 함
+	if (ExecutingMove.bCombDone)
+	{
+		Moveset[Moveset.Num() - 1].bCombDone = true;
+	}
+	
+	return ExecutingMove;
 }

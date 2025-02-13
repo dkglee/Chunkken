@@ -15,7 +15,6 @@ public class CC : ModuleRules
 		PublicIncludePaths.AddRange(new string[]
 		{
 			"CC/Public",
-			"CC/Character/Public",
 			"CC/Parser/Public",
 			"CC/Parser/DataTableStruct/Public",
 			"CC/GameMode/Public",

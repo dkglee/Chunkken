@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Containers/Deque.h"
+#include "ExecutingMove.h"
 #include "InputManager.generated.h"
 
 #define MAX_INPUT_QUEUE 60
@@ -19,6 +20,7 @@ struct FInputEventPerFrame
 	uint64 FrameIndex = 0;
 	bool bLeft = false;
 	bool bUsed = false;
+	bool bIgnored = false;
 };
 
 // 캐릭터당 하나씩 존재하는 인풋 매니저
@@ -40,7 +42,7 @@ public:
 	UFUNCTION()
 	void PushOnReleasedInput(int32 CharID, int32 InputID, uint64 FrameIndex, bool bLeft);
 	UFUNCTION()
-	int32 ExtractMoveIdFromInput(const TArray<int32>& Moveset);
+	FExecutingMove ExtractMoveIdFromInput(TArray<FExecutingMove>& Moveset);
 private:
 	UFUNCTION()
 	void StoreInputEvent(FInputEventPerFrame InputEvent);
@@ -48,6 +50,10 @@ private:
 	void UpdateInputEvent(FInputEventPerFrame InputEvent);
 	UFUNCTION()
 	int32 GetInputEvenIndex(uint64 FrameIndex);
+	UFUNCTION()
+	FExecutingMove ExtractFirstComboInput();
+	UFUNCTION()
+	FExecutingMove ExtractComboInput(const TArray<FExecutingMove>& Moveset);
 	
 	UPROPERTY()
 	TArray<FInputEventPerFrame> InputQueue;
