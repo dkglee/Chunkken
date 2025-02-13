@@ -8,6 +8,7 @@
 #include "ConditionListParser.h"
 #include "InputParser.h"
 #include "HitEffectParser.h"
+#include "MoveComboParser.h"
 #include "MoveParser.h"
 #include "StateParser.h"
 #include "TransitionParser.h"
@@ -43,4 +44,7 @@ void UChunkkenGameInstance::Init()
 
 	TransitionParser = NewObject<UTransitionParser>();
 	TransitionParser->ParseData();
+
+	MoveComboParser = NewObject<UMoveComboParser>();
+	MoveComboParser->ParserData();
 }

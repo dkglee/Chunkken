@@ -51,6 +51,7 @@ private:
 	
 	UPROPERTY()
 	TArray<FInputEventPerFrame> InputQueue;
+
 	UPROPERTY()
 	int32 CurrentQueueIndex = 0;
 };
