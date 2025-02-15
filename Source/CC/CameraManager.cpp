@@ -3,79 +3,94 @@
 
 #include "CameraManager.h"
 
-#include "Player_hr.h"
-#include "Player_sf.h"
-#include "Camera/CameraComponent.h"
-#include "GameFramework/Character.h"
-#include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/Character.h"
 
 // Sets default values
 ACameraManager::ACameraManager()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
-	MyCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
-	RootComponent = MyCameraComponent;
+
+	// Spring Arm 생성
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArm->SetupAttachment(RootComponent);
+	SpringArm->TargetArmLength = 1200.0f; // 기본 거리 설정
+	SpringArm->bDoCollisionTest = false;
+
+	// 카메라 생성 및 Spring Arm에 연결
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera->SetupAttachment(SpringArm);
+
+	// 카메라 거리 및 속도 설정
+	DefaultCameraDistance = 1200.0f;
+	ZoomSpeed = 5.0f;
+	MaxCameraDistance = 2000.0f;
+	MinCameraDistance = 800.0f;
 }
 
 // Called when the game starts or when spawned
 void ACameraManager::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	// 모든 플레이어 찾기
 	TArray<AActor*> FoundPlayers;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayer_hr::StaticClass(), FoundPlayers);
-	if (FoundPlayers.Num() > 0)
-	{
-		Player_hr = Cast<APlayer_hr>(FoundPlayers[0]); 
-		UE_LOG(LogTemp, Warning, TEXT("Player_hr 찾음: %s"), *Player_hr->GetName()); 
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Player_hr 찾을 수 없음!")); 
-	}
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACharacter::StaticClass(), FoundPlayers);
 
-
-	FoundPlayers.Empty(); 
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayer_sf::StaticClass(), FoundPlayers);
-	if (FoundPlayers.Num() > 0)
+	for (AActor* Players : FoundPlayers)
 	{
-		Player_sf = Cast<APlayer_sf>(FoundPlayers[0]); 
-		UE_LOG(LogTemp, Warning, TEXT("Player_sf 찾음: %s"), *Player_sf->GetName()); 
+		ACharacter* Player =Cast<ACharacter>(Players);
+		if (Player->ActorHasTag(TEXT("Player1")))
+		{
+			Player1 = Player;
+		}
+		else if (Player->ActorHasTag(TEXT("Player2")))
+		{
+			Player2 = Player;
+		}
 	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Player_sf 찾을 수 없음!")); 
-	}
+	
 }
 
 // Called every frame
 void ACameraManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (!Player_hr || !Player_sf)
-	{
-		return;
-	}
-
-	//중간지점
-	FVector P1Loc = Player_hr->GetActorLocation();
-	FVector P2Loc = Player_sf->GetActorLocation();
-	FVector Mid=(P1Loc+P2Loc)/2;
-
-	//z축 고정
-	Mid.Z = CameraOffset.Z;
 	
-	//mid + 오프셋
-	FVector DesiredLocation = Mid + CameraOffset;
-	SetActorLocation(DesiredLocation);
+	if (Player1 && Player2)
+	{
+		UpdateCameraPosition();
+		UpdateCameraZoom(DeltaTime);
+	}
+}
+// 플레이어 중간 지점에 카메라 배치
+void ACameraManager::UpdateCameraPosition()
+{
+	if (!Player1 || !Player2) return;
 
-	//두 캐릭터 바라보게
-	FRotator LookRot = UKismetMathLibrary::FindLookAtRotation(DesiredLocation, Mid);
-	SetActorRotation(LookRot);
+	FVector Player1Location = Player1->GetActorLocation();
+	FVector Player2Location = Player2->GetActorLocation();
+
+	// 두 플레이어의 중간 지점 계산
+	FVector NewCameraLocation = (Player1Location + Player2Location) / 2;
+	SetActorLocation(NewCameraLocation);
 }
 
+// 플레이어 거리 기반 줌 조정
+void ACameraManager::UpdateCameraZoom(float DeltaTime)
+{
+	if (!Player1 || !Player2) return;
+
+	float Distance = FVector::Dist(Player1->GetActorLocation(), Player2->GetActorLocation());
+
+	// 카메라 거리 제한 (Min ~ Max 사이)
+	float TargetDistance = FMath::Clamp(Distance, MinCameraDistance, MaxCameraDistance);
+
+	// 부드러운 보간 (FInterpTo)
+	float NewArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, TargetDistance, DeltaTime, ZoomSpeed);
+	SpringArm->TargetArmLength = NewArmLength;
+}

@@ -3,17 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MyCharacterBase.h"
-#include "Player_sf.generated.h"
+#include "GameFramework/Character.h"
+#include "SteveFox.generated.h"
 
 UCLASS()
-class CC_API APlayer_sf : public AMyCharacterBase
+class CC_API ASteveFox : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	APlayer_sf();
+	ASteveFox();
 
 protected:
 	// Called when the game starts or when spawned

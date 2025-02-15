@@ -9,8 +9,10 @@
 #include "InputParser.h"
 #include "HitEffectParser.h"
 #include "MoveParser.h"
+#include "SAssetView.h"
 #include "StateParser.h"
 #include "TransitionParser.h"
+#include "Kismet/GameplayStatics.h"
 
 UChunkkenGameInstance::UChunkkenGameInstance()
 {
@@ -43,4 +45,5 @@ void UChunkkenGameInstance::Init()
 
 	TransitionParser = NewObject<UTransitionParser>();
 	TransitionParser->ParseData();
+
 }

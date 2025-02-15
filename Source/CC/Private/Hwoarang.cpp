@@ -1,37 +1,39 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Player_hr.h"
+#include "Hwoarang.h"
 
 
 // Sets default values
-APlayer_hr::APlayer_hr()
+AHwoarang::AHwoarang()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	AutoPossessPlayer = EAutoReceiveInput::Disabled;
 }
 
 // Called when the game starts or when spawned
-void APlayer_hr::BeginPlay()
+void AHwoarang::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
+void AHwoarang::AddMovementInput(FVector WorldDirection, float ScaleValue, bool bForce)
+{
+	Super::AddMovementInput(WorldDirection, ScaleValue, bForce);
+}
+
 // Called every frame
-void APlayer_hr::Tick(float DeltaTime)
+void AHwoarang::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	//UE_LOG(LogTemp, Display, TEXT("%d"), GetRemoteRole())
 }
 
 // Called to bind functionality to input
-void APlayer_hr::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AHwoarang::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
-void APlayer_hr::MoveRight(float Value)
-{
-	Super::MoveRight(Value);
 }
 
