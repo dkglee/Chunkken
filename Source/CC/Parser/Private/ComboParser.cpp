@@ -47,6 +47,15 @@ void UComboParser::ParseData()
 	PrintComboMap();
 }
 
+const FComboDataStruct* UComboParser::GetComboData(int32 ComboID)
+{
+	if (ComboMap.find(ComboID) == ComboMap.end())
+	{
+		return nullptr;
+	}
+	return &ComboMap[ComboID];
+}
+
 TArray<int32> UComboParser::ParseComboNotaion(int32 CharacterID, std::string LineToken)
 {
 	TArray<int32> Notation;

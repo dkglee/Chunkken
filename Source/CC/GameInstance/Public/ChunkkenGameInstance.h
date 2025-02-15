@@ -36,4 +36,6 @@ private:
 	class UConditionListParser* ConditionListParser;
 	UPROPERTY()
 	class UTransitionParser* TransitionParser;
+	UPROPERTY()
+	class UMoveComboParser* MoveComboParser;
 };

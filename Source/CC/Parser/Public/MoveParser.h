@@ -21,6 +21,7 @@ public:
 
 	static MoveID GetMoveID(CharID CharID, uint64 Command);
 	static const FMoveDataStruct* GetMoveData(CharID CharID, MoveID MoveID);
+	static const FMoveDataStruct* GetMoveDataByMoveID(MoveID MoveID);
 
 protected:
 	FString ConvertBitmaskToBinary(uint64 Bitmask);
@@ -32,4 +33,5 @@ protected:
 	// int32 : MoveID
 	static std::map<CharID, std::map<uint64, MoveID>> MoveIDMap;
 	static std::map<CharID, std::map<MoveID, FMoveDataStruct>> MoveDataMap;
+	static std::map<MoveID, FMoveDataStruct> MoveDataMapByMoveID;
 };

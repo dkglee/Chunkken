@@ -17,6 +17,8 @@ public:
 	UFUNCTION()
 	void ParseData();
 
+	const FComboDataStruct* GetComboData(int32 ComboID);
+	
 protected:
 	TArray<int32> ParseComboNotaion(int32 CharacterID, std::string LineToken);
 	void ParseCombo();
