@@ -21,6 +21,7 @@ public class CC : ModuleRules
 			"CC/FrameManager/Public",
 			"CC/InputManager/Public",
 			"CC/Utils/Public",
+			"CC/FSM/Public/"
 		});
 
 		// Uncomment if you are using Slate UI

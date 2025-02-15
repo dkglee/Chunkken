@@ -6,5 +6,9 @@ ConditionID,ConditionName,ConditionChecker,ConditionData,ConditionGroup,Invert,P
 5,UpInputDetected,InputConditionChecker,"{""direction"":""UP""}",Input,FALSE,0,?? ?? ?? (?? ?)
 6,AttackButtonPressed,InputConditionChecker,"{""buttons"":[""LP"",""RP"",""LK"",""RK""]}",Input,FALSE,0,?? ??(??�?) ?? ??
 7,CrouchInputDetected,InputConditionChecker,"{""direction"":""DOWN""}",Input,FALSE,0,"?? ?? ?? (??, ?? ??)"
-8,FrameOver,FrameConditionChecker,"{""duration"":10}",Frame,FALSE,1,?? ??? 10??? ?? ????? ?.
-9,HitDetected,HitConditionChecker,"{""hitType"":""normal"", ""damageThreshold"":1}",Hit,FALSE,2,?? ?? ?? (?? ??)
+8,FrameOver,FrameConditionChecker,"{""duration"":10}",Frame,FALSE,0,?? ??? 10??? ?? ????? ?.
+9,HitDetected,HitConditionChecker,"{""hitType"":""normal"", ""damageThreshold"":1}",Hit,FALSE,0,?? ?? ?? (?? ??)
+10,PrevStateIdle,StateConditionChecker,"{""prevState"":""STANDING_IDLE""}",State,FALSE,0,?? ??? Idle ????
+11,PrevStateMove,StateConditionChecker,"{""prevState"":""MOVEMENT""}",State,FALSE,0,?? ??? Movement ????
+12,PrevStateCrouch,StateConditionChecker,"{""prevState"":""CROUCHING""}",State,FALSE,0,?? ??? Crouch????
+13,PrevStateJump,StateConditionChecker,"{""prevState"":""JUMP""}",State,FALSE,0,?? ??? Jump?????

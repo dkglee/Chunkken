@@ -18,11 +18,29 @@ public:
 	void ParseData();
 
 	static const FTransitionListDataStruct* GetTransitionData(int32 TransitionID);
+
+	virtual void BeginDestroy() override;
 	
 protected:
-	EConditionLogic ParserConditionLogic(std::string LineToken);
-	TArray<int32> ParserConditionIDs(std::string LineToken);
+	struct FLogicNode* ParseExpression();
+	struct FLogicNode* ParseOr();
+	struct FLogicNode* ParseAnd();
+	struct FLogicNode* ParsePrimitive();
+	FString GetToken();
+	FString PeekToken();
+
+	void PrintLogicNodeRecursive(FLogicNode* Node, int Depth = 0);
 	void PrintTransitionMap();
+	void ClearTransitionMap();
+	void DestroyLogicNode(FLogicNode* Node);
+	
+
+	TArray<FString> SplitString(const FString& Source);
 
 	static std::map<int32, FTransitionListDataStruct> TransitionMap;
+
+	UPROPERTY()
+	int32 IndexAST;
+	UPROPERTY()
+	TArray<FString> Tokens;
 };

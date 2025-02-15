@@ -38,28 +38,29 @@ void UTransitionParser::ParseData()
 			bIsFirstLine = false;
 			continue;
 		}
-
+	
 		while (std::getline(LineStream, Token, ','))
 		{
 			LineTokens.push_back(Token);
 		}
-
-		if (LineTokens.size() != 8)
+	
+		if (LineTokens.size() != 6)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Invalid row with %llu columns"), LineTokens.size());
 			continue;
 		}
-
+	
 		FTransitionListDataStruct Transition;
-
+	
 		Transition.TransitionID = std::atoi(LineTokens[0].c_str());
 		Transition.FromStateID = std::atoi(LineTokens[1].c_str());
-		Transition.bParentStateCheck = (LineTokens[2] == "TRUE") ? true : false;
-		Transition.ConditionLogic = ParserConditionLogic(LineTokens[3]);
-		Transition.ConditionIDs = ParserConditionIDs(LineTokens[4]);
-		Transition.ToStateID = std::atoi(LineTokens[5].c_str());
-		Transition.Priority = std::atoi(LineTokens[6].c_str());
-
+		Tokens.Empty();
+		IndexAST = 0;
+		Tokens = SplitString(FString(ANSI_TO_TCHAR(LineTokens[2].c_str())));
+		Transition.ConditionLogic = ParseExpression();
+		Transition.ToStateID = std::atoi(LineTokens[3].c_str());
+		Transition.Priority = std::atoi(LineTokens[4].c_str());
+	
 		TransitionMap[Transition.TransitionID] = Transition;
 	}
 
@@ -77,80 +78,156 @@ const FTransitionListDataStruct* UTransitionParser::GetTransitionData(int32 Tran
 	return nullptr;
 }
 
-EConditionLogic UTransitionParser::ParserConditionLogic(std::string LineToken)
+void UTransitionParser::BeginDestroy()
 {
-	if (LineToken == "AND") return EConditionLogic::AND;
-	if (LineToken == "OR") return EConditionLogic::OR;
-	if (LineToken == "NOT") return EConditionLogic::NOT;
-	return EConditionLogic::NONE;
-}
-
-TArray<int32> UTransitionParser::ParserConditionIDs(std::string LineToken)
-{
-	std::stringstream LineStream(LineToken);
-	std::string Token;
-
-	TArray<int32> ConditionIDs;
-
-	while (std::getline(LineStream, Token, '|'))
-	{
-		ConditionIDs.Add(std::atoi(Token.c_str()));
-	}
-	
-	return ConditionIDs;
+	ClearTransitionMap();
+	Super::BeginDestroy();
 }
 
 /** TransitionMap의 모든 데이터를 출력하는 함수 */
+void UTransitionParser::PrintLogicNodeRecursive(FLogicNode* Node, int Depth)
+{
+	if (!Node) return;
+
+	// 들여쓰기 기반 트리 출력
+	std::string Indent(Depth * 2, ' ');  // 공백 2개씩 반복
+	UE_LOG(LogTemp, Log, TEXT("%s%s"), *FString(Indent.c_str()), *Node->Value);
+
+	if (Node->Left) PrintLogicNodeRecursive(Node->Left, Depth + 1);
+	if (Node->Right) PrintLogicNodeRecursive(Node->Right, Depth + 1);
+}
+
 void UTransitionParser::PrintTransitionMap()
 {
-    if (TransitionMap.empty())
-    {
-        UE_LOG(LogTemp, Warning, TEXT("TransitionMap is empty!"));
-        return;
-    }
+	for (const auto& Pair : TransitionMap)
+	{
+		const FTransitionListDataStruct& Transition = Pair.second;
 
-    UE_LOG(LogTemp, Log, TEXT("========= Transition Map ========="));
+		UE_LOG(LogTemp, Warning, TEXT("Transition ID: %d"), Transition.TransitionID);
+		UE_LOG(LogTemp, Warning, TEXT("  From State ID: %d"), Transition.FromStateID);
+		UE_LOG(LogTemp, Warning, TEXT("  To State ID: %d"), Transition.ToStateID);
+		UE_LOG(LogTemp, Warning, TEXT("  Priority: %d"), Transition.Priority);
+		UE_LOG(LogTemp, Warning, TEXT("  On Transition Action: %s"), *Transition.OnTransitionAction);
 
-    for (const auto& Pair : TransitionMap)
-    {
-        const FTransitionListDataStruct& Transition = Pair.second;
+		if (Transition.ConditionLogic)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("  Condition Logic:"));
+			PrintLogicNodeRecursive(Transition.ConditionLogic);
+		}
+	}
+}
 
-        // ConditionLogic을 문자열로 변환
-        FString ConditionLogicStr;
-        switch (Transition.ConditionLogic)
-        {
-        case EConditionLogic::NONE: ConditionLogicStr = TEXT("None"); break;
-        case EConditionLogic::AND:  ConditionLogicStr = TEXT("AND"); break;
-        case EConditionLogic::OR:   ConditionLogicStr = TEXT("OR"); break;
-        case EConditionLogic::NOT:  ConditionLogicStr = TEXT("NOT"); break;
-        default: ConditionLogicStr = TEXT("Unknown"); break;
-        }
+void UTransitionParser::ClearTransitionMap()
+{
+	for (auto& Pair : TransitionMap)
+	{
+		DestroyLogicNode(Pair.second.ConditionLogic);
+	}
+	TransitionMap.clear();
+}
 
-        // ConditionIDs(TArray<int32>)를 쉼표로 구분된 문자열로 변환
-        FString ConditionIDsStr;
-        for (int32 i = 0; i < Transition.ConditionIDs.Num(); ++i)
-        {
-            ConditionIDsStr += FString::Printf(TEXT("%d"), Transition.ConditionIDs[i]);
-            if (i < Transition.ConditionIDs.Num() - 1)
-            {
-                ConditionIDsStr += TEXT(", ");
-            }
-        }
+void UTransitionParser::DestroyLogicNode(FLogicNode* Node)
+{
+	if (!Node) return;
 
-        // 최종 출력 문자열 생성
-        FString Output = FString::Printf(
-            TEXT("ID: %d, From: %d, To: %d, ParentCheck: %s, Logic: %s, ConditionIDs: [%s], Priority: %d, Action: %s"),
-            Transition.TransitionID,
-            Transition.FromStateID,
-            Transition.ToStateID,
-            Transition.bParentStateCheck ? TEXT("True") : TEXT("False"),
-            *ConditionLogicStr,
-            *ConditionIDsStr,
-            Transition.Priority,
-            *Transition.OnTransitionAction
-        );
+	DestroyLogicNode(Node->Left);
+	DestroyLogicNode(Node->Right);
 
-        // 콘솔 로그 출력
-    	FFastLogger::LogConsole(TEXT("%s"), *Output);
-    }
+	delete Node;
+}
+
+
+FLogicNode* UTransitionParser::ParseExpression()
+{
+	return ParseOr();
+}
+
+TArray<FString> UTransitionParser::SplitString(const FString& Source)
+{
+	TArray<FString> InTokens;
+	for (int32 i = 0; i < Source.Len(); i++)
+	{
+		TCHAR C = Source[i];
+
+		if (FChar::IsWhitespace(C))
+		{
+			continue;
+		}
+		else if (C == '(' || C == ')' || C == '&' || C == '|')
+		{
+			InTokens.Add(FString(1, &C));
+		}
+		else if (C == '!')
+		{
+			InTokens.Add(FString(1, &C));
+		}
+		else
+		{
+			// Condition ID 파싱
+			FString Token;
+			while (i < Source.Len() && !FChar::IsWhitespace(Source[i]) && Source[i] != '(' && Source[i] != ')' && Source[i] != '&' && Source[i] != '|')
+			{
+				Token += Source[i];
+				i++;
+			}
+			i--;
+			InTokens.Add(Token);
+		}
+	}
+	return InTokens;
+}
+
+FLogicNode* UTransitionParser::ParseOr()
+{
+	FLogicNode* Left = ParseAnd();
+	while (PeekToken() == "|")
+	{
+		GetToken(); // Remove "|"
+		FLogicNode* Right = ParseAnd();
+		Left = new FLogicNode("|", Left, Right);
+	}
+	return Left;
+}
+
+FLogicNode* UTransitionParser::ParseAnd()
+{
+	FLogicNode* Left = ParsePrimitive();
+	while (PeekToken() == "&")
+	{
+		GetToken(); // Remove "&"
+		FLogicNode* Right = ParsePrimitive();
+		Left = new FLogicNode("&", Left, Right);
+	}
+	return Left;
+}
+
+FLogicNode* UTransitionParser::ParsePrimitive()
+{
+	FString Token = GetToken();
+	if (Token == "(")
+	{
+		FLogicNode* Node = ParseExpression();
+		GetToken(); // Remove ")"
+		return Node;
+	}
+	else if (Token == "!")
+	{
+		FLogicNode* Node = new FLogicNode(Token, ParsePrimitive(), nullptr);
+		return Node;
+	}
+	else
+	{
+		FLogicNode* Node = new FLogicNode(Token, nullptr, nullptr);
+		return Node;
+	}
+}
+
+FString UTransitionParser::GetToken()
+{
+	return (IndexAST < Tokens.Num()) ? Tokens[IndexAST++] : "";
+}
+
+FString UTransitionParser::PeekToken()
+{
+	return (IndexAST < Tokens.Num()) ? Tokens[IndexAST] : "";
 }
