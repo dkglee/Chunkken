@@ -8,7 +8,7 @@ public class CC : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Json", "JsonUtilities" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "TraceInsights" });
 		
@@ -21,7 +21,11 @@ public class CC : ModuleRules
 			"CC/FrameManager/Public",
 			"CC/InputManager/Public",
 			"CC/Utils/Public",
-			"CC/FSM/Public/"
+			"CC/FSM/Public/",
+			"CC/FSM/CharacterStates/Public/",
+			"CC/FSM/States/Public/",
+			"CC/FSM/Conditions/Public/",
+			"CC/FSM/SubFSM/Public/"
 		});
 
 		// Uncomment if you are using Slate UI

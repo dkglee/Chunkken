@@ -52,6 +52,9 @@ struct FTransitionListDataStruct
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transition Data")
 	int32 FromStateID;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transition Data")
+	TArray<FString> ConditionTokens;
+	
 	struct FLogicNode* ConditionLogic;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transition Data")

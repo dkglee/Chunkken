@@ -57,6 +57,14 @@ void UTransitionParser::ParseData()
 		Tokens.Empty();
 		IndexAST = 0;
 		Tokens = SplitString(FString(ANSI_TO_TCHAR(LineTokens[2].c_str())));
+		for (int32 i = 0; i < Tokens.Num(); i++)
+		{
+			if (Tokens[i] == "(" || Tokens[i] == ")" || Tokens[i] == "&" || Tokens[i] == "|")
+			{
+				continue;
+			}
+			Transition.ConditionTokens.Add(Tokens[i]);
+		}
 		Transition.ConditionLogic = ParseExpression();
 		Transition.ToStateID = std::atoi(LineTokens[3].c_str());
 		Transition.Priority = std::atoi(LineTokens[4].c_str());
@@ -76,6 +84,20 @@ const FTransitionListDataStruct* UTransitionParser::GetTransitionData(int32 Tran
 		return &TransitionMap[TransitionID];
 	}
 	return nullptr;
+}
+
+std::vector<FTransitionListDataStruct*> UTransitionParser::GetTransitionDataList(int32 FromStateID)
+{
+	std::vector<FTransitionListDataStruct*> TransitionList;
+	for (const auto& Pair : TransitionMap)
+	{
+		const FTransitionListDataStruct& Transition = Pair.second;
+		if (Transition.FromStateID == FromStateID)
+		{
+			TransitionList.push_back(&TransitionMap[Transition.TransitionID]);
+		}
+	}
+	return TransitionList;
 }
 
 void UTransitionParser::BeginDestroy()

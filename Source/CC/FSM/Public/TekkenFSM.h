@@ -2,10 +2,14 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
-#include "TekkenFSM.generated.h"
+#include <map>
+#include <utility>
 
+#include "CoreMinimal.h"
+#include "TransitionListDataStruct.h"
+#include "Components/ActorComponent.h"
+#include "TransitionRules.h"
+#include "TekkenFSM.generated.h"
 
 UCLASS()
 class CC_API UTekkenFSM : public UActorComponent
@@ -24,4 +28,25 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
+	void ChangeSubFSM(int32 GroupID, int32 ChildID);
+
+protected:
+	void InitializeFSM();
+	bool CheckTransitionList(std::pair<int32, int32>& result);
+	bool ValidateCondition(FTransitionListDataStruct* LogicNode);
+	FString WrapJsonString();
+	
+	UPROPERTY()
+	class USubFSM* PreviousSubFSM = nullptr;
+	UPROPERTY()
+	class USubFSM* CurrentSubFSM = nullptr;
+
+	// 초기화 해야 하는것!
+	std::map<int32, FTransitionRules> TransitionRules;
+	UPROPERTY()
+	TMap<int32, class USubFSM*> SubFSMs;
+
+	// TODO : Get Character
+	UPROPERTY()
+	class ABaseCharacter* Me = nullptr;
 };

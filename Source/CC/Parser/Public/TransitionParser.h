@@ -18,6 +18,7 @@ public:
 	void ParseData();
 
 	static const FTransitionListDataStruct* GetTransitionData(int32 TransitionID);
+	static std::vector<FTransitionListDataStruct*> GetTransitionDataList(int32 FromStateID);
 
 	virtual void BeginDestroy() override;
 	
@@ -33,7 +34,6 @@ protected:
 	void PrintTransitionMap();
 	void ClearTransitionMap();
 	void DestroyLogicNode(FLogicNode* Node);
-	
 
 	TArray<FString> SplitString(const FString& Source);
 

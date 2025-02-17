@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BaseCharacter.h"
 #include "GameFramework/Character.h"
 #include "Hwoarang.generated.h"
 
 UCLASS()
-class CC_API AHwoarang : public ACharacter
+class CC_API AHwoarang : public ABaseCharacter
 {
 	GENERATED_BODY()
 
