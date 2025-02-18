@@ -1,10 +1,14 @@
 #include "IdleFSM.h"
 
+#include "FastLogger.h"
+
 FString UIdleFSM::StateName = TEXT("STANDING_IDLE");
 
 void UIdleFSM::Enter(int32 ChildID)
 {
 	Super::Enter(ChildID);
+
+	FFastLogger::LogScreen(FColor::Green, TEXT("Enter Idle State"));
 }
 
 void UIdleFSM::Update()

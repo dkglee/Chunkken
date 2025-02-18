@@ -3,9 +3,28 @@
 
 #include "CC/FSM/States/Public/WalkBackwardState.h"
 
+#include "FastLogger.h"
+
 FString UWalkBackwardState::StateName = TEXT("WALK_BACKWARD");
 
 FString UWalkBackwardState::GetStateName()
 {
 	return StateName;
+}
+
+void UWalkBackwardState::Exit()
+{
+	Super::Exit();
+}
+
+void UWalkBackwardState::Enter()
+{
+	Super::Enter();
+
+	
+}
+
+void UWalkBackwardState::Update()
+{
+	Super::Update();
 }
