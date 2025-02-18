@@ -138,3 +138,5 @@ void ABaseCharacter::UpdateMovement(uint64 FrameIndex)
 void ABaseCharacter::UpdateAttack(uint64 FrameIndex, FExecutingMove& ExecutingMove)
 {
 }
+
+// TODO: Movement하고 Attack을 순차적으로 실행 시켜야 함. 왜냐하면 CharacterState는 계속해서 업데이트 되어야 함.

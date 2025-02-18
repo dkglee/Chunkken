@@ -133,8 +133,9 @@ int32 UInputManager::GetInputEvenIndex(uint64 FrameIndex)
 FExecutingMove UInputManager::ExtractFirstComboInput()
 {
 	FExecutingMove ExecutingMove;
-	
-	int32 CurrentIndex = CurrentQueueIndex - 1;
+
+	// Tick이 먼저 호출됨
+	int32 CurrentIndex = CurrentQueueIndex - 2;
 	if (CurrentIndex < 0)
 	{
 		CurrentIndex = MAX_INPUT_QUEUE - 1;
@@ -173,8 +174,9 @@ FExecutingMove UInputManager::ExtractFirstComboInput()
 FExecutingMove UInputManager::ExtractComboInput(const TArray<FExecutingMove>& Moveset)
 {
 	FExecutingMove ExecutingMove;
-	
-	int32 CurrentIndex = CurrentQueueIndex - 1;
+
+	// Tick이 먼저 호출됨
+	int32 CurrentIndex = CurrentQueueIndex - 2;
 	if (CurrentIndex < 0)
 	{
 		CurrentIndex = MAX_INPUT_QUEUE - 1;

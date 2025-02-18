@@ -34,22 +34,23 @@ struct FCharacterState
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="State")
 	bool bCanBeDamaged = true;
 
+	// 이거는 FSM에서 다뤄져야 함
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="State")
 	bool bFrameOver = false;
 
-	// 히트 리액션 (피격 상태)
+	// 히트 리액션 (피격 상태) : 공격 이벤트가 들어오면 다뤄져야 함
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="HitReaction")
 	FString HitReaction = "";
 
-	// 이전 상태 (상태 머신 용도)
+	// 이전 상태 (상태 머신 용도) : FSM에서 State가 변경될 때 다뤄져야 함
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="StateMachine")
 	FString PrevState = "";
 
-	// 더블탭 입력 타이밍
+	// 더블탭 입력 타이밍 : 임시
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
 	int32 TapInterval = 0;
 
-	// 방향 정보
+	// 방향 정보 : Legacy
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
 	FString Direction = "";
 };
