@@ -3,8 +3,6 @@
 
 #include "CoreMinimal.h"
 #include "BaseCharacter.h"
-#include "GameFramework/Character.h"
-#include "GameCharacterState.h" 
 #include "Hwoarang.generated.h"
 
 UCLASS()

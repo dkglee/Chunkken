@@ -4,6 +4,8 @@
 #include "CameraManager.h"
 
 
+#include "BaseCharacter.h"
+#include "FastLogger.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -32,35 +34,24 @@ ACameraManager::ACameraManager()
 	MinCameraDistance = 800.0f;
 }
 
+void ACameraManager::RegisterPlayers(class ABaseCharacter* Left, class ABaseCharacter* Right)
+{
+	Player1 = Left;
+	Player2 = Right;
+}
+
 // Called when the game starts or when spawned
 void ACameraManager::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// 모든 플레이어 찾기
-	TArray<AActor*> FoundPlayers;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACharacter::StaticClass(), FoundPlayers);
-
-	for (AActor* Players : FoundPlayers)
-	{
-		ACharacter* Player =Cast<ACharacter>(Players);
-		if (Player->ActorHasTag(TEXT("Player1")))
-		{
-			Player1 = Player;
-		}
-		else if (Player->ActorHasTag(TEXT("Player2")))
-		{
-			Player2 = Player;
-		}
-	}
-	
 }
 
 // Called every frame
 void ACameraManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
+	// FFastLogger::LogScreen(FColor::Cyan, TEXT("Tick %d %d"), Player1 ? 1 : 0, Player2 ? 1 : 0);
 	if (Player1 && Player2)
 	{
 		UpdateCameraPosition();

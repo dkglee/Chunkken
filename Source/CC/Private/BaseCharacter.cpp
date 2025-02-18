@@ -82,16 +82,16 @@ void ABaseCharacter::UpdateMovement(uint64 FrameIndex)
 	bool bDown  = (BitMask & UInputParser::GetBitmask(UInputParser::GetIndex(DOWN))) != 0;
 	bool bBack  = (BitMask & UInputParser::GetBitmask(UInputParser::GetIndex(LEFT))) != 0;
 	bool bForward = (BitMask & UInputParser::GetBitmask(UInputParser::GetIndex(RIGHT))) != 0;
-	// 화랑은 왼쪽이 뒤로
-	// 화랑은 오른쪽이 앞으로
-	if (CharID == 102)
+	// 스티브는 왼쪽이 앞으로
+	// 스티브는 오른쪽이 뒤로
+	if (CharID == 101)
 	{
 		bool Temp = bBack;
 		bBack = bForward;
 		bForward = Temp;
 	}
 
-	FFastLogger::LogScreen(FColor::Cyan, TEXT("bUp: %d, bDown: %d, bBack: %d, bForward: %d"), bUp, bDown, bBack, bForward);
+	// FFastLogger::LogScreen(FColor::Cyan, TEXT("bUp: %d, bDown: %d, bBack: %d, bForward: %d"), bUp, bDown, bBack, bForward);
 	
 	// 위아래가 동시에 눌린 경우, 둘 다 무시
 	if(bUp && bDown)
@@ -142,6 +142,8 @@ void ABaseCharacter::UpdateMovement(uint64 FrameIndex)
 	CharacterState.bAttack = false;
 	CharacterState.bAttackAvailable = true;
 	CharacterState.bCanBeDamaged = true;
+
+	CharacterState.HitReaction = TEXT("Airborne");
 	
     
 	// 입력이 없으면 정지 처리

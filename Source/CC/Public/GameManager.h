@@ -23,10 +23,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Players")
-	AHwoarang* Player1;
+	class ABaseCharacter* Player1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Players")
-	ASteveFox* Player2;
+	class ABaseCharacter* Player2;
 
 	UFUNCTION(BlueprintCallable, Category="Combat")
 	void HandleAttack(ACharacter* Attacker, int32 MoveID);

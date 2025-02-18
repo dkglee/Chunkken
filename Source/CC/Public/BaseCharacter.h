@@ -8,8 +8,7 @@
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
-UCLASS()
-class CC_API ABaseCharacter : public ACharacter
+UCLASS()class CC_API ABaseCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -31,24 +30,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character State")
 	FCharacterState CharacterState;
 
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character State")
-	class UInputManager* InputManager;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character State")
-	class UTekkenFSM* TekkenFSM;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character State")
-	int32 CharID;
-
-	TArray<FExecutingMove> Moveset;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
 	int32 HP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
-	UBoxComponent* HitBox;
+	class UBoxComponent* HitBox; //공격판정
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
-	UBoxComponent* HurtBox;
+	class UBoxComponent* HurtBox; //피격판정
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="State")
 	EGameCharacterState CurrentState;
@@ -59,5 +48,15 @@ protected:
 	UFUNCTION(BlueprintCallable, Category="State")
 	void SetState(EGameCharacterState NewState);
 
+	
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character State")
+	class UInputManager* InputManager;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character State")
+	class UTekkenFSM* TekkenFSM;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character State")
+	int32 CharID;
+
+	TArray<FExecutingMove> Moveset;
 
 };
