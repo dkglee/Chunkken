@@ -3,6 +3,7 @@
 #include "AttackActiveState.h"
 #include "AttackRecoveryState.h"
 #include "AttackStartupState.h"
+#include "FastLogger.h"
 #include "StateParser.h"
 #include "TransitionParser.h"
 
@@ -11,6 +12,8 @@ FString UAttackFSM::StateName = TEXT("ATTACK");
 void UAttackFSM::Enter(int32 ChildID)
 {
 	Super::Enter(ChildID);
+
+	FFastLogger::LogScreen(FColor::Cyan, TEXT("Enter AttackFSM"));
 }
 
 void UAttackFSM::Update()

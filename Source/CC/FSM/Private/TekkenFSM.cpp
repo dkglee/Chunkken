@@ -53,7 +53,7 @@ void UTekkenFSM::ChangeSubFSM(int32 GroupID, int32 ChildID)
 		CurrentSubFSM->Enter(ChildID);
 	}
 
-	// FFastLogger::LogConsole(TEXT("Change to %s"), *CurrentSubFSM->GetStateName());
+	FFastLogger::LogConsole(TEXT("Change to %s"), *CurrentSubFSM->GetStateName());
 }
 
 void UTekkenFSM::Update(uint64 FrameIndex)

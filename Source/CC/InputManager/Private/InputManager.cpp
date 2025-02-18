@@ -87,12 +87,21 @@ void UInputManager::PushOnReleasedInput(int32 CharID, int32 InputID, uint64 Fram
 	UpdateInputEvent(InputEvent);
 }
 
-void UInputManager::StoreInputEvent(const FInputEventPerFrame& InputEvent)
+void UInputManager::StoreInputEvent(FInputEventPerFrame& InputEvent)
 {
 	int32 Index = GetInputEvenIndex(InputEvent.FrameIndex);
 
 	if (Index == -1)
 	{
+		// 새로운 인풋이 들어왔을 때
+		// 이전 인풋의 값에 BitMask를 업데이트 하고 넣어야 함
+		int32 PrevIndex = CurrentQueueIndex - 1;
+		if (PrevIndex < 0)
+		{
+			PrevIndex = MAX_INPUT_QUEUE - 1;
+		}
+		// 이전거 유지 필요 : 보니까 항상 일정하게 매 프레임마다 입력이 들어오는 처리가 안됨.
+		InputEvent.BitMask |= InputQueue[PrevIndex].BitMask;
 		InputQueue[CurrentQueueIndex] = InputEvent;
 		CurrentQueueIndex = (CurrentQueueIndex + 1) % MAX_INPUT_QUEUE;
 	}

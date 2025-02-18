@@ -25,7 +25,8 @@ public class CC : ModuleRules
 			"CC/FSM/CharacterStates/Public/",
 			"CC/FSM/States/Public/",
 			"CC/FSM/Conditions/Public/",
-			"CC/FSM/SubFSM/Public/"
+			"CC/FSM/SubFSM/Public/",
+			"CC/FSM/TekkenAnimInstance/Public/"
 		});
 
 		// Uncomment if you are using Slate UI

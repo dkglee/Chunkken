@@ -58,7 +58,7 @@ public:
 	UFUNCTION()
 	uint8 GetCurrentIndexBitMask();
 private:
-	void StoreInputEvent(const FInputEventPerFrame& InputEvent);
+	void StoreInputEvent(FInputEventPerFrame& InputEvent);
 	void UpdateInputEvent(FInputEventPerFrame InputEvent);
 	UFUNCTION()
 	int32 GetInputEvenIndex(uint64 FrameIndex);

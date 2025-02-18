@@ -58,5 +58,7 @@ protected:
 	int32 CharID;
 
 	TArray<FExecutingMove> Moveset;
-
+	int32 MoveIndex = 0;
+	FExecutingMove CurrentExecutingMove;
+	bool bResetMoveSet = false;
 };

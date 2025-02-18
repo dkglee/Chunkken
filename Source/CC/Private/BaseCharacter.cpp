@@ -49,7 +49,6 @@ void ABaseCharacter::Update(uint64 FrameIndex)
 	
 	if (ExecutingMove.bIgnore)
 	{
-		// FFastLogger::LogScreen(FColor::Red, TEXT("CharID: %d, Ignored: size of MoveSet: %d"), CharID, Moveset.Num());
 		return ;
 	}
 	
@@ -111,8 +110,6 @@ void ABaseCharacter::UpdateMovement(uint64 FrameIndex, const FExecutingMove& Exe
 	CharacterState.bJump = bUp;
 	CharacterState.bCrouching = bDown;
 	CharacterState.bGround = GetCharacterMovement()->IsMovingOnGround();
-	CharacterState.bAttack = false;
-	CharacterState.bAttackAvailable = true;
 	CharacterState.bCanBeDamaged = true;
 
 	if (ExecutingMove.MoveID != -1)
@@ -125,13 +122,13 @@ void ABaseCharacter::UpdateMovement(uint64 FrameIndex, const FExecutingMove& Exe
 	{
 		// 전방 이동 처리
 		FVector Direction = GetActorForwardVector();
-		AddMovementInput(Direction);
+		AddMovementInput(Direction, 0.6f);
 	}
 	else if(bBack)
 	{
 		// 후방 이동 처리
 		FVector Direction = -GetActorForwardVector();
-		AddMovementInput(Direction);
+		AddMovementInput(Direction, 0.15f);
 	}
     
 	// 입력이 없으면 정지 처리
@@ -142,8 +139,35 @@ void ABaseCharacter::UpdateMovement(uint64 FrameIndex, const FExecutingMove& Exe
 }
 
 // TODO: Movement하고 Attack을 순차적으로 실행 시켜야 함. 왜냐하면 CharacterState는 계속해서 업데이트 되어야 함.
+// 현재 실행중인 ExecutingMove를 찾아야 함.
 void ABaseCharacter::UpdateAttack(uint64 FrameIndex, const FExecutingMove& ExecutingMove)
 {
+	if (ExecutingMove.MoveID == -1)
+	{
+		CharacterState.bAttack = false;
+		return ;
+	}
+
+	// 공격 가능한 상태인지 확인 (FSM에서 처리해줌) && 공격할 것이 남았는지 확인
+	if (CharacterState.bAttackAvailable && MoveIndex < Moveset.Num())
+	{
+		CurrentExecutingMove = Moveset[MoveIndex++];
+		CharacterState.bAttack = true;
+	}
+	else 
+	{
+		CharacterState.bAttack = false;
+	}
+
+	// 그럼 언제 Moveset을 초기화 해야 할까?
+	// Attack Recovery가 온전히 끝나면 초기화 해야 함.
+	// 해당 작업은 Animation Notify가 호출되고 FSM이 업데이트를 해줌.
+	if (bResetMoveSet)
+	{
+		Moveset.Empty();
+		MoveIndex = 0;
+		bResetMoveSet = false;
+	}
 }
 
 void ABaseCharacter::Attack()
@@ -155,4 +179,3 @@ void ABaseCharacter::SetState(EGameCharacterState NewState)
 {
 	CurrentState = NewState;
 }
-// TODO: Movement하고 Attack을 순차적으로 실행 시켜야 함. 왜냐하면 CharacterState는 계속해서 업데이트 되어야 함.
