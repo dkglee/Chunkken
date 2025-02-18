@@ -1,10 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "BaseCharacter.h"
 #include "GameFramework/Character.h"
+#include "GameCharacterState.h" 
 #include "SteveFox.generated.h"
 
 UCLASS()
@@ -19,4 +19,5 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
 };
