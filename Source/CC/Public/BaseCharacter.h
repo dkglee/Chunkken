@@ -40,4 +40,24 @@ protected:
 	int32 CharID;
 
 	TArray<FExecutingMove> Moveset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	int32 HP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	UBoxComponent* HitBox;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	UBoxComponent* HurtBox;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="State")
+	EGameCharacterState CurrentState;
+
+	UFUNCTION(BlueprintCallable, Category="Combat")
+	void Attack();
+
+	UFUNCTION(BlueprintCallable, Category="State")
+	void SetState(EGameCharacterState NewState);
+
+
 };

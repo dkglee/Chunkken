@@ -2,9 +2,11 @@
 
 #include "CC.h"
 #include "FastLogger.h"
+#include "GameCharacterState.h"
 #include "InputManager.h"
 #include "InputParser.h"
 #include "TekkenFSM.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 ABaseCharacter::ABaseCharacter()
@@ -13,6 +15,20 @@ ABaseCharacter::ABaseCharacter()
 
 	InputManager = CreateDefaultSubobject<UInputManager>(TEXT("InputManager"));
 	TekkenFSM = CreateDefaultSubobject<UTekkenFSM>(TEXT("TekkenFSM"));
+
+	AutoPossessPlayer = EAutoReceiveInput::Disabled;
+	
+
+	// 체력 기본 값 설정
+	HP = 100;
+
+	// 히트박스 설정
+	HitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HitBox"));
+	HitBox->SetupAttachment(RootComponent);
+
+	// 허트박스 설정
+	HurtBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HurtBox"));
+	HurtBox->SetupAttachment(RootComponent);
 }
 
 void ABaseCharacter::OnPressedInput(int32 InputID, uint64 FrameIndex, bool bLeft)
@@ -139,4 +155,13 @@ void ABaseCharacter::UpdateAttack(uint64 FrameIndex, FExecutingMove& ExecutingMo
 {
 }
 
+void ABaseCharacter::Attack()
+{
+	CurrentState = EGameCharacterState::Attacking;
+}
+
+void ABaseCharacter::SetState(EGameCharacterState NewState)
+{
+	CurrentState = NewState;
+}
 // TODO: Movement하고 Attack을 순차적으로 실행 시켜야 함. 왜냐하면 CharacterState는 계속해서 업데이트 되어야 함.
