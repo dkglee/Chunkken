@@ -43,7 +43,7 @@ bool ACollision::CheckCollision(ACharacter* Attacker, ACharacter* Defender)
 		return false;
 	}
 
-	// 박스 중심과 크기를 가져와서 충돌 감지
+	// 박스 중심과 크기를 가져와서 충돌 감지. 히트박스와 허트박스가 겹치는지 확인
 	FVector AttackerLocation = AttackerHitBox->GetComponentLocation();
 	FVector AttackerExtent = AttackerHitBox->GetScaledBoxExtent();
 

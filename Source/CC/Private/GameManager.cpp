@@ -3,8 +3,11 @@
 
 #include "GameManager.h"
 
+#include "EngineUtils.h"
+#include "Collision.h"
 #include "Hwoarang.h"
 #include "SteveFox.h"
+#include "CC/Public/Collision.h"
 
 
 // Sets default values
@@ -49,10 +52,10 @@ void AGameManager::HandleAttack(ACharacter* Attacker, int32 MoveID)
 
 	ACharacter* Defender = (Attacker == Player1) ? Player2 : Player1;
 
-	bool bHit = ACollision::CheckCollision(Cast<AFightingCharacter>(Attacker), Cast<AFightingCharacter>(Defender));
+	// bool bHit = ACollision::CheckCollision(Cast<AFightingCharacter>(Attacker), Cast<AFightingCharacter>(Defender));
 
-	if (bHit)
-	{
-		UDamageComponent::ApplyDamage(Cast<AFightingCharacter>(Attacker), Cast<AFightingCharacter>(Defender), MoveID);
-	}
+	// if (bHit)
+	// {
+	// 	UDamageComponent::ApplyDamage(Cast<AFightingCharacter>(Attacker), Cast<AFightingCharacter>(Defender), MoveID);
+	// }
 }

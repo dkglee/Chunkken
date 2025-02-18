@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameHitEffectStruct.h"
+#include "HitEffectStruct.h"
 #include "Components/ActorComponent.h"
 #include "Damage.generated.h"
 

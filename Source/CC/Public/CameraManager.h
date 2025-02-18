@@ -15,6 +15,8 @@ public:
 	// Sets default values for this actor's properties
 	ACameraManager();
 
+	void RegisterPlayers(class ABaseCharacter* Left, class ABaseCharacter* Right);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -30,9 +32,9 @@ public:
 
 	// 플레이어 참조
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	ACharacter* Player1;
+	class ABaseCharacter* Player1;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	ACharacter* Player2;
+	class ABaseCharacter* Player2;
 
 	// 카메라 위치 조정
 	void UpdateCameraPosition();

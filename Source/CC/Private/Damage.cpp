@@ -8,15 +8,20 @@
 #include "HitEffectStruct.h"
 #include "Engine/Engine.h"
 
-auto UDamage::ApplyDamage(ACharacter* Attacker, ACharacter* Defender, int32 MoveID) 
+FHitEffectStruct* UDamage::GetHitEffectFromMoveID(int32 INT32)
+{
+	return nullptr;
+}
+
+void UDamage::ApplyDamage(ACharacter* Attacker, ACharacter* Defender, int32 MoveID) 
 {
 	if (!Attacker || !Defender)
 	{
 		return;
 	}
 
-	AHwoarang* HwoarangDefender = Cast<AHwoarang>(Defender);
-	ASteveFox* SteveFoxDefender = Cast<ASteveFox>(Defender);
+	ABaseCharacter* HwoarangDefender = Cast<ABaseCharacter>(Defender);
+	ABaseCharacter* SteveFoxDefender = Cast<ABaseCharacter>(Defender);
 
 	FHitEffectStruct* HitEffects = GetHitEffectFromMoveID(MoveID);
     
