@@ -19,10 +19,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
+	virtual void Tick(float DeltaTime) override;
 
 	//게임모드에서 플레이어 호출
 	UFUNCTION(BlueprintCallable, Category="Player")
-
 
 	void OnMoveLeftHwoarang(const FInputActionValue& Value);
 	void OnMoveRightHwoarang(const FInputActionValue& Value);
@@ -58,12 +58,15 @@ protected:
 	UInputAction* IA_Jump_SteveFox;
 	
 public:
-	void RegisterPlayers(ACharacter* InPlayer1, ACharacter* InPlayer2) ;
+	void RegisterPlayers(class ABaseCharacter* InPlayer1, class ABaseCharacter* InPlayer2) ;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player")
-	ACharacter* Player1;
+	class ABaseCharacter* Player1;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player")
-	ACharacter* Player2;
+	class ABaseCharacter* Player2;
 
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player")
+	class UFrameManager* FrameManager;
 };

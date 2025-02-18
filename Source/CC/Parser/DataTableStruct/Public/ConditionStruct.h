@@ -23,10 +23,4 @@ public:
 
 	UPROPERTY()
 	FString ConditionGroup;
-
-	UPROPERTY()
-	bool bInvert;
-
-	UPROPERTY()
-	int32 Priority;
 };

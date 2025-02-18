@@ -20,12 +20,10 @@ UMoveParser::UMoveParser()
 {
 }
 
-
 FString UMoveParser::ConvertBitmaskToBinary(uint64 Bitmask)
 {
 	return FString(ANSI_TO_TCHAR(std::bitset<64>(Bitmask).to_string().c_str()));
 }
-
 
 uint64 UMoveParser::ParseCommand(std::string LineToken)
 {
@@ -37,7 +35,6 @@ uint64 UMoveParser::ParseCommand(std::string LineToken)
 	{
 		// 단타 단위로 나뉘어짐
 		uint64 Bitmask = CalculateBitmask(Token);
-		// TODO : 트리로도 저장해야 함.
 		Command |= Bitmask;
 		Command <<= 8;
 	}
