@@ -15,11 +15,22 @@ struct FInputEventPerFrame
 {
 	GENERATED_BODY();
 
+	UPROPERTY()
 	int32 CharID = 0;
-	unsigned char BitMask = 0;
+
+	UPROPERTY()
+	uint8 BitMask = 0;
+
+	UPROPERTY()
 	uint64 FrameIndex = 0;
+
+	UPROPERTY()
 	bool bLeft = false;
+
+	UPROPERTY()
 	bool bUsed = false;
+
+	UPROPERTY()
 	bool bIgnored = false;
 };
 
@@ -41,21 +52,19 @@ public:
 	void PushOnPressedInput(int32 CharID, int32 InputID, uint64 FrameIndex, bool bLeft);
 	UFUNCTION()
 	void PushOnReleasedInput(int32 CharID, int32 InputID, uint64 FrameIndex, bool bLeft);
-	UFUNCTION()
 	FExecutingMove ExtractMoveIdFromInput(TArray<FExecutingMove>& Moveset);
+	UFUNCTION()
+	void PushEmptyInput(int32 CharID, uint64 FrameIndex, bool bLeft);
+	UFUNCTION()
+	uint8 GetCurrentIndexBitMask();
 private:
-	UFUNCTION()
-	void StoreInputEvent(FInputEventPerFrame InputEvent);
-	UFUNCTION()
+	void StoreInputEvent(const FInputEventPerFrame& InputEvent);
 	void UpdateInputEvent(FInputEventPerFrame InputEvent);
 	UFUNCTION()
 	int32 GetInputEvenIndex(uint64 FrameIndex);
-	UFUNCTION()
 	FExecutingMove ExtractFirstComboInput();
-	UFUNCTION()
 	FExecutingMove ExtractComboInput(const TArray<FExecutingMove>& Moveset);
 	
-	UPROPERTY()
 	TArray<FInputEventPerFrame> InputQueue;
 
 	UPROPERTY()

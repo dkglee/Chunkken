@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CharacterState.h"
+#include "ExecutingMove.h"
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
@@ -16,17 +17,27 @@ public:
 	// Sets default values for this character's properties
 	ABaseCharacter();
 
+	virtual void OnPressedInput(int32 InputID, uint64 FrameIndex, bool bLeft);
+	virtual void OnReleasedInput(int32 InputID, uint64 FrameIndex, bool bLeft);
+	virtual void Update(uint64 FrameIndex);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void UpdateMovement(uint64 Uint64);
+	virtual void UpdateAttack(uint64 FrameIndex, FExecutingMove& ExecutingMove);
 
 public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character State")
 	FCharacterState CharacterState;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character State")
+	class UInputManager* InputManager;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character State")
+	class UTekkenFSM* TekkenFSM;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character State")
+	int32 CharID;
+
+	TArray<FExecutingMove> Moveset;
 };

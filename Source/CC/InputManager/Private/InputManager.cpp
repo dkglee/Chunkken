@@ -2,6 +2,8 @@
 
 #include "InputParser.h"
 #include "CC.h"
+#include "FastLogger.h"
+#include "HLSLTypeAliases.h"
 #include "MoveComboParser.h"
 #include "MoveParser.h"
 
@@ -16,6 +18,15 @@ void UInputManager::BeginPlay()
 	InputQueue.Empty();
 	InputQueue.Reserve(MAX_INPUT_QUEUE);
 	InputQueue.SetNum(MAX_INPUT_QUEUE);
+	for (int i = 0; i < MAX_INPUT_QUEUE; i++)
+	{
+		InputQueue[i].CharID = 0;
+		InputQueue[i].BitMask = 0;
+		InputQueue[i].FrameIndex = 0;
+		InputQueue[i].bLeft = false;
+		InputQueue[i].bUsed = false;
+		InputQueue[i].bIgnored = false;
+	}
 }
 
 // 매 프레임마다 단위를 저장할 예정 : 한 프레임에 하나의 단위로 넣는게 좋겠지?
@@ -32,12 +43,12 @@ void UInputManager::PushOnPressedInput(int32 CharID, int32 InputID, uint64 Frame
 		{
 			BitMask = UInputParser::GetBitmask(UInputParser::GetIndex(RIGHT));
 		}
-		else
+		else if (BitMask == UInputParser::GetBitmask(UInputParser::GetIndex(RIGHT)))
 		{
 			BitMask = UInputParser::GetBitmask(UInputParser::GetIndex(LEFT));
 		}
 	}
-	
+
 	FInputEventPerFrame InputEvent;
 	InputEvent.CharID = CharID;
 	InputEvent.BitMask = BitMask;
@@ -59,7 +70,7 @@ void UInputManager::PushOnReleasedInput(int32 CharID, int32 InputID, uint64 Fram
 		{
 			BitMask = UInputParser::GetBitmask(UInputParser::GetIndex(RIGHT));
 		}
-		else
+		else if (BitMask == UInputParser::GetBitmask(UInputParser::GetIndex(RIGHT)))
 		{
 			BitMask = UInputParser::GetBitmask(UInputParser::GetIndex(LEFT));
 		}
@@ -71,25 +82,17 @@ void UInputManager::PushOnReleasedInput(int32 CharID, int32 InputID, uint64 Fram
 	InputEvent.FrameIndex = FrameIndex;
 	InputEvent.bLeft = bLeft;
 	InputEvent.bUsed = false;
-	InputEvent.bIgnored = true;
+	InputEvent.bIgnored = false;
 
 	UpdateInputEvent(InputEvent);
 }
 
-void UInputManager::StoreInputEvent(FInputEventPerFrame InputEvent)
+void UInputManager::StoreInputEvent(const FInputEventPerFrame& InputEvent)
 {
 	int32 Index = GetInputEvenIndex(InputEvent.FrameIndex);
 
 	if (Index == -1)
 	{
-		// 새로운 인풋이 들어왔을 때
-		// 이전 인풋의 값에 BitMask를 업데이트 하고 넣어야 함
-		int32 PrevIndex = CurrentQueueIndex - 1;
-		if (PrevIndex < 0)
-		{
-			PrevIndex = MAX_INPUT_QUEUE - 1;
-		}
-		InputEvent.BitMask |= InputQueue[PrevIndex].BitMask;
 		InputQueue[CurrentQueueIndex] = InputEvent;
 		CurrentQueueIndex = (CurrentQueueIndex + 1) % MAX_INPUT_QUEUE;
 	}
@@ -104,7 +107,7 @@ void UInputManager::StoreInputEvent(FInputEventPerFrame InputEvent)
 void UInputManager::UpdateInputEvent(FInputEventPerFrame InputEvent)
 {
 	int32 Index = GetInputEvenIndex(InputEvent.FrameIndex);
-	if (Index != -1)
+	if (Index == -1)
 	{
 		// 불가능한 경우 : 왜냐하면 눌러야 땔 수 가 있기 때문임
 		check(false);
@@ -206,7 +209,7 @@ FExecutingMove UInputManager::ExtractComboInput(const TArray<FExecutingMove>& Mo
 	for (int i = 0; i < Moveset.Num(); i++)
 	{
 		const FMoveDataStruct* MoveData = UMoveParser::GetMoveDataByMoveID(Moveset[i].MoveID);
-		FrameStartUp = MoveData->StartUp;
+		FrameStartUp += MoveData->StartUp;
 	}
 	
 	// MoveID가 -1이고 해당 입력이 콤보 인정 기간안에 실행되지 못했다면 무시해야 함.
@@ -254,4 +257,29 @@ FExecutingMove UInputManager::ExtractMoveIdFromInput(TArray<FExecutingMove>& Mov
 	}
 	
 	return ExecutingMove;
+}
+
+void UInputManager::PushEmptyInput(int32 CharID, uint64 FrameIndex, bool bLeft)
+{
+	FInputEventPerFrame InputEvent;
+	InputEvent.CharID = CharID;
+	InputEvent.BitMask = 0;
+	InputEvent.FrameIndex = FrameIndex;
+	InputEvent.bLeft = bLeft;
+	InputEvent.bUsed = false;
+	InputEvent.bIgnored = false;
+
+	StoreInputEvent(InputEvent);
+}
+
+uint8 UInputManager::GetCurrentIndexBitMask()
+{
+	// Tick이 입력보다 먼저 들어오는 문제가 있기 때문에 -2로 한것.
+	int32 CurrentIndex = CurrentQueueIndex - 2;
+	if (CurrentIndex < 0)
+	{
+		CurrentIndex = MAX_INPUT_QUEUE - 1;
+	}
+	uint8 BitMask = InputQueue[CurrentIndex].BitMask;
+	return BitMask;
 }

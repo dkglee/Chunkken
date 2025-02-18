@@ -25,10 +25,9 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
 	void ChangeSubFSM(int32 GroupID, int32 ChildID);
+	// Called every frame
+	void Update(uint64 FrameIndex);
 
 protected:
 	void InitializeFSM();
@@ -46,7 +45,6 @@ protected:
 	UPROPERTY()
 	TMap<int32, class USubFSM*> SubFSMs;
 
-	// TODO : Get Character
 	UPROPERTY()
 	class ABaseCharacter* Me = nullptr;
 };

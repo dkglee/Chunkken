@@ -4,6 +4,7 @@
 #include "BaseCharacter.h"
 #include "ConditionManager.h"
 #include "CrouchingFSM.h"
+#include "FastLogger.h"
 #include "HitReactionFSM.h"
 #include "IdleFSM.h"
 #include "JumpFSM.h"
@@ -15,8 +16,6 @@
 
 UTekkenFSM::UTekkenFSM()
 {
-	PrimaryComponentTick.bCanEverTick = true;
-
 }
 
 void UTekkenFSM::BeginPlay()
@@ -28,22 +27,6 @@ void UTekkenFSM::BeginPlay()
 	InitializeFSM();
 	CurrentSubFSM = SubFSMs[UStateParser::GetStateKey(UIdleFSM::StateName)];
 	CurrentSubFSM->Enter(-1);
-}
-
-void UTekkenFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// 대 그룹에서 다음의 것으로 넘어가는데 만약 그게 세부적인 ID라면?
-	// 다음 FSM에 Enter를 호출할 때, 내 생각에는 어떤 세부 상태가 시작되어야 하는지를 같이 넘겨주면 된다.
-	// first : GroupID, second : ChildID
-	std::pair<int32, int32> Result;
-	if (CheckTransitionList(Result))
-	{
-		ChangeSubFSM(Result.first, Result.second);
-	}
-	// SubFSM의 Update를 호출한다.
-	CurrentSubFSM->Update();
 }
 
 void UTekkenFSM::ChangeSubFSM(int32 GroupID, int32 ChildID)
@@ -69,6 +52,22 @@ void UTekkenFSM::ChangeSubFSM(int32 GroupID, int32 ChildID)
 		PreviousSubFSM->Exit();
 		CurrentSubFSM->Enter(ChildID);
 	}
+
+	FFastLogger::LogConsole(TEXT("Change to %s"), *CurrentSubFSM->GetStateName());
+}
+
+void UTekkenFSM::Update(uint64 FrameIndex)
+{
+	// 대 그룹에서 다음의 것으로 넘어가는데 만약 그게 세부적인 ID라면?
+	// 다음 FSM에 Enter를 호출할 때, 내 생각에는 어떤 세부 상태가 시작되어야 하는지를 같이 넘겨주면 된다.
+	// first : GroupID, second : ChildID
+	std::pair<int32, int32> Result;
+	if (CheckTransitionList(Result))
+	{
+		ChangeSubFSM(Result.first, Result.second);
+	}
+	// SubFSM의 Update를 호출한다.
+	CurrentSubFSM->Update();
 }
 
 void UTekkenFSM::InitializeFSM()

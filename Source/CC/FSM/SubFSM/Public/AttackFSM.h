@@ -9,7 +9,6 @@ class UAttackFSM : public USubFSM
 {
 	GENERATED_BODY()
 public:
-	// TODO: static으로 해당 State의 이름을 선언하자.
 	static FString StateName;
 
 	virtual void Enter(int32 ChildID) override;
