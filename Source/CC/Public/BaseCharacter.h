@@ -23,8 +23,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	virtual void UpdateMovement(uint64 Uint64);
-	virtual void UpdateAttack(uint64 FrameIndex, FExecutingMove& ExecutingMove);
+	virtual void UpdateMovement(uint64 FrameIndex, const FExecutingMove& ExecutingMove);
+	virtual void UpdateAttack(uint64 FrameIndex, const FExecutingMove& ExecutingMove);
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character State")

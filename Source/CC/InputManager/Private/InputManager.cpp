@@ -249,6 +249,7 @@ FExecutingMove UInputManager::ExtractMoveIdFromInput(TArray<FExecutingMove>& Mov
 	
 	if (ExecutingMove.MoveID != -1 && !ExecutingMove.bIgnore)
 	{
+		FFastLogger::LogScreen(FColor::Green, TEXT("MoveID: %d, FrameIndex: %d"), ExecutingMove.MoveID, ExecutingMove.FrameIndex);
 		Moveset.Add(ExecutingMove);
 	}
 	

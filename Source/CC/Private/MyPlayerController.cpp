@@ -143,7 +143,6 @@ void AMyPlayerController::OnMoveRightHwoarang(const FInputActionValue& Value)
     {
         return ;
     }
-
     int32 InputID = UInputParser::GetIndex(RIGHT);
     Player1->OnPressedInput(InputID, FrameManager->GetFrameIndex(), true);
 }

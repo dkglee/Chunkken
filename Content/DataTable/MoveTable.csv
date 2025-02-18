@@ -51,6 +51,5 @@ MoveID,CharID,Command,RelativeID,AttackType,Damage,Hits,HitLevel,StartUp,ActiveF
 1050,102,f+UP+LK,0,Kick,11,1,Middle,28,2,30,-6,-7,Hunting Hawk1
 1051,102,f+DOWN+LP,0,Punch,9,1,Low,12,2,14,-1,6,Forward Down Left Punch
 1052,102,f+DOWN+RP,0,Punch,14,1,Low,14,2,16,-2,7,Forward Down Right Punch
-1053,102,f+DOWM+RP ,0,Punch,14,1,Low,14,2,16,-2,7,Rusty Knife
-1054,102,RK|RK|RK|RK,0,Punch,12,4,High,12,2,14,-6,6,Raptor Combo
-1055,102,f+UP+LK|RK|LK,0,Kick,20,3,Middle,16,2,20,-8,9,Hunting Hawk3
+1053,102,RK|RK|RK|RK,0,Punch,12,4,High,12,2,14,-6,6,Raptor Combo
+1054,102,f+UP+LK|RK|LK,0,Kick,20,3,Middle,16,2,20,-8,9,Hunting Hawk3

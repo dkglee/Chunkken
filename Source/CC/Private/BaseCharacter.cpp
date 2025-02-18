@@ -46,21 +46,15 @@ void ABaseCharacter::Update(uint64 FrameIndex)
 	// Update Input
 	InputManager->PushEmptyInput(CharID, FrameIndex, CharID == 102 ? true : false);
 	FExecutingMove ExecutingMove = InputManager->ExtractMoveIdFromInput(Moveset);
+	
 	if (ExecutingMove.bIgnore)
 	{
+		// FFastLogger::LogScreen(FColor::Red, TEXT("CharID: %d, Ignored: size of MoveSet: %d"), CharID, Moveset.Num());
 		return ;
 	}
 	
-	if (ExecutingMove.MoveID == -1)
-	{
-		// 이동
-		UpdateMovement(FrameIndex);
-	}
-	else
-	{
-		// 공격
-		UpdateAttack(FrameIndex, ExecutingMove);
-	}
+	UpdateMovement(FrameIndex, ExecutingMove);
+	UpdateAttack(FrameIndex, ExecutingMove);
 
 	// Update FSM
 	TekkenFSM->Update(FrameIndex);
@@ -73,7 +67,7 @@ void ABaseCharacter::BeginPlay()
 	
 }
 
-void ABaseCharacter::UpdateMovement(uint64 FrameIndex)
+void ABaseCharacter::UpdateMovement(uint64 FrameIndex, const FExecutingMove& ExecutingMove)
 {
 	uint8 BitMask = InputManager->GetCurrentIndexBitMask();
 
@@ -82,16 +76,8 @@ void ABaseCharacter::UpdateMovement(uint64 FrameIndex)
 	bool bDown  = (BitMask & UInputParser::GetBitmask(UInputParser::GetIndex(DOWN))) != 0;
 	bool bBack  = (BitMask & UInputParser::GetBitmask(UInputParser::GetIndex(LEFT))) != 0;
 	bool bForward = (BitMask & UInputParser::GetBitmask(UInputParser::GetIndex(RIGHT))) != 0;
-	// 스티브는 왼쪽이 앞으로
-	// 스티브는 오른쪽이 뒤로
-	if (CharID == 101)
-	{
-		bool Temp = bBack;
-		bBack = bForward;
-		bForward = Temp;
-	}
 
-	// FFastLogger::LogScreen(FColor::Cyan, TEXT("bUp: %d, bDown: %d, bBack: %d, bForward: %d"), bUp, bDown, bBack, bForward);
+	// FFastLogger::LogScreen(FColor::Cyan, TEXT("CharID: %d, bUp: %d, bDown: %d, bBack: %d, bForward: %d"), CharID, bUp, bDown, bBack, bForward);
 	
 	// 위아래가 동시에 눌린 경우, 둘 다 무시
 	if(bUp && bDown)
@@ -119,6 +105,21 @@ void ABaseCharacter::UpdateMovement(uint64 FrameIndex)
 		// this->Crouch();
 	}
 
+	// 이동 상태 저장
+	CharacterState.bForward = bForward;
+	CharacterState.bBackward = bBack;
+	CharacterState.bJump = bUp;
+	CharacterState.bCrouching = bDown;
+	CharacterState.bGround = GetCharacterMovement()->IsMovingOnGround();
+	CharacterState.bAttack = false;
+	CharacterState.bAttackAvailable = true;
+	CharacterState.bCanBeDamaged = true;
+
+	if (ExecutingMove.MoveID != -1)
+	{
+		return ;
+	}
+	
 	// 수평 입력 처리
 	if(bForward)
 	{
@@ -132,19 +133,6 @@ void ABaseCharacter::UpdateMovement(uint64 FrameIndex)
 		FVector Direction = -GetActorForwardVector();
 		AddMovementInput(Direction);
 	}
-
-	// 이동 상태 저장
-	CharacterState.bForward = bForward;
-	CharacterState.bBackward = bBack;
-	CharacterState.bJump = bUp;
-	CharacterState.bCrouching = bDown;
-	CharacterState.bGround = GetCharacterMovement()->IsMovingOnGround();
-	CharacterState.bAttack = false;
-	CharacterState.bAttackAvailable = true;
-	CharacterState.bCanBeDamaged = true;
-
-	CharacterState.HitReaction = TEXT("Airborne");
-	
     
 	// 입력이 없으면 정지 처리
 	if(!bUp && !bDown && !bBack && !bForward)
@@ -153,7 +141,8 @@ void ABaseCharacter::UpdateMovement(uint64 FrameIndex)
 	}
 }
 
-void ABaseCharacter::UpdateAttack(uint64 FrameIndex, FExecutingMove& ExecutingMove)
+// TODO: Movement하고 Attack을 순차적으로 실행 시켜야 함. 왜냐하면 CharacterState는 계속해서 업데이트 되어야 함.
+void ABaseCharacter::UpdateAttack(uint64 FrameIndex, const FExecutingMove& ExecutingMove)
 {
 }
 
