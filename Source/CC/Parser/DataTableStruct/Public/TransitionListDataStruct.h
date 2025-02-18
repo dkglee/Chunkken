@@ -3,13 +3,42 @@
 #include "CoreMinimal.h"
 #include "TransitionListDataStruct.generated.h"
 
-UENUM(BlueprintType)
-enum class EConditionLogic : uint8
+struct FLogicNode
 {
-	NONE UMETA(DisplayName = "None"),
-	AND  UMETA(DisplayName = "AND"),
-	OR   UMETA(DisplayName = "OR"),
-	NOT  UMETA(DisplayName = "NOT")
+	FString Value;
+	struct FLogicNode* Left;
+	struct FLogicNode* Right;
+
+	FLogicNode()
+		: Value(""), Left(nullptr), Right(nullptr)
+	{
+	}
+	
+	FLogicNode(FString InValue, struct FLogicNode* InLeft = nullptr, struct FLogicNode* InRight = nullptr)
+		: Value(InValue), Left(InLeft), Right(InRight)
+	{
+	}
+
+	// AST 평가 함수
+	bool Evaluate(const TMap<FString, bool>& Values)
+	{
+		if (Value == "&")
+		{
+			return Left->Evaluate(Values) && Right->Evaluate(Values);
+		}
+		else if (Value == "|")
+		{
+			return Left->Evaluate(Values) || Right->Evaluate(Values);
+		}
+		else if (Value == "!")
+		{
+			return !Left->Evaluate(Values);
+		}
+		else
+		{
+			return Values.Contains(Value) ? Values[Value] : false;
+		}
+	}
 };
 
 USTRUCT(BlueprintType)
@@ -24,13 +53,9 @@ struct FTransitionListDataStruct
 	int32 FromStateID;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transition Data")
-	bool bParentStateCheck;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transition Data")
-	EConditionLogic ConditionLogic;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transition Data")
-	TArray<int32> ConditionIDs;
+	TArray<FString> ConditionTokens;
+	
+	struct FLogicNode* ConditionLogic;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transition Data")
 	int32 ToStateID;

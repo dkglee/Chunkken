@@ -8,8 +8,9 @@
 // Sets default values
 ASteveFox::ASteveFox()
 {
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	AutoPossessPlayer = EAutoReceiveInput::Disabled;
+	
+	CharID = 101;
 
 	// 체력 기본 값 설정
 	HP = 100;
@@ -21,6 +22,8 @@ ASteveFox::ASteveFox()
 	// 허트박스 설정
 	HurtBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HurtBox"));
 	HurtBox->SetupAttachment(RootComponent);
+
+	
 }
 
 // Called when the game starts or when spawned
@@ -29,20 +32,6 @@ void ASteveFox::BeginPlay()
 	Super::BeginPlay();
 	
 }
-
-// Called every frame
-void ASteveFox::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-// Called to bind functionality to input
-void ASteveFox::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
 void ASteveFox::Attack()
 {
 	CurrentState = EGameCharacterState::Attacking;

@@ -1,12 +1,16 @@
 #include "MyPlayerController.h"
 
+#include "CC.h"
 #include "FastLogger.h"
+#include "FrameManager.h"
 #include "Hwoarang.h"
+#include "InputParser.h"
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/Pawn.h"
 
 AMyPlayerController::AMyPlayerController()
 {
+    PrimaryActorTick.bCanEverTick = true;
     //화랑 입력
     ConstructorHelpers::FObjectFinder<UInputMappingContext> TempIMCHwoarang(TEXT("/Game/Inputs/IMC_Hwoarang.IMC_Hwoarang"));
     if (TempIMCHwoarang.Succeeded())
@@ -51,6 +55,8 @@ AMyPlayerController::AMyPlayerController()
     {
         IA_Jump_SteveFox = TempIAJumpSteveFox.Object;
     }
+
+    FrameManager = CreateDefaultSubobject<UFrameManager>(TEXT("FrameManager"));
 }
 
 void AMyPlayerController::BeginPlay()
@@ -84,12 +90,10 @@ void AMyPlayerController::SetupInputComponent()
         }
         if (IA_MoveRight_Hwoarang)
         {
-           
             EnhancedInput->BindAction(IA_MoveRight_Hwoarang, ETriggerEvent::Triggered, this, &AMyPlayerController::OnMoveRightHwoarang);
         }
         if (IA_Jump_Hwoarang)
         {
-           
             EnhancedInput->BindAction(IA_Jump_Hwoarang, ETriggerEvent::Triggered, this, &AMyPlayerController::OnJumpHwoarang);
         }
 
@@ -100,21 +104,33 @@ void AMyPlayerController::SetupInputComponent()
         }
         if (IA_MoveRight_SteveFox)
         {
-           
             EnhancedInput->BindAction(IA_MoveRight_SteveFox, ETriggerEvent::Triggered, this, &AMyPlayerController::OnMoveRightSteveFox);
         }
         if (IA_Jump_SteveFox)
         {
-           
             EnhancedInput->BindAction(IA_Jump_SteveFox, ETriggerEvent::Triggered, this, &AMyPlayerController::OnJumpSteveFox);
         }
     }
 }
 
-void AMyPlayerController::RegisterPlayers(ACharacter* InPlayer1, ACharacter* InPlayer2)
+void AMyPlayerController::Tick(float DeltaTime)
 {
-        Player1 = InPlayer1;
-        Player2 = InPlayer2;
+    Super::Tick(DeltaTime);
+
+    FrameManager->UpdateFrame(DeltaTime);
+
+    uint64 FrameIndex = FrameManager->GetFrameIndex();
+    if (Player1 && Player2)
+    {
+        Player1->Update(FrameIndex);
+        Player2->Update(FrameIndex);
+    }
+}
+
+void AMyPlayerController::RegisterPlayers(ABaseCharacter* InPlayer1, ABaseCharacter* InPlayer2)
+{
+    Player1 = InPlayer1;
+    Player2 = InPlayer2;
 }
 
 
@@ -123,62 +139,69 @@ void AMyPlayerController::OnMoveRightHwoarang(const FInputActionValue& Value)
 {
     float ActionValue = Value.Get<float>();
 
-    if (Player1 != nullptr)
+    if (!Player1)
     {
-        FVector Direction = Player1->GetActorRightVector() ;
-        //FFastLogger::LogScreen(FColor::Red, TEXT("Move Left : %f"), ActionValue);
-        Player1->AddMovementInput(Direction, ActionValue);
+        return ;
     }
+
+    int32 InputID = UInputParser::GetIndex(RIGHT);
+    Player1->OnPressedInput(InputID, FrameManager->GetFrameIndex(), true);
 }
 
 void AMyPlayerController::OnMoveLeftHwoarang(const FInputActionValue& Value)
 {
     float ActionValue = Value.Get<float>();
-
-    if (Player1 != nullptr)
+    
+    if (!Player1)
     {
-        FVector Direction = FVector::RightVector * -1;
-        Player1->AddMovementInput(Direction);
+        return ;
     }
+
+    int32 InputID = UInputParser::GetIndex(LEFT);
+    Player1->OnPressedInput(InputID, FrameManager->GetFrameIndex(), true);
 }
 
 void AMyPlayerController::OnJumpHwoarang(const FInputActionValue& Value)
 {
-    if (ACharacter* MyCharacter = Cast<ACharacter>(Player1))
+    if (!Player1)
     {
-        Player1->Jump();
+        return ;
     }
+    int32 InputID = UInputParser::GetIndex(UP);
+    Player1->OnPressedInput(InputID, FrameManager->GetFrameIndex(), true);
 }
 
 //스티브폭스 입력 함수
 void AMyPlayerController::OnMoveRightSteveFox(const FInputActionValue& Value)
 {
     float ActionValue = Value.Get<float>();
-
-    if (Player2 != nullptr)
+    if (!Player2)
     {
-        FVector Direction = Player2->GetActorRightVector();
-        Player2->AddMovementInput(Direction, ActionValue);
+        return ;
     }
+    int32 InputID = UInputParser::GetIndex(RIGHT);
+    Player2->OnPressedInput(InputID, FrameManager->GetFrameIndex(), false);
 }
 
 void AMyPlayerController::OnMoveLeftSteveFox(const FInputActionValue& Value)
 {
     float ActionValue = Value.Get<float>();
 
-    if (Player2 != nullptr)
+    if (!Player2)
     {
-        FVector Direction = FVector::RightVector * -1 ;
-        Player2->AddMovementInput(Direction);
+        return ;
     }
+    int32 InputID = UInputParser::GetIndex(LEFT);
+    Player2->OnPressedInput(InputID, FrameManager->GetFrameIndex(), false);
 }
 
 void AMyPlayerController::OnJumpSteveFox(const FInputActionValue& Value)
 {
-    if (ACharacter* MyCharacter = Cast<ACharacter>(Player2))
+    if (!Player2)
     {
-        Player2->Jump();
+        return ;
     }
+
+    int32 InputID = UInputParser::GetIndex(UP);
+    Player2->OnPressedInput(InputID, FrameManager->GetFrameIndex(), false);
 }
-
-

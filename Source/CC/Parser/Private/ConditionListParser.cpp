@@ -81,7 +81,7 @@ void UConditionListParser::ParseData()
 			continue;
 		}
 
-		if (LineTokens.size() != 8)
+		if (LineTokens.size() != 6)
 		{
 			continue;
 		}
@@ -92,8 +92,6 @@ void UConditionListParser::ParseData()
 		Condition.ConditionChecker = LineTokens[2].c_str();
 		Condition.ConditionData = RestoreJson(LineTokens[3]).c_str();
 		Condition.ConditionGroup = LineTokens[4].c_str();
-		Condition.bInvert = LineTokens[5] == "TRUE" ? true : false;
-		Condition.Priority = std::atoi(LineTokens[6].c_str());
 
 		ConditionMap[Condition.ConditionID] = Condition;
 	}
@@ -102,8 +100,8 @@ void UConditionListParser::ParseData()
 
 	for (auto& Pair : ConditionMap)
 	{
-		FFastLogger::LogConsole(TEXT("ConditionID: %d, ConditionName: %s, ConditionChecker: %s, ConditionData: %s, ConditionGroup: %s, bInvert: %d, Priority: %d"),
-			Pair.first, *Pair.second.ConditionName, *Pair.second.ConditionChecker, *Pair.second.ConditionData, *Pair.second.ConditionGroup, Pair.second.bInvert, Pair.second.Priority);
+		FFastLogger::LogConsole(TEXT("ConditionID: %d, ConditionName: %s, ConditionChecker: %s, ConditionData: %s, ConditionGroup: %s"),
+			Pair.first, *Pair.second.ConditionName, *Pair.second.ConditionChecker, *Pair.second.ConditionData, *Pair.second.ConditionGroup);
 	}
 }
 
