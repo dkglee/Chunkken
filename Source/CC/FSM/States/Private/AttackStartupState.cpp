@@ -46,12 +46,12 @@ void UAttackStartupState::Enter()
 	}
 	int32 StartUpFrame = MoveData->StartUp;
 
-	FFastLogger::LogConsole(TEXT("Animation %s"), *ExecutingMove.AnimationRef);
-
 	UAnimMontage* Montage = TekkenAnimInstance->GetMontageFromName(ExecutingMove.AnimationRef);
 	if (!Montage)
 	{
+		FFastLogger::LogConsole(TEXT("Animation: %s"), *ExecutingMove.AnimationRef);
 		FFastLogger::LogConsole(TEXT("Montage is nullptr"));
+		Me->CharacterState.bFrameOver = true;
 		return;
 	}
 	float PlayRate = FAnimUtils::CalculateAnimPlayRate(StartUpFrame, Montage->GetSectionLength(0));

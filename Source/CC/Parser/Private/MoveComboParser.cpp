@@ -112,7 +112,6 @@ bool UMoveComboParser::IsMoveIdInCombo(const TArray<FExecutingMove>& Moveset, in
 	if (bIsInCombo)
 	{
 		AnimID = Root->Children[MoveID]->AnimID;
-		FFastLogger::LogConsole(TEXT("Anim ID : %d"), AnimID);
 	}
 	return bIsInCombo;
 }

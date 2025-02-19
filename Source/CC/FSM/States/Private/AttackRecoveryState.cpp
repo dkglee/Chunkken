@@ -50,10 +50,12 @@ void UAttackRecoveryState::Enter()
 	if (!Montage)
 	{
 		FFastLogger::LogConsole(TEXT("Montage is nullptr"));
+		Me->CharacterState.bFrameOver = true;
+		Me->CharacterState.bAttackAvailable = true;
 		return;
 	}
 	float PlayRate = FAnimUtils::CalculateAnimPlayRate(RecvoryFrame, Montage->GetSectionLength(2));
-	FFastLogger::LogConsole(TEXT("PlayRate: %f: Recovery: %d: Montage Play : %f"), PlayRate, RecvoryFrame, Montage->GetSectionLength(0));
+	FFastLogger::LogConsole(TEXT("PlayRate: %f: Recovery: %d: Montage Play : %f"), PlayRate, RecvoryFrame, Montage->GetSectionLength(2));
 	TekkenAnimInstance->PlayMontageModule(ExecutingMove.AnimationRef, PlayRate, FName(TEXT("Recovery")));
 }
 

@@ -46,6 +46,13 @@ UTekkenAnimIntance::UTekkenAnimIntance()
 	{
 		MontageMap.Add(TEXT("RightJab"), SteveRightPunchMontage.Object);
 	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SteveVanguardMontage
+	(TEXT("/Game/Animations/Montages/Tekken_Hook_Montage.Tekken_Hook_Montage"));
+	if (SteveVanguardMontage.Succeeded())
+	{
+		MontageMap.Add(TEXT("VanguardRush1"), SteveVanguardMontage.Object);
+	}
+	
 }
 
 void UTekkenAnimIntance::AnimNotify_RestartMovement()
@@ -66,7 +73,6 @@ void UTekkenAnimIntance::AnimNotify_ResetFrame()
 	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(UAnimInstance::TryGetPawnOwner());
 	if (BaseCharacter)
 	{
-		FFastLogger::LogConsole(TEXT("Reset Frame"));
 		BaseCharacter->CharacterState.bFrameOver = true;
 	}
 }
