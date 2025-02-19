@@ -1,7 +1,7 @@
 #include "BaseCharacter.h"
-
+#include "CC/Public/Collision.h"
+#include "CC/Public/Damage.h" 
 #include "CC.h"
-#include "FastLogger.h"
 #include "GameCharacterState.h"
 #include "InputManager.h"
 #include "InputParser.h"
@@ -9,6 +9,7 @@
 #include "CC/TekkenAnimInstance/Public/TekkenAnimIntance.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "EngineUtils.h"
 
 ABaseCharacter::ABaseCharacter()
 {
@@ -31,7 +32,11 @@ ABaseCharacter::ABaseCharacter()
 
 	// 체력 기본 값 설정
 	HP = 100;
-
+	
+	// 컴포넌트 생성
+	CollisionComponent = CreateDefaultSubobject<UCollision>(TEXT("CollisionComponent"));
+	DamageComponent = CreateDefaultSubobject<UDamage>(TEXT("DamageComponent"));
+	
 	// 히트박스 설정
 	HitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HitBox"));
 	HitBox->SetupAttachment(RootComponent);
@@ -39,7 +44,24 @@ ABaseCharacter::ABaseCharacter()
 	// 허트박스 설정
 	HurtBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HurtBox"));
 	HurtBox->SetupAttachment(RootComponent);
+
 }
+
+void ABaseCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (HitBox)
+	{
+		HitBox->IgnoreActorWhenMoving(this, true);
+	}
+
+	if (HurtBox)
+	{
+		HurtBox->IgnoreActorWhenMoving(this, true);
+	}
+}
+
 
 void ABaseCharacter::OnPressedInput(int32 InputID, uint64 FrameIndex, bool bLeft)
 {
@@ -83,12 +105,12 @@ class USubFSM* ABaseCharacter::GetSubFSM()
 	return TekkenFSM->GetCurrentFSM();
 }
 
-// Called when the game starts or when spawned
-void ABaseCharacter::BeginPlay()
+float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+	class AController* EventInstigator, AActor* DamageCauser)
 {
-	Super::BeginPlay();
-	
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
+
 
 void ABaseCharacter::UpdateMovement(uint64 FrameIndex, const FExecutingMove& ExecutingMove)
 {
@@ -192,3 +214,17 @@ void ABaseCharacter::SetState(EGameCharacterState NewState)
 {
 	CurrentState = NewState;
 }
+
+void ABaseCharacter::PerformAttack(int32 MoveID)
+{
+	if (!CollisionComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[공격 실패] 충돌 컴포넌트가 없습니다."));
+		return;
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("[공격 실행] %s 가(이) MoveID %d 공격을 실행합니다."), *GetName(), MoveID);
+	CurrentMoveID = MoveID;
+	CollisionComponent->CheckCollision(this, nullptr, MoveID);  // 충돌 검사
+}
+// TODO: Movement하고 Attack을 순차적으로 실행 시켜야 함. 왜냐하면 CharacterState는 계속해서 업데이트 되어야 함.
