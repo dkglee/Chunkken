@@ -28,6 +28,9 @@ public:
 	void ChangeSubFSM(int32 GroupID, int32 ChildID);
 	// Called every frame
 	void Update(uint64 FrameIndex);
+	UFUNCTION()
+	class UBaseState* GetCurrentState();
+	class USubFSM* GetCurrentFSM();
 
 protected:
 	void InitializeFSM();

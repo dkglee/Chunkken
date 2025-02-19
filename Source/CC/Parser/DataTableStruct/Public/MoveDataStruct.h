@@ -46,4 +46,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 OnHit;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 AnimID;
 };

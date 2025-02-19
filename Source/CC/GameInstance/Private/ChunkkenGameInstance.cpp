@@ -3,6 +3,7 @@
 
 #include "CC/GameInstance/Public/ChunkkenGameInstance.h"
 
+#include "AnimParser.h"
 #include "CharacterParser.h"
 #include "ComboParser.h"
 #include "ConditionListParser.h"
@@ -47,4 +48,7 @@ void UChunkkenGameInstance::Init()
 
 	MoveComboParser = NewObject<UMoveComboParser>();
 	MoveComboParser->ParserData();
+
+	AnimParser = NewObject<UAnimParser>();
+	AnimParser->ParseData();
 }

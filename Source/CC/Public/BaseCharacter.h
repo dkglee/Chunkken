@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BaseState.h"
 #include "CharacterState.h"
 #include "ExecutingMove.h"
+#include "GameCharacterState.h"
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
@@ -20,12 +22,17 @@ public:
 	virtual void OnReleasedInput(int32 InputID, uint64 FrameIndex, bool bLeft);
 	virtual void Update(uint64 FrameIndex);
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	UFUNCTION()
+	class UBaseState* GetCurrentState();
+	UFUNCTION()
+	class USubFSM* GetSubFSM();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	virtual void UpdateMovement(uint64 Uint64);
-	virtual void UpdateAttack(uint64 FrameIndex, FExecutingMove& ExecutingMove);
+	virtual void UpdateMovement(uint64 FrameIndex, const FExecutingMove& ExecutingMove);
+	virtual void UpdateAttack(uint64 FrameIndex, const FExecutingMove& ExecutingMove);
+	void ClearMoveset();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character State")
@@ -54,6 +61,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category="State")
 	void SetState(EGameCharacterState NewState);
 
+	UPROPERTY(EditDefaultsOnly, Category="Anim")
+	TSubclassOf<class UTekkenAnimIntance> TekkenAnimClass;
 	// 충돌 및 데미지 처리 컴포넌트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UCollision* CollisionComponent;
@@ -70,6 +79,9 @@ public:
 
 
 	
+	FExecutingMove CurrentExecutingMove;
+	
+	bool bResetMoveSet = false;
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character State")
 	class UInputManager* InputManager;
@@ -79,5 +91,5 @@ protected:
 	int32 CharID;
 
 	TArray<FExecutingMove> Moveset;
-
+	int32 MoveIndex = 0;
 };

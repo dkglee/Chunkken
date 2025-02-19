@@ -4,6 +4,7 @@
 #include "BaseState.h"
 #include "CharacterState.h"
 #include "ConditionManager.h"
+#include "FastLogger.h"
 #include "StateParser.h"
 #include "TekkenFSM.h"
 
@@ -11,23 +12,28 @@ void USubFSM::Enter(int32 ChildID)
 {
 	if (!States.Contains(ChildID))
 	{
+		CurrentState = nullptr;
 		return ;
 	}
 	CurrentState = States[ChildID];
 	CurrentState->Enter();
+	FFastLogger::LogConsole(TEXT("Enter: %s"), *CurrentState->GetStateName());
 }
 
 void USubFSM::Update()
 {
+	// FFastLogger::LogConsole(TEXT("%s"), *GetStateName());
 	if (!CurrentState)
 	{
 		return ;
 	}
+	// FFastLogger::LogConsole(TEXT("%s"), *CurrentState->GetStateName());
 
 	std::pair<int32, int32> Result;
 	if (CheckTransitionList(Result))
 	{
 		ChangeState(Result.first, Result.second);
+		return ;
 	}
 	CurrentState->Update();
 }
@@ -43,7 +49,7 @@ void USubFSM::Exit()
 
 void USubFSM::ChangeState(int32 GroupID, int32 ChildID)
 {
-	if (GroupID != -1)
+	if (GroupID == -1)
 	{
 		OwnerFSM->ChangeSubFSM(GroupID, ChildID);
 		return ;
@@ -60,6 +66,11 @@ void USubFSM::ChangeState(int32 GroupID, int32 ChildID)
 	}
 	CurrentState = States[ChildID];
 	CurrentState->Enter();
+}
+
+class UBaseState* USubFSM::GetCurrentState()
+{
+	return CurrentState;
 }
 
 bool USubFSM::CheckTransitionList(std::pair<int32, int32>& Result)

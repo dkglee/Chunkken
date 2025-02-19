@@ -29,7 +29,7 @@ struct FCharacterState
 	bool bGround = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="State")
-	bool bAttackAvailable = false;
+	bool bAttackAvailable = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="State")
 	bool bCanBeDamaged = true;

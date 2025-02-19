@@ -69,7 +69,7 @@ void UMoveComboParser::ParserData()
 			continue;
 		}
 
-		if (LineTokens.size() != 3)
+		if (LineTokens.size() != 4)
 		{
 			continue;
 		}
@@ -77,6 +77,7 @@ void UMoveComboParser::ParserData()
 		int32 ParentID = std::atoi(LineTokens[0].c_str());
 		int32 StepOrder = std::atoi(LineTokens[1].c_str());
 		int32 MoveID = std::atoi(LineTokens[2].c_str());
+		int32 AnimID = std::atoi(LineTokens[3].c_str());
 
 		// FFastLogger::LogConsole(TEXT("%d %d %d"), ParentID, StepOrder, MoveID);
 		ParsedMap[ParentID].push_back(MoveID);
@@ -89,7 +90,7 @@ void UMoveComboParser::ParserData()
 	PrintMoveTree();
 }
 
-bool UMoveComboParser::IsMoveIdInCombo(const TArray<FExecutingMove>& Moveset, int32 MoveID)
+bool UMoveComboParser::IsMoveIdInCombo(const TArray<FExecutingMove>& Moveset, int32 MoveID, int32& AnimID)
 {
 	int32 StartMoveID = Moveset[0].MoveID;
 	if (MoveTree.find(StartMoveID) == MoveTree.end())
@@ -107,6 +108,10 @@ bool UMoveComboParser::IsMoveIdInCombo(const TArray<FExecutingMove>& Moveset, in
 		Root = Root->Children[MoveIDInLoop];
 	}
 	bool bIsInCombo = Root->Children.contains(MoveID);
+	if (bIsInCombo)
+	{
+		AnimID = Root->Children[MoveID]->AnimID;
+	}
 	return bIsInCombo;
 }
 

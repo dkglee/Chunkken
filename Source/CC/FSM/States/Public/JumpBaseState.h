@@ -14,6 +14,11 @@ UCLASS()
 class CC_API UJumpBaseState : public UBaseState
 {
 	GENERATED_BODY()
-	
+
+public:
 	virtual FString GetStateName() override;
+	virtual void Exit() override {}
+	virtual void Enter() override {}
+	virtual void Update() override {}
+	
 };

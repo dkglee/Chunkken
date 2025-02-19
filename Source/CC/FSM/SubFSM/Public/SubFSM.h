@@ -3,6 +3,8 @@
 #include <map>
 
 #include "CoreMinimal.h"
+#include "BaseCharacter.h"
+#include "TekkenAnimIntance.h"
 #include "UObject/Object.h"
 #include "TransitionRules.h"
 #include "SubFSM.generated.h"
@@ -19,12 +21,14 @@ public:
 	{
 		Me = InMe;
 		OwnerFSM = InOwnerFSM;
+		TekkenAnimInstance = Cast<UTekkenAnimIntance>(Me->GetMesh()->GetAnimInstance());
 	}
 	virtual void Enter(int32 ChildID);
 	virtual void Update();
 	virtual void Exit();
 	virtual void ChangeState(int32 GroupId, int32 ChildId);
 	virtual FString GetStateName() { return TEXT(""); }
+	class UBaseState* GetCurrentState();
 
 protected:
 	virtual bool CheckTransitionList(std::pair<int32, int32>& Result);
@@ -35,6 +39,8 @@ protected:
 	class ABaseCharacter* Me = nullptr;
 	UPROPERTY()
 	class UTekkenFSM* OwnerFSM = nullptr;
+	UPROPERTY()
+	class UTekkenAnimIntance* TekkenAnimInstance = nullptr;
 	UPROPERTY()
 	class UBaseState* CurrentState = nullptr;
 

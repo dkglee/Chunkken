@@ -1,56 +1,55 @@
-MoveID,CharID,Command,RelativeID,AttackType,Damage,Hits,HitLevel,StartUp,ActiveFrames,Recovery,OnBlock,OnHIt,Notes
-1001,101,LP,0,Punch,5,1,High,10,2,10,1,8,Jab
-1002,101,RP,0,Punch,12,1,High,12,2,14,-1,5,Right Jab
-1003,101,LK,0,None,0,0,None,0,0,0,0,0,Ducking Left
-1004,101,RK,0,None,0,0,None,0,0,0,0,0,Ducking Right
-1005,101,f+RP,0,Punch,11,1,Middle,21,2,17,-6,5,Ducking Body Blow
-1006,101,f+LK,1003,None,0,0,None,0,0,0,0,0,Ducking Left
-1007,101,f+RK,1004,None,0,0,None,0,0,0,0,0,Ducking Right
-1008,101,f+DOWN+LP,0,Punch,12,1,Middle,13,2,14,-2,5,Left Uppercut
-1009,101,f+DOWN+RP,0,Punch,10,1,Middle,16,2,24,-11,6,Crescent Hook
-1010,101,DOWN+LP,0,Kick,12,1,Low,16,2,20,-13,-2,Knee Blaster
-1011,101,DOWN+RP,0,Punch,11,1,Low,17,2,23,-18,-5,Wildman Combo1
-1012,101,b+DOWN+RP,0,Kick,21,1,Low,26,2,19,-12,1,Knee Clipper
-1013,101,b+DOWN+LK,0,Kick,10,1,Low,16,2,20,-13,0,Foot Stomp Right Hook1
-1014,101,b+LP,0,Punch,10,1,High,13,2,18,-14,2,Quick Hook
-1015,101,b+RP,0,Punch,20,1,Middle,17,2,20,-13,14,Body Bomb
-1016,101,b+UP+RP,0,Punch,17,1,High,17,2,14,3,14,Bounty Hunter
-1017,101,b+UP+LK,0,None,0,0,None,0,0,0,0,0,Outfox
-1018,101,f+UP+LP,0,Punch,18,1,Middle,19,2,17,-6,5,Over the Top
-1019,101,f+UP+RP,0,Punch,20,1,Middle,22,2,20,-14,52,Burst Hammer
-1020,101,UP+RP,1019,Punch,20,1,Middle,22,2,20,-14,52,Burst Hammer
-1021,101,f+UP+LK,0,Kick,20,1,Low,36,2,21,-12,9,Jump-in Foot Stomp Right Hook1
-1022,101,UP+LK,1021,Kick,20,1,Low,36,2,21,-12,9,Jump-in Foot Stomp Right Hook1
-1023,101,f+UP+RK,0,Kick,20,1,Middle,23,2,18,-9,D,Jumping Duck Kick
-1024,101,UP+RK,1023,Kick,20,1,Middle,23,2,18,-9,D,Jumping Duck Kick
-1025,101,RP|LP,0,Punch,26,2,High,12,2,14,-6,6,Vanguard Rush1
-1026,101,f+DOWN+LP|RP|LP,0,Punch,32,2,High,13,2,10,-2,2,Uppercut Psyche-out Hook
-1027,101,f+RP|RP,0,Punch,26,2,Middle,21,2,16,-6,11,Conqueror Combination1
-1028,102,LP,0,Punch,5,1,High,10,2,10,1,8,Jab
-1029,102,RP,0,Punch,12,1,High,12,2,14,-1,5,Right Jab
-1030,102,LK,0,Kick,10,1,High,12,2,14,-1,5,Left Kick
-1031,102,RK,0,Kick,15,1,High,14,2,16,-2,6,Right Kick
-1032,102,f+LP,0,Punch,8,1,High,11,2,13,-1,6,Forward Left Punch
-1033,102,f+RP,0,Punch,14,1,Middle,13,2,16,-3,7,Ignition Barrage
-1034,102,f+LK,0,Kick,12,1,Middle,14,2,16,-3,7,Forward Left Kick
-1035,102,f+RK,0,Kick,16,1,Middle,15,2,18,-4,8,Peacekeeper
-1036,102,DOWN+LP,0,Punch,6,1,Low,10,2,12,0,5,Down Left Punch
-1037,102,DOWN+RP,0,Punch,8,1,Low,12,2,14,-1,6,Down Right Punch
-1038,102,DOWN+LK,0,Kick,10,1,Low,14,2,16,-2,6,Down Left Kick
-1039,102,DOWN+RK,0,Kick,12,1,Low,16,2,18,-3,7,Down Right Kick
-1040,102,b+LP,0,Punch,7,1,High,11,2,13,-1,6,Back Left Punch
-1041,102,b+RP,0,Punch,13,1,Middle,13,2,15,-2,7,Back Right Punch
-1042,102,b+LK,0,Kick,11,1,Low,15,2,17,-3,7,Left Heel Lance
-1043,102,b+RK,0,Kick,14,1,Low,17,2,19,-4,8,Back Right Kick
-1044,102,UP+LP,0,Punch,9,1,High,12,2,14,-1,6,Up Left Punch
-1045,102,UP+RP,0,Punch,15,1,High,14,2,16,-2,7,Up Right Punch
-1046,102,UP+LK,0,Kick,13,1,Middle,16,2,18,-3,8,Up Left Kick
-1047,102,UP+RK,0,Kick,18,1,Middle,18,2,20,-4,9,Up Right Kick
-1048,102,f+UP+LP,0,Punch,10,1,High,13,2,15,-1,6,Forward Up Left Punch
-1049,102,f+UP+RP,0,Punch,16,1,Middle,15,2,17,-2,7,Forward Up Right Punch
-1050,102,f+UP+LK,0,Kick,11,1,Middle,28,2,30,-6,-7,Hunting Hawk1
-1051,102,f+DOWN+LP,0,Punch,9,1,Low,12,2,14,-1,6,Forward Down Left Punch
-1052,102,f+DOWN+RP,0,Punch,14,1,Low,14,2,16,-2,7,Forward Down Right Punch
-1053,102,f+DOWM+RP ,0,Punch,14,1,Low,14,2,16,-2,7,Rusty Knife
-1054,102,RK|RK|RK|RK,0,Punch,12,4,High,12,2,14,-6,6,Raptor Combo
-1055,102,f+UP+LK|RK|LK,0,Kick,20,3,Middle,16,2,20,-8,9,Hunting Hawk3
+MoveID,CharID,Command,RelativeID,AttackType,Damage,Hits,HitLevel,StartUp,ActiveFrames,Recovery,OnBlock,OnHIt,AnimID,Notes
+1001,101,LP,0,Punch,5,1,High,10,2,10,1,8,1001,Jab
+1002,101,RP,0,Punch,12,1,High,12,2,14,-1,5,0,Right Jab
+1003,101,LK,0,None,0,0,None,0,0,0,0,0,0,Ducking Left
+1004,101,RK,0,None,0,0,None,0,0,0,0,0,0,Ducking Right
+1005,101,f+RP,0,Punch,11,1,Middle,21,2,17,-6,5,0,Ducking Body Blow
+1006,101,f+LK,1003,None,0,0,None,0,0,0,0,0,0,Ducking Left
+1007,101,f+RK,1004,None,0,0,None,0,0,0,0,0,0,Ducking Right
+1008,101,f+DOWN+LP,0,Punch,12,1,Middle,13,2,14,-2,5,0,Left Uppercut
+1009,101,f+DOWN+RP,0,Punch,10,1,Middle,16,2,24,-11,6,0,Crescent Hook
+1010,101,DOWN+LP,0,Kick,12,1,Low,16,2,20,-13,-2,0,Knee Blaster
+1011,101,DOWN+RP,0,Punch,11,1,Low,17,2,23,-18,-5,0,Wildman Combo1
+1012,101,b+DOWN+RP,0,Kick,21,1,Low,26,2,19,-12,1,0,Knee Clipper
+1013,101,b+DOWN+LK,0,Kick,10,1,Low,16,2,20,-13,0,0,Foot Stomp Right Hook1
+1014,101,b+LP,0,Punch,10,1,High,13,2,18,-14,2,0,Quick Hook
+1015,101,b+RP,0,Punch,20,1,Middle,17,2,20,-13,14,0,Body Bomb
+1016,101,b+UP+RP,0,Punch,17,1,High,17,2,14,3,14,0,Bounty Hunter
+1017,101,b+UP+LK,0,None,0,0,None,0,0,0,0,0,0,Outfox
+1018,101,f+UP+LP,0,Punch,18,1,Middle,19,2,17,-6,5,0,Over the Top
+1019,101,f+UP+RP,0,Punch,20,1,Middle,22,2,20,-14,52,0,Burst Hammer
+1020,101,UP+RP,1019,Punch,20,1,Middle,22,2,20,-14,52,0,Burst Hammer
+1021,101,f+UP+LK,0,Kick,20,1,Low,36,2,21,-12,9,0,Jump-in Foot Stomp Right Hook1
+1022,101,UP+LK,1021,Kick,20,1,Low,36,2,21,-12,9,0,Jump-in Foot Stomp Right Hook1
+1023,101,f+UP+RK,0,Kick,20,1,Middle,23,2,18,-9,D,0,Jumping Duck Kick
+1024,101,UP+RK,1023,Kick,20,1,Middle,23,2,18,-9,D,0,Jumping Duck Kick
+1025,101,RP|LP,0,Punch,26,2,High,12,2,14,-6,6,0,Vanguard Rush1
+1026,101,f+DOWN+LP|RP|LP,0,Punch,32,2,High,13,2,10,-2,2,0,Uppercut Psyche-out Hook
+1027,101,f+RP|RP,0,Punch,26,2,Middle,21,2,16,-6,11,0,Conqueror Combination1
+1028,102,LP,0,Punch,5,1,High,10,2,10,1,8,1001,Jab
+1029,102,RP,0,Punch,12,1,High,12,2,14,-1,5,0,Right Jab
+1030,102,LK,0,Kick,10,1,High,12,2,14,-1,5,0,Left Kick
+1031,102,RK,0,Kick,15,1,High,14,2,16,-2,6,0,Right Kick
+1032,102,f+LP,0,Punch,8,1,High,11,2,13,-1,6,0,Forward Left Punch
+1033,102,f+RP,0,Punch,14,1,Middle,13,2,16,-3,7,0,Ignition Barrage
+1034,102,f+LK,0,Kick,12,1,Middle,14,2,16,-3,7,0,Forward Left Kick
+1035,102,f+RK,0,Kick,16,1,Middle,15,2,18,-4,8,0,Peacekeeper
+1036,102,DOWN+LP,0,Punch,6,1,Low,10,2,12,0,5,0,Down Left Punch
+1037,102,DOWN+RP,0,Punch,8,1,Low,12,2,14,-1,6,0,Down Right Punch
+1038,102,DOWN+LK,0,Kick,10,1,Low,14,2,16,-2,6,0,Down Left Kick
+1039,102,DOWN+RK,0,Kick,12,1,Low,16,2,18,-3,7,0,Down Right Kick
+1040,102,b+LP,0,Punch,7,1,High,11,2,13,-1,6,0,Back Left Punch
+1041,102,b+RP,0,Punch,13,1,Middle,13,2,15,-2,7,0,Back Right Punch
+1042,102,b+LK,0,Kick,11,1,Low,15,2,17,-3,7,0,Left Heel Lance
+1043,102,b+RK,0,Kick,14,1,Low,17,2,19,-4,8,0,Back Right Kick
+1044,102,UP+LP,0,Punch,9,1,High,12,2,14,-1,6,0,Up Left Punch
+1045,102,UP+RP,0,Punch,15,1,High,14,2,16,-2,7,0,Up Right Punch
+1046,102,UP+LK,0,Kick,13,1,Middle,16,2,18,-3,8,0,Up Left Kick
+1047,102,UP+RK,0,Kick,18,1,Middle,18,2,20,-4,9,0,Up Right Kick
+1048,102,f+UP+LP,0,Punch,10,1,High,13,2,15,-1,6,0,Forward Up Left Punch
+1049,102,f+UP+RP,0,Punch,16,1,Middle,15,2,17,-2,7,0,Forward Up Right Punch
+1050,102,f+UP+LK,0,Kick,11,1,Middle,28,2,30,-6,-7,0,Hunting Hawk1
+1051,102,f+DOWN+LP,0,Punch,9,1,Low,12,2,14,-1,6,0,Forward Down Left Punch
+1052,102,f+DOWN+RP,0,Punch,14,1,Low,14,2,16,-2,7,0,Forward Down Right Punch
+1053,102,RK|RK|RK|RK,0,Punch,12,4,High,12,2,14,-6,6,0,Raptor Combo
+1054,102,f+UP+LK|RK|LK,0,Kick,20,3,Middle,16,2,20,-8,9,0,Hunting Hawk3

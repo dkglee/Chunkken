@@ -38,4 +38,6 @@ private:
 	class UTransitionParser* TransitionParser;
 	UPROPERTY()
 	class UMoveComboParser* MoveComboParser;
+	UPROPERTY()
+	class UAnimParser* AnimParser;
 };

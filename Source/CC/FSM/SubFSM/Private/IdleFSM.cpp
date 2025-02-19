@@ -1,5 +1,8 @@
 #include "IdleFSM.h"
 
+#include "BaseCharacter.h"
+#include "FastLogger.h"
+
 FString UIdleFSM::StateName = TEXT("STANDING_IDLE");
 
 void UIdleFSM::Enter(int32 ChildID)
