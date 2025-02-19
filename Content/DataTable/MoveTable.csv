@@ -1,6 +1,6 @@
 MoveID,CharID,Command,RelativeID,AttackType,Damage,Hits,HitLevel,StartUp,ActiveFrames,Recovery,OnBlock,OnHIt,AnimID,Notes
 1001,101,LP,0,Punch,5,1,High,10,2,10,1,8,1001,Jab
-1002,101,RP,0,Punch,12,1,High,12,2,14,-1,5,0,Right Jab
+1002,101,RP,0,Punch,12,1,High,12,2,14,-1,5,1002,Right Jab
 1003,101,LK,0,None,0,0,None,0,0,0,0,0,0,Ducking Left
 1004,101,RK,0,None,0,0,None,0,0,0,0,0,0,Ducking Right
 1005,101,f+RP,0,Punch,11,1,Middle,21,2,17,-6,5,0,Ducking Body Blow

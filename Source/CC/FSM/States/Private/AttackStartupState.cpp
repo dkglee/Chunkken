@@ -46,6 +46,8 @@ void UAttackStartupState::Enter()
 	}
 	int32 StartUpFrame = MoveData->StartUp;
 
+	FFastLogger::LogConsole(TEXT("Animation %s"), *ExecutingMove.AnimationRef);
+
 	UAnimMontage* Montage = TekkenAnimInstance->GetMontageFromName(ExecutingMove.AnimationRef);
 	if (!Montage)
 	{
@@ -60,6 +62,4 @@ void UAttackStartupState::Enter()
 void UAttackStartupState::Update()
 {
 	Super::Update();
-
-	FFastLogger::LogScreen(FColor::Cyan, TEXT("Me->CharacterState.bFrameOver: %d"), Me->CharacterState.bFrameOver);
 }

@@ -40,6 +40,12 @@ UTekkenAnimIntance::UTekkenAnimIntance()
 	{
 		MontageMap.Add(TEXT("Jab"), SteveLeftPunchMontage.Object);
 	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SteveRightPunchMontage
+	(TEXT("/Game/Animations/Montages/Tekken_RightPunch_Montage.Tekken_RightPunch_Montage"));
+	if (SteveRightPunchMontage.Succeeded())
+	{
+		MontageMap.Add(TEXT("RightJab"), SteveRightPunchMontage.Object);
+	}
 }
 
 void UTekkenAnimIntance::AnimNotify_RestartMovement()

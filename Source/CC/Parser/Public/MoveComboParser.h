@@ -31,11 +31,11 @@ private:
 	void LogMoveTree(MoveNode* Node, const FString& Indent);
 	void PrintMoveTree();
 	void InitMoveTree();
-	void InitTree(const std::vector<int32>& Children, MoveNode** Parent);
+	void InitTree(const std::vector<std::pair<int32, int32>>& Children, MoveNode** Parent);
 	void DeleteMoveTree(MoveNode* Node);
 	void ClearMoveTree();
 
 
-	std::map<int32, std::vector<int32>> ParsedMap;
+	std::map<int32, std::vector<std::pair<int32, int32>>> ParsedMap;
 	static std::map<int32, MoveNode*> MoveTree;
 };
