@@ -19,6 +19,7 @@ public:
 	virtual void OnPressedInput(int32 InputID, uint64 FrameIndex, bool bLeft);
 	virtual void OnReleasedInput(int32 InputID, uint64 FrameIndex, bool bLeft);
 	virtual void Update(uint64 FrameIndex);
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -42,11 +43,31 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="State")
 	EGameCharacterState CurrentState;
 
+	uint64 NewFrameIndex;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Move")
+	int32 CurrentMoveID;
+
 	UFUNCTION(BlueprintCallable, Category="Combat")
 	void Attack();
 
 	UFUNCTION(BlueprintCallable, Category="State")
 	void SetState(EGameCharacterState NewState);
+
+	// 충돌 및 데미지 처리 컴포넌트
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class UCollision* CollisionComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class UDamage* DamageComponent;
+
+	// 기존 DataTable을 활용
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	class UDataTable* ExistingDataTable;
+
+	// 공격 실행 (공통 함수)
+	void PerformAttack(int32 MoveID);
+
 
 	
 protected:
