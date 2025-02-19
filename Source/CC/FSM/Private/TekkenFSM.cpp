@@ -31,6 +31,8 @@ void UTekkenFSM::BeginPlay()
 
 void UTekkenFSM::ChangeSubFSM(int32 GroupID, int32 ChildID)
 {
+	FFastLogger::LogConsole(TEXT("MAIN: GroupID: %d, ChildID: %d"), GroupID, ChildID);
+
 	PreviousSubFSM = CurrentSubFSM;
 	
 	// 이전 상태를 Wraping State에 저장.
@@ -52,8 +54,6 @@ void UTekkenFSM::ChangeSubFSM(int32 GroupID, int32 ChildID)
 		PreviousSubFSM->Exit();
 		CurrentSubFSM->Enter(ChildID);
 	}
-
-	// FFastLogger::LogConsole(TEXT("Change to %s"), *CurrentSubFSM->GetStateName());
 }
 
 void UTekkenFSM::Update(uint64 FrameIndex)
@@ -65,9 +65,20 @@ void UTekkenFSM::Update(uint64 FrameIndex)
 	if (CheckTransitionList(Result))
 	{
 		ChangeSubFSM(Result.first, Result.second);
+		return ;
 	}
 	// SubFSM의 Update를 호출한다.
 	CurrentSubFSM->Update();
+}
+
+UBaseState* UTekkenFSM::GetCurrentState()
+{
+	return CurrentSubFSM->GetCurrentState();
+}
+
+class USubFSM* UTekkenFSM::GetCurrentFSM()
+{
+	return CurrentSubFSM;
 }
 
 void UTekkenFSM::InitializeFSM()

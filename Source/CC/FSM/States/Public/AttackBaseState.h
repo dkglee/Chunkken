@@ -15,5 +15,9 @@ class CC_API UAttackBaseState : public UBaseState
 {
 	GENERATED_BODY()
 
+public:
+	virtual void Exit() override {}
+	virtual void Enter() override {}
+	virtual void Update() override {}
 	virtual FString GetStateName() override;
 };

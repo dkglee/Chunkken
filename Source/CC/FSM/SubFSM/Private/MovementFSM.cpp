@@ -1,5 +1,6 @@
 #include "MovementFSM.h"
 
+#include "FastLogger.h"
 #include "StateParser.h"
 #include "TekkenFSM.h"
 #include "TransitionParser.h"
@@ -11,6 +12,8 @@ FString UMovementFSM::StateName = TEXT("MOVEMENT");
 void UMovementFSM::Enter(int32 ChildID)
 {
 	Super::Enter(ChildID);
+
+	FFastLogger::LogScreen(FColor::Cyan, TEXT("MovementFSM Enter"));
 }
 
 void UMovementFSM::Update()

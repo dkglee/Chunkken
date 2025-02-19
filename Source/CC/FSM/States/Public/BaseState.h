@@ -15,11 +15,7 @@ class CC_API UBaseState : public UObject
 	GENERATED_BODY()
 
 public:	
-	virtual void Initialize(class ABaseCharacter* InMe, class USubFSM* InOwnerFSM)
-	{
-		Me = InMe;
-		OwnerFSM = InOwnerFSM;
-	}
+	virtual void Initialize(class ABaseCharacter* InMe, class USubFSM* InOwnerFSM);
 
 	UFUNCTION()
 	virtual void Exit(){}
@@ -29,10 +25,16 @@ public:
 	virtual void Update(){}
 	UFUNCTION()
 	virtual FString GetStateName() { return TEXT(""); }
-
+	UFUNCTION()
+	void SetRestartMovement(bool bFlag);
+	
 protected:
 	UPROPERTY()
 	class ABaseCharacter* Me = nullptr;
 	UPROPERTY()
 	class USubFSM* OwnerFSM = nullptr;
+	UPROPERTY()
+	class UTekkenAnimIntance* TekkenAnimInstance = nullptr;
+	UPROPERTY()
+	bool bRestartMovement = true;
 };

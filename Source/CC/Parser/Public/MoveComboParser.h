@@ -10,6 +10,7 @@
 struct MoveNode
 {
 	int32 MoveID;
+	int32 AnimID;
 	std::map<int32, struct MoveNode*> Children;
 };
 
@@ -23,7 +24,7 @@ public:
 	UFUNCTION()
 	void ParserData();
 
-	static bool IsMoveIdInCombo(const TArray<FExecutingMove>& Moveset, int32 MoveID);
+	static bool IsMoveIdInCombo(const TArray<FExecutingMove>& Moveset, int32 MoveID, int32& AnimID);
 	
 	virtual void BeginDestroy() override;
 private:

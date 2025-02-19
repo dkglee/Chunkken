@@ -96,7 +96,7 @@ void UMoveParser::ParserData()
 			continue;
 		}
 
-		if (LineTokens.size() != 14)
+		if (LineTokens.size() != 15)
 		{
 			continue;
 		}
@@ -115,6 +115,7 @@ void UMoveParser::ParserData()
 		MoveData.Recovery = std::atoi(LineTokens[10].c_str());
 		MoveData.OnBlock = std::atoi(LineTokens[11].c_str());
 		MoveData.OnHit = std::atoi(LineTokens[12].c_str());
+		MoveData.AnimID = std::atoi(LineTokens[13].c_str());
 
 		MoveIDMap[MoveData.CharID][MoveData.Command] = MoveData.MoveID;
 		MoveDataMap[MoveData.CharID][MoveData.MoveID] = MoveData;

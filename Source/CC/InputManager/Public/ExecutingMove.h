@@ -11,4 +11,5 @@ struct FExecutingMove
 	bool bIgnore = false;
 	// bCombDone이 true일 시 콤보가 끝남
 	bool bCombDone = false;
+	FString AnimationRef = "";
 };
