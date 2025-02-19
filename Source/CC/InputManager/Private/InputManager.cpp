@@ -1,5 +1,6 @@
 #include "InputManager.h"
 
+#include "AnimParser.h"
 #include "InputParser.h"
 #include "CC.h"
 #include "FastLogger.h"
@@ -176,6 +177,15 @@ FExecutingMove UInputManager::ExtractFirstComboInput()
 	// 해당 비트로 MoveID가 있는지 조회해야 함
 	int32 MoveID = UMoveParser::GetMoveID(CurrentInput.CharID, ResultBitMask);
 	ExecutingMove.MoveID = MoveID;
+	if (MoveID != -1)
+	{
+		int32 AnimID = UMoveParser::GetMoveDataByMoveID(MoveID)->AnimID;
+		const FAnimationDataStruct* AnimData = UAnimParser::GetAnimData(AnimID);
+		if (AnimData)
+		{
+			ExecutingMove.AnimationRef = AnimData->AnimName;
+		}
+	}
 	
 	return ExecutingMove;
 }
@@ -233,13 +243,18 @@ FExecutingMove UInputManager::ExtractComboInput(const TArray<FExecutingMove>& Mo
 	}
 
 	// 콤보 안에 드는지 확인해야 함!
-	bool bIsInCombo = UMoveComboParser::IsMoveIdInCombo(Moveset, MoveID);
+	int32 AnimId = -1;
+	bool bIsInCombo = UMoveComboParser::IsMoveIdInCombo(Moveset, MoveID, AnimId);
 	if (!bIsInCombo)
 	{
 		ExecutingMove.bIgnore = true;
 		ExecutingMove.bCombDone = true;
 	}
-	
+	const FAnimationDataStruct* AnimData = UAnimParser::GetAnimData(AnimId);
+	if (AnimData)
+	{
+		ExecutingMove.AnimationRef = AnimData->AnimName;
+	}
 	return ExecutingMove;
 }
 

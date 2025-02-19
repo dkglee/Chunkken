@@ -17,6 +17,10 @@ class CC_API UAttackRecoveryState : public UAttackBaseState
 
 public:
 	static FString StateName;
+	
+	virtual void Exit() override;
+	virtual void Enter() override;
+	virtual void Update() override;
 
 	virtual FString GetStateName() override;
 };

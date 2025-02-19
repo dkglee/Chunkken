@@ -23,4 +23,7 @@ public:
 	static FString StateName;
 
 	virtual FString GetStateName() override;
+
+	UPROPERTY()
+	FString MontageName = TEXT("MOVE_BACKWARD");
 };

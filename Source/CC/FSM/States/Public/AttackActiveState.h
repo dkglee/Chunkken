@@ -16,7 +16,15 @@ class CC_API UAttackActiveState : public UAttackBaseState
 	GENERATED_BODY()
 
 public:
+	virtual void Exit() override;
+	virtual void Enter() override;
+	virtual void Update() override;
+	
 	static FString StateName;
 
 	virtual FString GetStateName() override;
+
+protected:
+	int32 EndCount = 0;
+	int32 EndFrame = 0;
 };

@@ -6,6 +6,7 @@
 #include "InputManager.h"
 #include "InputParser.h"
 #include "TekkenFSM.h"
+#include "CC/TekkenAnimInstance/Public/TekkenAnimIntance.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -15,6 +16,15 @@ ABaseCharacter::ABaseCharacter()
 
 	InputManager = CreateDefaultSubobject<UInputManager>(TEXT("InputManager"));
 	TekkenFSM = CreateDefaultSubobject<UTekkenFSM>(TEXT("TekkenFSM"));
+
+	static ConstructorHelpers::FClassFinder<UAnimInstance> ABP_AnimInstace
+	(TEXT("/Game/Animations/ABP_TekkenAnimInstace.ABP_TekkenAnimInstace_C"));
+	if (ABP_AnimInstace.Succeeded())
+	{
+		TekkenAnimClass = ABP_AnimInstace.Class;
+	}
+
+	GetMesh()->SetAnimInstanceClass(TekkenAnimClass);
 
 	AutoPossessPlayer = EAutoReceiveInput::Disabled;
 	
@@ -43,20 +53,34 @@ void ABaseCharacter::OnReleasedInput(int32 InputID, uint64 FrameIndex, bool bLef
 
 void ABaseCharacter::Update(uint64 FrameIndex)
 {
+	CharacterState.bForward = false;
+	CharacterState.bBackward = false;
+	CharacterState.bJump = false;
+	CharacterState.bCrouching = false;
+	CharacterState.bGround = GetCharacterMovement()->IsMovingOnGround();
+	CharacterState.bCanBeDamaged = true;
+	CharacterState.bAttack = false;
+	
 	// Update Input
 	InputManager->PushEmptyInput(CharID, FrameIndex, CharID == 102 ? true : false);
 	FExecutingMove ExecutingMove = InputManager->ExtractMoveIdFromInput(Moveset);
 	
-	if (ExecutingMove.bIgnore)
-	{
-		return ;
-	}
-	
 	UpdateMovement(FrameIndex, ExecutingMove);
 	UpdateAttack(FrameIndex, ExecutingMove);
-
+	ClearMoveset();
+	
 	// Update FSM
 	TekkenFSM->Update(FrameIndex);
+}
+
+UBaseState* ABaseCharacter::GetCurrentState()
+{
+	return TekkenFSM->GetCurrentState();
+}
+
+class USubFSM* ABaseCharacter::GetSubFSM()
+{
+	return TekkenFSM->GetCurrentFSM();
 }
 
 // Called when the game starts or when spawned
@@ -68,6 +92,11 @@ void ABaseCharacter::BeginPlay()
 
 void ABaseCharacter::UpdateMovement(uint64 FrameIndex, const FExecutingMove& ExecutingMove)
 {
+	if (ExecutingMove.bIgnore)
+	{
+		return ;
+	}
+	
 	uint8 BitMask = InputManager->GetCurrentIndexBitMask();
 
 	// 각 방향에 대한 입력 여부 확인
@@ -111,37 +140,17 @@ void ABaseCharacter::UpdateMovement(uint64 FrameIndex, const FExecutingMove& Exe
 	CharacterState.bCrouching = bDown;
 	CharacterState.bGround = GetCharacterMovement()->IsMovingOnGround();
 	CharacterState.bCanBeDamaged = true;
-
-	if (ExecutingMove.MoveID != -1)
-	{
-		return ;
-	}
-	
-	// 수평 입력 처리
-	if(bForward)
-	{
-		// 전방 이동 처리
-		FVector Direction = GetActorForwardVector();
-		AddMovementInput(Direction, 0.6f);
-	}
-	else if(bBack)
-	{
-		// 후방 이동 처리
-		FVector Direction = -GetActorForwardVector();
-		AddMovementInput(Direction, 0.15f);
-	}
-    
-	// 입력이 없으면 정지 처리
-	if(!bUp && !bDown && !bBack && !bForward)
-	{
-		// 정지 처리
-	}
 }
 
 // TODO: Movement하고 Attack을 순차적으로 실행 시켜야 함. 왜냐하면 CharacterState는 계속해서 업데이트 되어야 함.
 // 현재 실행중인 ExecutingMove를 찾아야 함.
 void ABaseCharacter::UpdateAttack(uint64 FrameIndex, const FExecutingMove& ExecutingMove)
 {
+	if (ExecutingMove.bIgnore)
+	{
+		return ;
+	}
+	
 	if (ExecutingMove.MoveID == -1)
 	{
 		CharacterState.bAttack = false;
@@ -158,11 +167,15 @@ void ABaseCharacter::UpdateAttack(uint64 FrameIndex, const FExecutingMove& Execu
 	{
 		CharacterState.bAttack = false;
 	}
+}
 
+void ABaseCharacter::ClearMoveset()
+{
 	// 그럼 언제 Moveset을 초기화 해야 할까?
-	// Attack Recovery가 온전히 끝나면 초기화 해야 함.
-	// 해당 작업은 Animation Notify가 호출되고 FSM이 업데이트를 해줌.
-	if (bResetMoveSet)
+	// TODO: 공격 당했을 때! & 강제 초기화
+	// MoveIndex가 Moveset의 크기보다 크거나 같을 때!
+	// 공격이 끝났을 때!
+	if (bResetMoveSet && MoveIndex >= Moveset.Num())
 	{
 		Moveset.Empty();
 		MoveIndex = 0;
