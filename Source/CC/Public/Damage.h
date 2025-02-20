@@ -25,5 +25,5 @@ public:
 	// 데미지 적용
 	void ApplyDamage(ACharacter* Attacker, ACharacter* Defender, int32 MoveID);
 
-	FMoveDataStruct* MoveDataStruct;
+	FMoveDataStruct* MoveDataStructs;
 };
