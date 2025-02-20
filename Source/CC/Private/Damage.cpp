@@ -1,49 +1,62 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Damage.h"
-#include "Hwoarang.h"
-#include "SteveFox.h"
-#include "GameCharacterState.h"
-#include "HitEffectStruct.h"
-#include "Engine/Engine.h"
 
-FHitEffectStruct* UDamage::GetHitEffectFromMoveID(int32 INT32)
+#include "BaseCharacter.h"
+#include "HitEffectParser.h"
+#include "HitEffectStruct.h"
+#include "Engine/DataTable.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/DamageType.h"
+#include "GameFramework/Actor.h"
+#include "HitEffectStruct.h"
+#include "MoveParser.h"
+
+UDamage::UDamage()
 {
-	return nullptr;
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void UDamage::ApplyDamage(ACharacter* Attacker, ACharacter* Defender, int32 MoveID) 
+void UDamage::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void UDamage::ApplyDamage(ACharacter* Attacker, ACharacter* Defender, int32 MoveID)
 {
 	if (!Attacker || !Defender)
 	{
+		UE_LOG(LogTemp, Error, TEXT("데미지 적용 실패- 공격자 또는 피격자가 없다."));
 		return;
 	}
 
-	ABaseCharacter* HwoarangDefender = Cast<ABaseCharacter>(Defender);
-	ABaseCharacter* SteveFoxDefender = Cast<ABaseCharacter>(Defender);
+	ABaseCharacter* AttackerCharacter = Cast<ABaseCharacter>(Attacker);
+	ABaseCharacter* DefenderCharacter = Cast<ABaseCharacter>(Defender);
 
-	FHitEffectStruct* HitEffects = GetHitEffectFromMoveID(MoveID);
-    
-	if (!HitEffects)  
+	if (!AttackerCharacter || !DefenderCharacter)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("MoveID %d not found in HitEffect database"), MoveID);
+		UE_LOG(LogTemp, Error, TEXT("데미지 적용 실패- 캐릭터가 없다."));
+		return;
+	}
+	
+	int32 MoveIDKey = UHitEffectParser::GetHitEffectByMoveID(MoveID);
+	const FHitEffectStruct* MoveData = UHitEffectParser::GetHitEffect(MoveIDKey);
+	if (!AttackerCharacter)
+	{
+		UE_LOG(LogTemp, Error, TEXT("데미지 적용 실패- DataTable이 없다."));
 		return;
 	}
 
-	float FinalDamage = HitEffects->ExtraDamage;
+	
+	const FMoveDataStruct* GameMoveDataStruct = UMoveParser::GetMoveDataByMoveID(MoveID);
 
-	if (HwoarangDefender)
+	if (!GameMoveDataStruct)
 	{
-		HwoarangDefender->HP -= FinalDamage;
-		HwoarangDefender->SetState(EGameCharacterState::Hit);
-	}
-	else if (SteveFoxDefender)
-	{
-		SteveFoxDefender->HP -= FinalDamage;
-		SteveFoxDefender->SetState(EGameCharacterState::Hit);
+		UE_LOG(LogTemp, Error, TEXT("데미지 적용 실패- MoveID %d를 DataTable에서 찾을 수 없다."), MoveID);
+		return;
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("%s hit %s for %f damage"), 
-		   *Attacker->GetName(), *Defender->GetName(), FinalDamage);
+	// 데미지 적용
+	float FinalDamage =MoveDataStructs->Damage;
+	DefenderCharacter->HP -= FinalDamage;
+	
+	UE_LOG(LogTemp, Log, TEXT("데미지 적용- %s 가(이) %s 에게 MoveID %d 공격으로 %f 데미지 적용. 남은 체력: %d"),*AttackerCharacter->GetName(), *DefenderCharacter->GetName(), MoveID, FinalDamage, DefenderCharacter->HP);
 }

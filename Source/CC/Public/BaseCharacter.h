@@ -21,6 +21,7 @@ public:
 	virtual void OnPressedInput(int32 InputID, uint64 FrameIndex, bool bLeft);
 	virtual void OnReleasedInput(int32 InputID, uint64 FrameIndex, bool bLeft);
 	virtual void Update(uint64 FrameIndex);
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	UFUNCTION()
 	class UBaseState* GetCurrentState();
 	UFUNCTION()
@@ -42,12 +43,32 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
 	class UBoxComponent* HitBox; //공격판정
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	class UBoxComponent* HitBox1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	class UBoxComponent* HitBox2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	class UBoxComponent* HitBox3;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	class UBoxComponent* HitBox4;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	TArray<UBoxComponent*> HitBoxes;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
 	class UBoxComponent* HurtBox; //피격판정
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	TArray<UBoxComponent*> HurtBoxes;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="State")
 	EGameCharacterState CurrentState;
+	
+	uint64 NewFrameIndex;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Move")
+	int32 CurrentMoveID;
+	
 
 	UFUNCTION(BlueprintCallable, Category="Combat")
 	void Attack();
@@ -57,6 +78,21 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Anim")
 	TSubclassOf<class UTekkenAnimIntance> TekkenAnimClass;
+	// 충돌 및 데미지 처리 컴포넌트
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class UCollision* CollisionComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class UDamage* DamageComponent;
+
+	// 기존 DataTable을 활용
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	class UDataTable* ExistingDataTable;
+
+	// 공격 실행 (공통 함수)
+	void PerformAttack(int32 MoveID);
+
+
 	
 	FExecutingMove CurrentExecutingMove;
 	

@@ -1,59 +1,118 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
+#include "Collision.h"
 #include "CC/Public/Collision.h"
 
-#include "Hwoarang.h"
-#include "SteveFox.h"
+#include "BaseCharacter.h"
+#include "Damage.h"
+#include "HitEffectParser.h"
+#include "MoveDataStruct.h"
+#include "MoveParser.h"
 #include "Components/BoxComponent.h"
+#include "GameFramework/Character.h"
 
+#include "Engine/DataTable.h"
+#include "Engine/OverlapResult.h"
 
-// Sets default values
-ACollision::ACollision()
+UCollision::UCollision()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+    PrimaryComponentTick.bCanEverTick = false;
+    bAttackActive = false;
 }
 
-// Called when the game starts or when spawned
-void ACollision::BeginPlay()
+void UCollision::BeginPlay()
 {
-	Super::BeginPlay();
-	
+    Super::BeginPlay();
+
 }
 
-// Called every frame
-void ACollision::Tick(float DeltaTime)
+ 
+bool UCollision::CheckCollision(ACharacter* Attacker, ACharacter* Defender, int32 MoveID)
 {
-	Super::Tick(DeltaTime);
-}
+    if (!bAttackActive || !Attacker || !Defender)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("충돌검사 - 공격자와 피격자 동일"));
+        return false;
+    }
 
-bool ACollision::CheckCollision(ACharacter* Attacker, ACharacter* Defender)
-{
-	if (!Attacker || !Defender)
-	{
-		return false;
-	}
+    ABaseCharacter* AttackerCharacter = Cast<ABaseCharacter>(Attacker);
+    ABaseCharacter* DefenderCharacter = Cast<ABaseCharacter>(Defender);
+    
+    if (!bAttackActive || !DefenderCharacter )
+    {
+        UE_LOG(LogTemp, Warning, TEXT("충돌검사 - 캐릭터 또는 데이터테이블 찾지못함"));
+        return false;
+    }
 
-	UBoxComponent* AttackerHitBox = Cast<UBoxComponent>(Attacker->FindComponentByClass<UBoxComponent>());
-	UBoxComponent* DefenderHurtBox = Cast<UBoxComponent>(Defender->FindComponentByClass<UBoxComponent>());
+    int32 HitData = UHitEffectParser::GetHitEffectByMoveID(MoveID);
+    const FHitEffectStruct* Hitdatas= UHitEffectParser::GetHitEffect(HitData);
+    if (!Hitdatas)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("충돌검사 - 데이터테이블에서 MoveID를 찾지못함"));
+        return false;
+    }
 
-	if (!AttackerHitBox || !DefenderHurtBox)
-	{
-		return false;
-	}
+    const FMoveDataStruct* MoveDataStruct = UMoveParser::GetMoveDataByMoveID(MoveID);
+    if (!MoveDataStruct)
+    {
+        return false;   
+    }
+    int32 AttackerActiveFrame = MoveDataStruct->ActiveFrames;
+    int32 AttackerStartUp = MoveDataStruct->StartUp;
+    int32 AttackerRecovery = MoveDataStruct->Recovery;
 
-	// 박스 중심과 크기를 가져와서 충돌 감지. 히트박스와 허트박스가 겹치는지 확인
-	FVector AttackerLocation = AttackerHitBox->GetComponentLocation();
-	FVector AttackerExtent = AttackerHitBox->GetScaledBoxExtent();
+    //ActiveFrame에서만 충돌판정
+    if (AttackerCharacter->NewFrameIndex <AttackerStartUp || AttackerCharacter->NewFrameIndex >(AttackerStartUp+AttackerActiveFrame))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("충돌검사 -  MoveID %d 공격이 ActiveFrame 범위를 벗어났습니다. 현재 프레임: %d"),MoveID, AttackerCharacter->NewFrameIndex);
+        
+        return false;
+    }
+    //hitbox 한 번에 검사
+        
+    for (UBoxComponent* HitBox : AttackerCharacter->CollisionComponent->HitBoxes)
+    {
+        if (!HitBox) continue;
 
-	FVector DefenderLocation = DefenderHurtBox->GetComponentLocation();
-	FVector DefenderExtent = DefenderHurtBox->GetScaledBoxExtent();
+        // 충돌된 객체 리스트
+        TArray<FOverlapResult> Overlaps;
 
-	// 두 박스가 충돌하는지 확인 (AABB 충돌 감지)
-	bool bXCollision = FMath::Abs(AttackerLocation.X - DefenderLocation.X) <= (AttackerExtent.X + DefenderExtent.X);
-	bool bYCollision = FMath::Abs(AttackerLocation.Y - DefenderLocation.Y) <= (AttackerExtent.Y + DefenderExtent.Y);
-	bool bZCollision = FMath::Abs(AttackerLocation.Z - DefenderLocation.Z) <= (AttackerExtent.Z + DefenderExtent.Z);
+        // 충돌된 모든 객체를 한 번에 검색
+        FCollisionShape CollisionShape = FCollisionShape::MakeBox(HitBox->GetUnscaledBoxExtent());
+        FCollisionQueryParams QueryParams;
+        QueryParams.AddIgnoredActor(Attacker);  // 자기 자신은 제외
 
-	return bXCollision && bYCollision && bZCollision;
+        bool bOverlapDetected = GetWorld()->OverlapMultiByChannel(
+            Overlaps,
+            HitBox->GetComponentLocation(),
+            FQuat::Identity,
+            ECollisionChannel::ECC_Pawn,  // 캐릭터만 충돌 검사
+            CollisionShape,
+            QueryParams
+        );
+
+        if (bOverlapDetected)
+        {
+            for (const FOverlapResult& Overlap : Overlaps)
+            {
+                ACharacter* OverlappedCharacter = Cast<ACharacter>(Overlap.GetActor());
+
+                //  방어자와 충돌했는지 확인
+                if (OverlappedCharacter == Defender)
+                {
+                    UE_LOG(LogTemp, Log, TEXT("충돌 성공- %s 가(이) %s 에게 MoveID %d 공격 적중!"),
+                        *AttackerCharacter->GetName(), *DefenderCharacter->GetName(), MoveID);
+
+                    UDamage* DamageComponent = AttackerCharacter->FindComponentByClass<UDamage>();
+                    if (DamageComponent)
+                    {
+                        DamageComponent->ApplyDamage(Attacker, Defender, MoveID);
+                        UE_LOG(LogTemp, Log, TEXT("데미지 적용- %s 에게 데미지 적용 완료"), *DefenderCharacter->GetName());
+                    }
+                    return true;
+                }
+            }
+        }
+    }
+    UE_LOG(LogTemp, Warning, TEXT("충돌검사 - 충돌없음"))
+        return false;
+    
 }
