@@ -28,10 +28,10 @@ ACameraManager::ACameraManager()
 	Camera->SetupAttachment(SpringArm);
 
 	// 카메라 거리 및 속도 설정
-	DefaultCameraDistance = 1200.0f;
+	DefaultCameraDistance = 500.0f;
 	ZoomSpeed = 5.0f;
-	MaxCameraDistance = 2000.0f;
-	MinCameraDistance = 800.0f;
+	MaxCameraDistance = 1000.0f;
+	MinCameraDistance = 400.0f;
 }
 
 void ACameraManager::RegisterPlayers(class ABaseCharacter* Left, class ABaseCharacter* Right)

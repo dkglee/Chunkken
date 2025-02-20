@@ -52,7 +52,12 @@ UTekkenAnimIntance::UTekkenAnimIntance()
 	{
 		MontageMap.Add(TEXT("VanguardRush1"), SteveVanguardMontage.Object);
 	}
-	
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SteveDuckingBodyBlow
+	(TEXT("/Game/Animations/Montages/Tekken_RightHook_Montage.Tekken_RightHook_Montage"));
+	if (SteveDuckingBodyBlow.Succeeded())
+	{
+		MontageMap.Add(TEXT("DuckingBodyBlow"), SteveDuckingBodyBlow.Object);
+	}
 }
 
 void UTekkenAnimIntance::AnimNotify_RestartMovement()
@@ -90,7 +95,6 @@ void UTekkenAnimIntance::PlayMontageModule(const FString& MontageName, float InP
 {
 	if (MontageMap.Contains(MontageName))
 	{
-		FFastLogger::LogScreen(FColor::Blue, TEXT("Play Montage: %s"), *MontageName);
 		PlayMontage(MontageMap[MontageName], InPlayRate, StartSectionName);
 	}
 }
