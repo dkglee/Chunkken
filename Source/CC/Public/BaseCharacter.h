@@ -43,17 +43,32 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
 	class UBoxComponent* HitBox; //공격판정
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	class UBoxComponent* HitBox1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	class UBoxComponent* HitBox2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	class UBoxComponent* HitBox3;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	class UBoxComponent* HitBox4;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	TArray<UBoxComponent*> HitBoxes;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
 	class UBoxComponent* HurtBox; //피격판정
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	TArray<UBoxComponent*> HurtBoxes;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="State")
 	EGameCharacterState CurrentState;
-
+	
 	uint64 NewFrameIndex;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Move")
 	int32 CurrentMoveID;
+	
 
 	UFUNCTION(BlueprintCallable, Category="Combat")
 	void Attack();

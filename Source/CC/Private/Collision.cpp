@@ -25,8 +25,6 @@ void UCollision::BeginPlay()
 }
 
  
-
-
 bool UCollision::CheckCollision(ACharacter* Attacker, ACharacter* Defender, int32 MoveID)
 {
     if (!bAttackActive || !Attacker || !Defender)
@@ -116,6 +114,5 @@ bool UCollision::CheckCollision(ACharacter* Attacker, ACharacter* Defender, int3
     }
     UE_LOG(LogTemp, Warning, TEXT("충돌검사 - 충돌없음"))
         return false;
-    
     
 }
