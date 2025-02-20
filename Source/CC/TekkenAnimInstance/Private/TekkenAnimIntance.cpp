@@ -40,6 +40,24 @@ UTekkenAnimIntance::UTekkenAnimIntance()
 	{
 		MontageMap.Add(TEXT("Jab"), SteveLeftPunchMontage.Object);
 	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SteveRightPunchMontage
+	(TEXT("/Game/Animations/Montages/Tekken_RightPunch_Montage.Tekken_RightPunch_Montage"));
+	if (SteveRightPunchMontage.Succeeded())
+	{
+		MontageMap.Add(TEXT("RightJab"), SteveRightPunchMontage.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SteveVanguardMontage
+	(TEXT("/Game/Animations/Montages/Tekken_Hook_Montage.Tekken_Hook_Montage"));
+	if (SteveVanguardMontage.Succeeded())
+	{
+		MontageMap.Add(TEXT("VanguardRush1"), SteveVanguardMontage.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SteveDuckingBodyBlow
+	(TEXT("/Game/Animations/Montages/Tekken_RightHook_Montage.Tekken_RightHook_Montage"));
+	if (SteveDuckingBodyBlow.Succeeded())
+	{
+		MontageMap.Add(TEXT("DuckingBodyBlow"), SteveDuckingBodyBlow.Object);
+	}
 }
 
 void UTekkenAnimIntance::AnimNotify_RestartMovement()
@@ -60,7 +78,6 @@ void UTekkenAnimIntance::AnimNotify_ResetFrame()
 	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(UAnimInstance::TryGetPawnOwner());
 	if (BaseCharacter)
 	{
-		FFastLogger::LogConsole(TEXT("Reset Frame"));
 		BaseCharacter->CharacterState.bFrameOver = true;
 	}
 }
@@ -78,7 +95,6 @@ void UTekkenAnimIntance::PlayMontageModule(const FString& MontageName, float InP
 {
 	if (MontageMap.Contains(MontageName))
 	{
-		FFastLogger::LogScreen(FColor::Blue, TEXT("Play Montage: %s"), *MontageName);
 		PlayMontage(MontageMap[MontageName], InPlayRate, StartSectionName);
 	}
 }

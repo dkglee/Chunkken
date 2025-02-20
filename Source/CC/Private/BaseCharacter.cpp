@@ -135,6 +135,8 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
 
 void ABaseCharacter::UpdateMovement(uint64 FrameIndex, const FExecutingMove& ExecutingMove)
 {
+	// TODO : bIgnore
+	// 무시하는 상황은 콤보가 진행중인데 다른 입력이 들어온 상황을 의미함.
 	if (ExecutingMove.bIgnore)
 	{
 		return ;
@@ -189,16 +191,16 @@ void ABaseCharacter::UpdateMovement(uint64 FrameIndex, const FExecutingMove& Exe
 // 현재 실행중인 ExecutingMove를 찾아야 함.
 void ABaseCharacter::UpdateAttack(uint64 FrameIndex, const FExecutingMove& ExecutingMove)
 {
-	if (ExecutingMove.bIgnore)
-	{
-		return ;
-	}
-	
-	if (ExecutingMove.MoveID == -1)
-	{
-		CharacterState.bAttack = false;
-		return ;
-	}
+	// if (ExecutingMove.bIgnore)
+	// {
+	// 	return ;
+	// }
+	//
+	// if (ExecutingMove.MoveID == -1)
+	// {
+	// 	CharacterState.bAttack = false;
+	// 	return ;
+	// }
 
 	// 공격 가능한 상태인지 확인 (FSM에서 처리해줌) && 공격할 것이 남았는지 확인
 	if (CharacterState.bAttackAvailable && MoveIndex < Moveset.Num())

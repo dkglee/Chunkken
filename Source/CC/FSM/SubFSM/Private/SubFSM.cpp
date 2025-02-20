@@ -17,7 +17,6 @@ void USubFSM::Enter(int32 ChildID)
 	}
 	CurrentState = States[ChildID];
 	CurrentState->Enter();
-	FFastLogger::LogConsole(TEXT("Enter: %s"), *CurrentState->GetStateName());
 }
 
 void USubFSM::Update()

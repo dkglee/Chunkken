@@ -15,7 +15,7 @@ void UMoveComboParser::LogMoveTree(MoveNode* Node, const FString& Indent)
 	if (!Node) return;
 
 	// 현재 노드 출력
-	UE_LOG(LogTemp, Warning, TEXT("%s├── MoveID: %d"), *Indent, Node->MoveID);
+	UE_LOG(LogTemp, Warning, TEXT("%s├── MoveID: %d , %d"), *Indent, Node->MoveID, Node->AnimID);
 
 	// 자식 노드를 재귀적으로 출력
 	for (auto& [MoveID, ChildNode] : Node->Children)
@@ -78,9 +78,10 @@ void UMoveComboParser::ParserData()
 		int32 StepOrder = std::atoi(LineTokens[1].c_str());
 		int32 MoveID = std::atoi(LineTokens[2].c_str());
 		int32 AnimID = std::atoi(LineTokens[3].c_str());
+		FFastLogger::LogConsole(TEXT("AnimID - Parser : %d"), AnimID);
 
 		// FFastLogger::LogConsole(TEXT("%d %d %d"), ParentID, StepOrder, MoveID);
-		ParsedMap[ParentID].push_back(MoveID);
+		ParsedMap[ParentID].push_back({MoveID, AnimID});
 	}
 
 	InputFile.close();
@@ -125,13 +126,15 @@ void UMoveComboParser::InitMoveTree()
 {
 	for (auto& [ParentID, Children] : ParsedMap)
 	{
-		int32 StartIndex = Children[0];
+		int32 StartIndex = Children[0].first;
+		int32 StartAnimID = Children[0].second; 
 
 		MoveNode* Root;
 		if (MoveTree.find(StartIndex) == MoveTree.end())
 		{
 			Root = new MoveNode();
 			Root->MoveID = StartIndex;
+			Root->AnimID = StartAnimID;
 			MoveTree[StartIndex] = Root;
 		}
 		else
@@ -143,18 +146,20 @@ void UMoveComboParser::InitMoveTree()
 	}
 }
 
-void UMoveComboParser::InitTree(const std::vector<int32>& Children, MoveNode** Parent)
+void UMoveComboParser::InitTree(const std::vector<std::pair<int32, int32>>& Children, MoveNode** Parent)
 {
 	MoveNode* StartNode = *Parent;
 
 	for (int i = 1; i < Children.size(); i++)
 	{
-		int32 MoveID = Children[i];
+		int32 MoveID = Children[i].first;
+		int32 AnimID = Children[i].second;
 		if (StartNode->Children.find(MoveID) == StartNode->Children.end())
 		{
 			// 없음
 			MoveNode* Node = new MoveNode();
 			Node->MoveID = MoveID;
+			Node->AnimID = AnimID;
 			StartNode->Children[MoveID] = Node;
 			StartNode = Node;
 		}
