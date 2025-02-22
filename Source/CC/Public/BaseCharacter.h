@@ -29,7 +29,8 @@ public:
 	class USubFSM* GetSubFSM();
 	UFUNCTION()
 	class UDamageComponent* GetDamageComponent();
-	
+	UFUNCTION()
+	void ClearMoveSetForce();
 
 protected:
 	// Called when the game starts or when spawned

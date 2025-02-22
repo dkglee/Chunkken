@@ -50,6 +50,13 @@ UDamageComponent* ABaseCharacter::GetDamageComponent()
 	return DamageComponent;
 }
 
+void ABaseCharacter::ClearMoveSetForce()
+{
+	Moveset.Empty();
+	MoveIndex = 0;
+	bResetMoveSet = false;
+}
+
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();

@@ -15,6 +15,7 @@ void UHitReactionBaseState::Exit()
 	Super::Exit();
 	
 	Me->CharacterState.bFrameOver = false;
+	Me->ClearMoveSetForce();
 }
 
 void UHitReactionBaseState::Enter()
@@ -23,6 +24,7 @@ void UHitReactionBaseState::Enter()
 
 	Me->CharacterState.HitReaction = "";
 	Me->CharacterState.bFrameOver = false;
+	Me->ClearMoveSetForce();
 }
 
 void UHitReactionBaseState::Update()

@@ -25,6 +25,8 @@ public:
 	virtual FString GetStateName() override;
 
 protected:
+	void PlayAnimation(const FString& String, int32 INT32);
+	
 	std::pair<FString, int32> HitAnimData;
 	FTimerHandle TimerHandle;
 };

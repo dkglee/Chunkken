@@ -5,12 +5,58 @@
 
 #include "BaseCharacter.h"
 #include "FastLogger.h"
+#include "TekkenAnimIntance.h"
 
 FString UHitReactionNormalState::StateName = TEXT("HIT_REACTION_NORMAL");
 
 FString UHitReactionNormalState::GetStateName()
 {
 	return StateName;
+}
+
+void UHitReactionNormalState::PlayAnimation(const FString& String, int32 INT32)
+{
+	if (String.IsEmpty() || INT32 < 0)
+	{
+		FFastLogger::LogConsole(TEXT("String is Empty or INT32 is less than 0"));
+		return;
+	}
+
+	// SocketID = Odd : Left | Even : Right // 애니메이션 재생
+	FFastLogger::LogScreen(FColor::Cyan, TEXT("PlayAnimation : %s"), *String);
+	if (String.Equals(TEXT("HIGH")))
+	{
+		FFastLogger::LogScreen(FColor::Cyan, TEXT("PlayAnimation : High"));
+		if (INT32 % 2 == 0)
+		{
+			TekkenAnimInstance->PlayMontageModule(TEXT("HeadHitRight"));
+		}
+		else
+		{
+			TekkenAnimInstance->PlayMontageModule(TEXT("HeadHitLeft"));
+		}
+	}
+	else if (String.Equals(TEXT("MIDDLE")))
+	{
+		FFastLogger::LogScreen(FColor::Cyan, TEXT("PlayAnimation : Middle"));
+		if (INT32 % 2 == 0)
+		{
+			TekkenAnimInstance->PlayMontageModule(TEXT("BodyHitRight"));
+		}
+		else
+		{
+			TekkenAnimInstance->PlayMontageModule(TEXT("BodyHitLeft"));
+		}
+	}
+	else if (String.Equals(TEXT("LOW")))
+	{
+		FFastLogger::LogScreen(FColor::Cyan, TEXT("PlayAnimation : Low"));
+		// Low에 대한 처리를 여기에 작성
+	}
+	else
+	{
+		// 그 외의 처리를 여기에 작성
+	}
 }
 
 void UHitReactionNormalState::Exit()
@@ -31,20 +77,7 @@ void UHitReactionNormalState::Enter()
 	FString HitLevel = HitAnimData.first;
 	int32 SocketID = HitAnimData.second;
 
-	// SocketID = Odd : Left | Even : Right // 애니메이션 재생
-
-	
-	/* TEST */
-	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-	TWeakObjectPtr<UHitReactionNormalState> WeakThis = TWeakObjectPtr<UHitReactionNormalState>(this);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakThis]()
-	{
-		if (WeakThis.IsValid())
-		{
-			UHitReactionNormalState* HitReactionNormalState = WeakThis.Get();
-			HitReactionNormalState->Me->CharacterState.bFrameOver = true;
-		}
-	}), 2.0f, false);
+	PlayAnimation(HitLevel, SocketID);
 }
 
 void UHitReactionNormalState::Update()
