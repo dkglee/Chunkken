@@ -73,7 +73,6 @@ void ABaseCharacter::Update(uint64 FrameIndex)
 	CharacterState.bJump = false;
 	CharacterState.bCrouching = false;
 	CharacterState.bGround = GetCharacterMovement()->IsMovingOnGround();
-	CharacterState.bCanBeDamaged = true;
 	CharacterState.bAttack = false;
 	
 	// Update Input
@@ -155,7 +154,6 @@ void ABaseCharacter::UpdateMovement(uint64 FrameIndex, const FExecutingMove& Exe
 	CharacterState.bJump = bUp;
 	CharacterState.bCrouching = bDown;
 	CharacterState.bGround = GetCharacterMovement()->IsMovingOnGround();
-	CharacterState.bCanBeDamaged = true;
 }
 
 void ABaseCharacter::UpdateAttack(uint64 FrameIndex, const FExecutingMove& ExecutingMove)

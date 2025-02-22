@@ -16,8 +16,9 @@ class CC_API UHitReactionBaseState : public UBaseState
 	GENERATED_BODY()
 
 public:
-	virtual void Exit(){};
-	virtual void Enter(){};
-	virtual void Update(){};
+	virtual void Exit() override;
+	virtual void Enter() override;
+	virtual void Update() override;
+
 	virtual FString GetStateName() override;
 };

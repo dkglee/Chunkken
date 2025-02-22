@@ -28,6 +28,7 @@ struct FCharacterState
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="State")
 	bool bGround = true;
 
+	// 공격 중에 다음 공격이 실행될 수 있는가를 나타냄
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="State")
 	bool bAttackAvailable = true;
 
@@ -54,6 +55,5 @@ struct FCharacterState
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
 	FString Direction = "";
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
-	FString HitLevel = "";
+	std::pair<FString, int32> HitAnimInfo = {TEXT(""), 0};
 };

@@ -18,5 +18,14 @@ class CC_API UGetupState : public UHitReactionBaseState
 public:
 	static FString StateName;
 
+	virtual void Exit() override;
+	virtual void Enter() override;
+	virtual void Update() override;
+
 	virtual FString GetStateName() override;
+
+protected:
+	// TEST
+	UPROPERTY()
+	FTimerHandle TimerHandle;
 };
