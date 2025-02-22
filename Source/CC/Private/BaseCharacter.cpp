@@ -2,6 +2,7 @@
 #include "CC/Public/Collision.h"
 #include "CC/Public/Damage.h" 
 #include "CC.h"
+#include "DamageComponent.h"
 #include "GameCharacterState.h"
 #include "InputManager.h"
 #include "InputParser.h"
@@ -10,6 +11,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EngineUtils.h"
+#include "Components/CapsuleComponent.h"
 
 ABaseCharacter::ABaseCharacter()
 {
@@ -17,6 +19,7 @@ ABaseCharacter::ABaseCharacter()
 
 	InputManager = CreateDefaultSubobject<UInputManager>(TEXT("InputManager"));
 	TekkenFSM = CreateDefaultSubobject<UTekkenFSM>(TEXT("TekkenFSM"));
+	DamageComponent = CreateDefaultSubobject<UDamageComponent>(TEXT("BaseCharacterDamageComponent"));
 
 	static ConstructorHelpers::FClassFinder<UAnimInstance> ABP_AnimInstace
 	(TEXT("/Game/Animations/ABP_TekkenAnimInstace.ABP_TekkenAnimInstace_C"));
@@ -28,12 +31,28 @@ ABaseCharacter::ABaseCharacter()
 	GetMesh()->SetAnimInstanceClass(TekkenAnimClass);
 
 	AutoPossessPlayer = EAutoReceiveInput::Disabled;
+
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SKM_Skeletal
+	(TEXT("/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny"));
+	if (SKM_Skeletal.Succeeded())
+	{
+		GetMesh()->SetSkeletalMesh(SKM_Skeletal.Object);
+	}
+
+	GetCharacterMovement()->bRunPhysicsWithNoController = true;
+
+	// GetMesh()->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
+	GetMesh()->SetCollisionProfileName("Player");
+}
+
+UDamageComponent* ABaseCharacter::GetDamageComponent()
+{
+	return DamageComponent;
 }
 
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	InputManager->RegisterComponent();
 }
 
 
@@ -88,7 +107,6 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
 
 void ABaseCharacter::UpdateMovement(uint64 FrameIndex, const FExecutingMove& ExecutingMove)
 {
-	// TODO : bIgnore
 	// 무시하는 상황은 콤보가 진행중인데 다른 입력이 들어온 상황을 의미함.
 	if (ExecutingMove.bIgnore)
 	{
@@ -140,21 +158,8 @@ void ABaseCharacter::UpdateMovement(uint64 FrameIndex, const FExecutingMove& Exe
 	CharacterState.bCanBeDamaged = true;
 }
 
-// TODO: Movement하고 Attack을 순차적으로 실행 시켜야 함. 왜냐하면 CharacterState는 계속해서 업데이트 되어야 함.
-// 현재 실행중인 ExecutingMove를 찾아야 함.
 void ABaseCharacter::UpdateAttack(uint64 FrameIndex, const FExecutingMove& ExecutingMove)
 {
-	// if (ExecutingMove.bIgnore)
-	// {
-	// 	return ;
-	// }
-	//
-	// if (ExecutingMove.MoveID == -1)
-	// {
-	// 	CharacterState.bAttack = false;
-	// 	return ;
-	// }
-
 	// 공격 가능한 상태인지 확인 (FSM에서 처리해줌) && 공격할 것이 남았는지 확인
 	if (CharacterState.bAttackAvailable && MoveIndex < Moveset.Num())
 	{
@@ -180,27 +185,3 @@ void ABaseCharacter::ClearMoveset()
 		bResetMoveSet = false;
 	}
 }
-
-void ABaseCharacter::Attack()
-{
-	CurrentState = EGameCharacterState::Attacking;
-}
-
-void ABaseCharacter::SetState(EGameCharacterState NewState)
-{
-	CurrentState = NewState;
-}
-
-void ABaseCharacter::PerformAttack(int32 MoveID)
-{
-	if (!CollisionComponent)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[공격 실패] 충돌 컴포넌트가 없습니다."));
-		return;
-	}
-
-	UE_LOG(LogTemp, Log, TEXT("[공격 실행] %s 가(이) MoveID %d 공격을 실행합니다."), *GetName(), MoveID);
-	CurrentMoveID = MoveID;
-	CollisionComponent->CheckCollision(this, nullptr, MoveID);  // 충돌 검사
-}
-// TODO: Movement하고 Attack을 순차적으로 실행 시켜야 함. 왜냐하면 CharacterState는 계속해서 업데이트 되어야 함.

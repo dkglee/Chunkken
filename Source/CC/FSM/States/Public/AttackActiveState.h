@@ -27,4 +27,5 @@ public:
 protected:
 	int32 EndCount = 0;
 	int32 EndFrame = 0;
+	bool bHit = false;
 };

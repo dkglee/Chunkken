@@ -7,7 +7,7 @@ ConditionID,ConditionName,ConditionChecker,ConditionData,ConditionGroup,Notes
 6,AttackButtonPressed,InputConditionChecker,"{""bAttack"": true}",Input,?? ??(??�?) ?? ??
 7,CrouchInputDetected,InputConditionChecker,"{""bCrouching"": true}",Input,"?? ?? ?? (??, ?? ??)"
 8,FrameOver,FrameConditionChecker,"{""bFrameOver"": true}",Frame,?? ??? 10??? ?? ????? ?.
-9,HitReactionStun,HitConditionChecker,"{""HitReaction"":""Stun""}",Hit,??
+9,HitReactionStun,HitConditionChecker,"{""HitReaction"":""HitStun""}",Hit,??
 10,HitReactionAirborne,HitConditionChecker,"{""HitReaction"":""Airborne""}",Hit,???
 11,HitReactionKnockDown,HitConditionChecker,"{""HitReaction"":""KnockDown""}",Hit,???
 12,PrevStateIdle,StateConditionChecker,"{""PrevState"":""STANDING_IDLE""}",State,?? ??? Idle ????

@@ -4,9 +4,11 @@
 #include "CC/FSM/States/Public/AttackActiveState.h"
 
 #include "BaseCharacter.h"
+#include "DamageComponent.h"
 #include "FastLogger.h"
 #include "MoveDataStruct.h"
 #include "MoveParser.h"
+#include "SocketParser.h"
 
 FString UAttackActiveState::StateName = TEXT("ATTACK_ACTIVE");
 
@@ -23,6 +25,7 @@ void UAttackActiveState::Exit()
 
 	Me->CharacterState.bFrameOver = false;
 	Me->CharacterState.bAttackAvailable = false;
+	bHit = false;
 
 	// 충돌 비활성화 해줘야 함
 	// Me->ResetCollision();
@@ -32,8 +35,10 @@ void UAttackActiveState::Enter()
 {
 	Super::Enter();
 
+	bHit = false;
+
 	FFastLogger::LogConsole(TEXT("AttackActiveState Enter"));
-	
+
 	EndCount = 0;
 
 	Me->CharacterState.bFrameOver = false;
@@ -48,9 +53,6 @@ void UAttackActiveState::Enter()
 		return;
 	}
 	EndFrame = MoveData->ActiveFrames;
-
-	// 충돌 활성화 해줘야 함
-	// Me->SetCollision();
 }
 
 void UAttackActiveState::Update()
@@ -60,9 +62,30 @@ void UAttackActiveState::Update()
 	if (EndCount == EndFrame)
 	{
 		Me->CharacterState.bFrameOver = true;
+		return ;
 	}
-	else
+	
+	EndCount++;
+
+	if (bHit != false)
 	{
-		EndCount++;
+		return ;
 	}
+	
+	UDamageComponent* DamageComponent = Me->GetDamageComponent();
+	if (!DamageComponent)
+	{
+		FFastLogger::LogConsole(TEXT("DamageComponent is nullptr : %p"), Me);
+		return;
+	}
+
+	int32 SocketID = Me->CurrentExecutingMove.SocketID;
+	FString SocketName = USocketParser::GetSocketName(SocketID);
+	if (SocketName.IsEmpty())
+	{
+		FFastLogger::LogConsole(TEXT("SocketName is Empty"));
+		return;
+	}
+	
+	bHit = DamageComponent->DetectCollision(SocketName);
 }

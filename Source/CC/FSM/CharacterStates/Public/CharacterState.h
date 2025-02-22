@@ -53,4 +53,7 @@ struct FCharacterState
 	// 방향 정보 : Legacy
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
 	FString Direction = "";
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
+	FString HitLevel = "";
 };
