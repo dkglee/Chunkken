@@ -29,4 +29,5 @@ protected:
 	
 	std::pair<FString, int32> HitAnimData;
 	FTimerHandle TimerHandle;
+	int32 StunFrame;
 };

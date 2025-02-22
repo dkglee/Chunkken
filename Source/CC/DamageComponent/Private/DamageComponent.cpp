@@ -64,7 +64,6 @@ bool UDamageComponent::DetectCollision(const FString& SocketName)
 
 	if (!HitResult.bBlockingHit)
 	{
-		FFastLogger::LogScreen(FColor::Cyan, TEXT("No Hit"));
 		return false;
 	}
 
@@ -132,7 +131,7 @@ void UDamageComponent::UpdateHitReaction(ABaseCharacter* Target, const FMoveData
 
 	Target->CharacterState.HitReaction = HitReaction;
 	Target->CharacterState.HitAnimInfo = {MoveData->HitLevel, MoveData->SocketID};
-
+	Target->CharacterState.HitStun = HitEffect->StunFrames;
 	// UI에 HitLevel 표시 : High, Mid, Low
 	return ;
 }

@@ -56,4 +56,5 @@ struct FCharacterState
 	FString Direction = "";
 
 	std::pair<FString, int32> HitAnimInfo = {TEXT(""), 0};
+	int32 HitStun = 0;
 };

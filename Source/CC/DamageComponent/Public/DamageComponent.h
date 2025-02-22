@@ -30,7 +30,7 @@ protected:
 	class ABaseCharacter* Me = nullptr;
 
 	UPROPERTY()
-	float SphereRadius = 50.0f;
+	float SphereRadius = 25.0f;
 
 	UPROPERTY()
 	int32 HP = 100.0f;

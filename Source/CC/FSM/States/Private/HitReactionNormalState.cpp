@@ -3,7 +3,9 @@
 
 #include "CC/FSM/States/Public/HitReactionNormalState.h"
 
+#include "AnimUtils.h"
 #include "BaseCharacter.h"
+#include "EditorAnimUtils.h"
 #include "FastLogger.h"
 #include "TekkenAnimIntance.h"
 
@@ -23,40 +25,55 @@ void UHitReactionNormalState::PlayAnimation(const FString& String, int32 INT32)
 	}
 
 	// SocketID = Odd : Left | Even : Right // 애니메이션 재생
-	FFastLogger::LogScreen(FColor::Cyan, TEXT("PlayAnimation : %s"), *String);
+
+
+	FString Anim = TEXT("");
 	if (String.Equals(TEXT("HIGH")))
 	{
-		FFastLogger::LogScreen(FColor::Cyan, TEXT("PlayAnimation : High"));
 		if (INT32 % 2 == 0)
 		{
-			TekkenAnimInstance->PlayMontageModule(TEXT("HeadHitRight"));
+			Anim = TEXT("HeadHitRight");
 		}
 		else
 		{
-			TekkenAnimInstance->PlayMontageModule(TEXT("HeadHitLeft"));
+			Anim = TEXT("HeadHitLeft");
 		}
 	}
 	else if (String.Equals(TEXT("MIDDLE")))
 	{
-		FFastLogger::LogScreen(FColor::Cyan, TEXT("PlayAnimation : Middle"));
 		if (INT32 % 2 == 0)
 		{
-			TekkenAnimInstance->PlayMontageModule(TEXT("BodyHitRight"));
+			Anim = TEXT("BodyHitRight");
 		}
 		else
 		{
-			TekkenAnimInstance->PlayMontageModule(TEXT("BodyHitLeft"));
+			Anim = TEXT("BodyHitLeft");
 		}
 	}
 	else if (String.Equals(TEXT("LOW")))
 	{
-		FFastLogger::LogScreen(FColor::Cyan, TEXT("PlayAnimation : Low"));
 		// Low에 대한 처리를 여기에 작성
 	}
 	else
 	{
 		// 그 외의 처리를 여기에 작성
 	}
+
+	if (Anim.IsEmpty())
+	{
+		FFastLogger::LogConsole(TEXT("Anim is Empty"));
+		return;
+	}
+
+	UAnimMontage* Montage = TekkenAnimInstance->GetMontageFromName(Anim);
+	if (!Montage)
+	{
+		FFastLogger::LogConsole(TEXT("Montage is nullptr"));
+		return;
+	}
+
+	float PlayRate = FAnimUtils::CalculateAnimPlayRate(30, Montage->GetSectionLength(0));
+	TekkenAnimInstance->PlayMontageModule(Anim, PlayRate);
 }
 
 void UHitReactionNormalState::Exit()
@@ -69,6 +86,7 @@ void UHitReactionNormalState::Enter()
 	Super::Enter();
 
 	HitAnimData = Me->CharacterState.HitAnimInfo;
+	StunFrame = Me->CharacterState.HitStun;
 	Me->CharacterState.HitAnimInfo = std::pair<FString, int32>(TEXT(""), -1);
 
 	FFastLogger::LogScreen(FColor::Cyan, TEXT("HitReactionNormalState Enter"));
