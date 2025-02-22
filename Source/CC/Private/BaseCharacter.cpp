@@ -28,59 +28,12 @@ ABaseCharacter::ABaseCharacter()
 	GetMesh()->SetAnimInstanceClass(TekkenAnimClass);
 
 	AutoPossessPlayer = EAutoReceiveInput::Disabled;
-	
-
-	// 체력 기본 값 설정
-	HP = 100;
-	
-	// 컴포넌트 생성
-	CollisionComponent = CreateDefaultSubobject<UCollision>(TEXT("CollisionComponent"));
-	DamageComponent = CreateDefaultSubobject<UDamage>(TEXT("DamageComponent"));
-	
-	// 히트박스 설정
-	//HitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HitBox"));
-	HitBox1 = CreateDefaultSubobject<UBoxComponent>(TEXT("HitBox1"));
-	HitBox1->SetupAttachment(GetMesh(),TEXT("hand_lSocket"));
-	HitBox1->SetBoxExtent(FVector(15.0f,15.0,15.0f));
-	
-	HitBox2 = CreateDefaultSubobject<UBoxComponent>(TEXT("HitBox2"));
-	HitBox2->SetupAttachment(GetMesh(),TEXT("hand_rSocket"));
-	HitBox2->SetBoxExtent(FVector(15.0f,15.0,15.0f));
-	
-	HitBox3 = CreateDefaultSubobject<UBoxComponent>(TEXT("HitBox3"));
-	HitBox3->SetupAttachment(GetMesh(),TEXT("foot_lSocket"));
-	HitBox3->SetBoxExtent(FVector(15.0f,15.0,15.0f));
-	
-	HitBox4 = CreateDefaultSubobject<UBoxComponent>(TEXT("HitBox4"));
-	HitBox4->SetupAttachment(GetMesh(),TEXT("foot_rSocket"));
-	HitBox4->SetBoxExtent(FVector(15.0f,15.0,15.0f));
-
-	//HitBoxes.Add(HitBox);
-	HitBoxes.Add(HitBox1);
-	HitBoxes.Add(HitBox2);
-	HitBoxes.Add(HitBox3);
-	HitBoxes.Add(HitBox4);
-	
-	// 허트박스 설정
-	HurtBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HurtBox"));
-	HurtBox->SetupAttachment(GetMesh(),TEXT("spine_01Socket"));
-	HurtBox->SetBoxExtent(FVector(30.0f,30.0,100.0f));
-	HurtBoxes.Add(HurtBox);
 }
 
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (HitBox)
-	{
-		HitBox->IgnoreActorWhenMoving(this, true);
-	}
-
-	if (HurtBox)
-	{
-		HurtBox->IgnoreActorWhenMoving(this, true);
-	}
+	InputManager->RegisterComponent();
 }
 
 

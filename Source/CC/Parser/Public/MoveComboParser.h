@@ -11,6 +11,7 @@ struct MoveNode
 {
 	int32 MoveID;
 	int32 AnimID;
+	int32 SocketID;
 	std::map<int32, struct MoveNode*> Children;
 };
 
@@ -31,11 +32,10 @@ private:
 	void LogMoveTree(MoveNode* Node, const FString& Indent);
 	void PrintMoveTree();
 	void InitMoveTree();
-	void InitTree(const std::vector<std::pair<int32, int32>>& Children, MoveNode** Parent);
+	void InitTree(const std::vector<MoveNode>& Children, MoveNode** Parent);
 	void DeleteMoveTree(MoveNode* Node);
 	void ClearMoveTree();
-
-
-	std::map<int32, std::vector<std::pair<int32, int32>>> ParsedMap;
+	
+	std::map<int32, std::vector<MoveNode>> ParsedMap;
 	static std::map<int32, MoveNode*> MoveTree;
 };

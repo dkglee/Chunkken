@@ -69,19 +69,20 @@ void UMoveComboParser::ParserData()
 			continue;
 		}
 
-		if (LineTokens.size() != 4)
+		if (LineTokens.size() != 5)
 		{
 			continue;
 		}
 
+		MoveNode Node;
 		int32 ParentID = std::atoi(LineTokens[0].c_str());
 		int32 StepOrder = std::atoi(LineTokens[1].c_str());
-		int32 MoveID = std::atoi(LineTokens[2].c_str());
-		int32 AnimID = std::atoi(LineTokens[3].c_str());
-		FFastLogger::LogConsole(TEXT("AnimID - Parser : %d"), AnimID);
+		Node.MoveID = std::atoi(LineTokens[2].c_str());
+		Node.AnimID = std::atoi(LineTokens[3].c_str());
+		Node.SocketID = std::atoi(LineTokens[4].c_str());
 
 		// FFastLogger::LogConsole(TEXT("%d %d %d"), ParentID, StepOrder, MoveID);
-		ParsedMap[ParentID].push_back({MoveID, AnimID});
+		ParsedMap[ParentID].push_back(Node);
 	}
 
 	InputFile.close();
@@ -126,8 +127,9 @@ void UMoveComboParser::InitMoveTree()
 {
 	for (auto& [ParentID, Children] : ParsedMap)
 	{
-		int32 StartIndex = Children[0].first;
-		int32 StartAnimID = Children[0].second; 
+		int32 StartIndex = Children[0].MoveID;
+		int32 StartAnimID = Children[0].AnimID;
+		int32 StartSocketID = Children[0].SocketID;
 
 		MoveNode* Root;
 		if (MoveTree.find(StartIndex) == MoveTree.end())
@@ -135,6 +137,7 @@ void UMoveComboParser::InitMoveTree()
 			Root = new MoveNode();
 			Root->MoveID = StartIndex;
 			Root->AnimID = StartAnimID;
+			Root->SocketID = StartSocketID;
 			MoveTree[StartIndex] = Root;
 		}
 		else
@@ -146,20 +149,22 @@ void UMoveComboParser::InitMoveTree()
 	}
 }
 
-void UMoveComboParser::InitTree(const std::vector<std::pair<int32, int32>>& Children, MoveNode** Parent)
+void UMoveComboParser::InitTree(const std::vector<MoveNode>& Children, MoveNode** Parent)
 {
 	MoveNode* StartNode = *Parent;
 
 	for (int i = 1; i < Children.size(); i++)
 	{
-		int32 MoveID = Children[i].first;
-		int32 AnimID = Children[i].second;
+		int32 MoveID = Children[i].MoveID;
+		int32 AnimID = Children[i].AnimID;
+		int32 SocketID = Children[i].SocketID;
 		if (StartNode->Children.find(MoveID) == StartNode->Children.end())
 		{
 			// 없음
 			MoveNode* Node = new MoveNode();
 			Node->MoveID = MoveID;
 			Node->AnimID = AnimID;
+			Node->SocketID = SocketID;
 			StartNode->Children[MoveID] = Node;
 			StartNode = Node;
 		}

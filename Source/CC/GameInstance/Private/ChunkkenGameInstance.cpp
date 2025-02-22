@@ -11,6 +11,7 @@
 #include "HitEffectParser.h"
 #include "MoveComboParser.h"
 #include "MoveParser.h"
+#include "SocketParser.h"
 #include "StateParser.h"
 #include "TransitionParser.h"
 
@@ -51,4 +52,7 @@ void UChunkkenGameInstance::Init()
 
 	AnimParser = NewObject<UAnimParser>();
 	AnimParser->ParseData();
+
+	SocketParser = NewObject<USocketParser>();
+	SocketParser->ParseData();
 }

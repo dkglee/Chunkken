@@ -23,6 +23,9 @@ void UAttackActiveState::Exit()
 
 	Me->CharacterState.bFrameOver = false;
 	Me->CharacterState.bAttackAvailable = false;
+
+	// 충돌 비활성화 해줘야 함
+	// Me->ResetCollision();
 }
 
 void UAttackActiveState::Enter()
@@ -45,6 +48,9 @@ void UAttackActiveState::Enter()
 		return;
 	}
 	EndFrame = MoveData->ActiveFrames;
+
+	// 충돌 활성화 해줘야 함
+	// Me->SetCollision();
 }
 
 void UAttackActiveState::Update()

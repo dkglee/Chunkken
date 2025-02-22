@@ -40,4 +40,6 @@ private:
 	class UMoveComboParser* MoveComboParser;
 	UPROPERTY()
 	class UAnimParser* AnimParser;
+	UPROPERTY()
+	class USocketParser* SocketParser;
 };
