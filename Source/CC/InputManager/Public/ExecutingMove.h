@@ -12,4 +12,5 @@ struct FExecutingMove
 	// bCombDone이 true일 시 콤보가 끝남
 	bool bCombDone = false;
 	FString AnimationRef = "";
+	int32 SocketID = -1;
 };

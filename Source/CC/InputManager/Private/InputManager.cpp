@@ -16,6 +16,8 @@ UInputManager::UInputManager()
 // Called when the game starts
 void UInputManager::BeginPlay()
 {
+	Super::BeginPlay();
+	
 	InputQueue.Empty();
 	InputQueue.Reserve(MAX_INPUT_QUEUE);
 	InputQueue.SetNum(MAX_INPUT_QUEUE);
@@ -185,6 +187,9 @@ FExecutingMove UInputManager::ExtractFirstComboInput()
 		{
 			ExecutingMove.AnimationRef = AnimData->AnimName;
 		}
+		const FMoveDataStruct* MoveData = UMoveParser::GetMoveDataByMoveID(MoveID);
+		int32 SocketID = MoveData != nullptr ? MoveData->SocketID : -1;
+		ExecutingMove.SocketID = SocketID;
 	}
 	
 	return ExecutingMove;
@@ -250,11 +255,16 @@ FExecutingMove UInputManager::ExtractComboInput(const TArray<FExecutingMove>& Mo
 		ExecutingMove.bIgnore = true;
 		ExecutingMove.bCombDone = true;
 	}
+
 	const FAnimationDataStruct* AnimData = UAnimParser::GetAnimData(AnimId);
 	if (AnimData)
 	{
 		ExecutingMove.AnimationRef = AnimData->AnimName;
 	}
+	const FMoveDataStruct* MoveData = UMoveParser::GetMoveDataByMoveID(MoveID);
+	int32 SocketID = MoveData != nullptr ? MoveData->SocketID : -1;
+	ExecutingMove.SocketID = SocketID;
+	
 	return ExecutingMove;
 }
 

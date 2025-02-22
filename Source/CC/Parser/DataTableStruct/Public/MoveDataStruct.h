@@ -49,4 +49,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 AnimID;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 SocketID;
 };

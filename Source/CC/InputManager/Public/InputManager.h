@@ -43,7 +43,6 @@ class CC_API UInputManager : public UActorComponent
 public:
 	UInputManager();
 
-protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 

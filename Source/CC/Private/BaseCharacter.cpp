@@ -2,6 +2,7 @@
 #include "CC/Public/Collision.h"
 #include "CC/Public/Damage.h" 
 #include "CC.h"
+#include "DamageComponent.h"
 #include "GameCharacterState.h"
 #include "InputManager.h"
 #include "InputParser.h"
@@ -10,6 +11,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EngineUtils.h"
+#include "Components/CapsuleComponent.h"
 
 ABaseCharacter::ABaseCharacter()
 {
@@ -17,6 +19,7 @@ ABaseCharacter::ABaseCharacter()
 
 	InputManager = CreateDefaultSubobject<UInputManager>(TEXT("InputManager"));
 	TekkenFSM = CreateDefaultSubobject<UTekkenFSM>(TEXT("TekkenFSM"));
+	DamageComponent = CreateDefaultSubobject<UDamageComponent>(TEXT("BaseCharacterDamageComponent"));
 
 	static ConstructorHelpers::FClassFinder<UAnimInstance> ABP_AnimInstace
 	(TEXT("/Game/Animations/ABP_TekkenAnimInstace.ABP_TekkenAnimInstace_C"));
@@ -28,59 +31,28 @@ ABaseCharacter::ABaseCharacter()
 	GetMesh()->SetAnimInstanceClass(TekkenAnimClass);
 
 	AutoPossessPlayer = EAutoReceiveInput::Disabled;
-	
 
-	// 체력 기본 값 설정
-	HP = 100;
-	
-	// 컴포넌트 생성
-	CollisionComponent = CreateDefaultSubobject<UCollision>(TEXT("CollisionComponent"));
-	DamageComponent = CreateDefaultSubobject<UDamage>(TEXT("DamageComponent"));
-	
-	// 히트박스 설정
-	//HitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HitBox"));
-	HitBox1 = CreateDefaultSubobject<UBoxComponent>(TEXT("HitBox1"));
-	HitBox1->SetupAttachment(GetMesh(),TEXT("hand_lSocket"));
-	HitBox1->SetBoxExtent(FVector(15.0f,15.0,15.0f));
-	
-	HitBox2 = CreateDefaultSubobject<UBoxComponent>(TEXT("HitBox2"));
-	HitBox2->SetupAttachment(GetMesh(),TEXT("hand_rSocket"));
-	HitBox2->SetBoxExtent(FVector(15.0f,15.0,15.0f));
-	
-	HitBox3 = CreateDefaultSubobject<UBoxComponent>(TEXT("HitBox3"));
-	HitBox3->SetupAttachment(GetMesh(),TEXT("foot_lSocket"));
-	HitBox3->SetBoxExtent(FVector(15.0f,15.0,15.0f));
-	
-	HitBox4 = CreateDefaultSubobject<UBoxComponent>(TEXT("HitBox4"));
-	HitBox4->SetupAttachment(GetMesh(),TEXT("foot_rSocket"));
-	HitBox4->SetBoxExtent(FVector(15.0f,15.0,15.0f));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SKM_Skeletal
+	(TEXT("/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny"));
+	if (SKM_Skeletal.Succeeded())
+	{
+		GetMesh()->SetSkeletalMesh(SKM_Skeletal.Object);
+	}
 
-	//HitBoxes.Add(HitBox);
-	HitBoxes.Add(HitBox1);
-	HitBoxes.Add(HitBox2);
-	HitBoxes.Add(HitBox3);
-	HitBoxes.Add(HitBox4);
-	
-	// 허트박스 설정
-	HurtBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HurtBox"));
-	HurtBox->SetupAttachment(GetMesh(),TEXT("spine_01Socket"));
-	HurtBox->SetBoxExtent(FVector(30.0f,30.0,100.0f));
-	HurtBoxes.Add(HurtBox);
+	GetCharacterMovement()->bRunPhysicsWithNoController = true;
+
+	// GetMesh()->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
+	GetMesh()->SetCollisionProfileName("Player");
+}
+
+UDamageComponent* ABaseCharacter::GetDamageComponent()
+{
+	return DamageComponent;
 }
 
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (HitBox)
-	{
-		HitBox->IgnoreActorWhenMoving(this, true);
-	}
-
-	if (HurtBox)
-	{
-		HurtBox->IgnoreActorWhenMoving(this, true);
-	}
 }
 
 
@@ -101,7 +73,6 @@ void ABaseCharacter::Update(uint64 FrameIndex)
 	CharacterState.bJump = false;
 	CharacterState.bCrouching = false;
 	CharacterState.bGround = GetCharacterMovement()->IsMovingOnGround();
-	CharacterState.bCanBeDamaged = true;
 	CharacterState.bAttack = false;
 	
 	// Update Input
@@ -135,7 +106,6 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
 
 void ABaseCharacter::UpdateMovement(uint64 FrameIndex, const FExecutingMove& ExecutingMove)
 {
-	// TODO : bIgnore
 	// 무시하는 상황은 콤보가 진행중인데 다른 입력이 들어온 상황을 의미함.
 	if (ExecutingMove.bIgnore)
 	{
@@ -184,24 +154,10 @@ void ABaseCharacter::UpdateMovement(uint64 FrameIndex, const FExecutingMove& Exe
 	CharacterState.bJump = bUp;
 	CharacterState.bCrouching = bDown;
 	CharacterState.bGround = GetCharacterMovement()->IsMovingOnGround();
-	CharacterState.bCanBeDamaged = true;
 }
 
-// TODO: Movement하고 Attack을 순차적으로 실행 시켜야 함. 왜냐하면 CharacterState는 계속해서 업데이트 되어야 함.
-// 현재 실행중인 ExecutingMove를 찾아야 함.
 void ABaseCharacter::UpdateAttack(uint64 FrameIndex, const FExecutingMove& ExecutingMove)
 {
-	// if (ExecutingMove.bIgnore)
-	// {
-	// 	return ;
-	// }
-	//
-	// if (ExecutingMove.MoveID == -1)
-	// {
-	// 	CharacterState.bAttack = false;
-	// 	return ;
-	// }
-
 	// 공격 가능한 상태인지 확인 (FSM에서 처리해줌) && 공격할 것이 남았는지 확인
 	if (CharacterState.bAttackAvailable && MoveIndex < Moveset.Num())
 	{
@@ -227,27 +183,3 @@ void ABaseCharacter::ClearMoveset()
 		bResetMoveSet = false;
 	}
 }
-
-void ABaseCharacter::Attack()
-{
-	CurrentState = EGameCharacterState::Attacking;
-}
-
-void ABaseCharacter::SetState(EGameCharacterState NewState)
-{
-	CurrentState = NewState;
-}
-
-void ABaseCharacter::PerformAttack(int32 MoveID)
-{
-	if (!CollisionComponent)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[공격 실패] 충돌 컴포넌트가 없습니다."));
-		return;
-	}
-
-	UE_LOG(LogTemp, Log, TEXT("[공격 실행] %s 가(이) MoveID %d 공격을 실행합니다."), *GetName(), MoveID);
-	CurrentMoveID = MoveID;
-	CollisionComponent->CheckCollision(this, nullptr, MoveID);  // 충돌 검사
-}
-// TODO: Movement하고 Attack을 순차적으로 실행 시켜야 함. 왜냐하면 CharacterState는 계속해서 업데이트 되어야 함.

@@ -18,5 +18,15 @@ class CC_API UHitReactionAirState : public UHitReactionBaseState
 public:
 	static FString StateName;
 
+	virtual void Exit() override;
+	virtual void Enter() override;
+	virtual void Update() override;
+
 	virtual FString GetStateName() override;
+
+protected:
+	std::pair<FString, int32> HitAnimData;
+
+	UPROPERTY()
+	FTimerHandle TimerHandle;
 };
