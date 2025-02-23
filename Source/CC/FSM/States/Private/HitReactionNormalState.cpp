@@ -25,8 +25,6 @@ void UHitReactionNormalState::PlayAnimation(const FString& String, int32 INT32)
 	}
 
 	// SocketID = Odd : Left | Even : Right // 애니메이션 재생
-
-
 	FString Anim = TEXT("");
 	if (String.Equals(TEXT("HIGH")))
 	{

@@ -130,6 +130,7 @@ FString USubFSM::WrapJsonString()
 	JsonObject->SetBoolField("bAttackAvailable", CharacterState.bAttackAvailable);
 	JsonObject->SetBoolField("bCanBeDamaged", CharacterState.bCanBeDamaged);
 	JsonObject->SetBoolField("bFrameOver", CharacterState.bFrameOver);
+	JsonObject->SetBoolField("bKO", CharacterState.bKO);
 
 	JsonObject->SetStringField("HitReaction", CharacterState.HitReaction);
 	JsonObject->SetStringField("PrevState", CharacterState.PrevState);

@@ -5,6 +5,7 @@
 
 #include "BaseCharacter.h"
 #include "FastLogger.h"
+#include "TekkenAnimIntance.h"
 
 FString UGetupState::StateName = TEXT("GETUP");
 
@@ -29,17 +30,7 @@ void UGetupState::Enter()
 	FFastLogger::LogScreen(FColor::Cyan, TEXT("HitReactionKnockDown Enter"));
 	
 	// Airborne 애니메이션 재생
-	/* TEST */
-	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-	TWeakObjectPtr<UGetupState> WeakThis = TWeakObjectPtr<UGetupState>(this);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakThis]()
-	{
-		if (WeakThis.IsValid())
-		{
-			UGetupState* Getup = WeakThis.Get();
-			Getup->Me->CharacterState.bFrameOver = true;
-		}
-	}), 2.0f, false);
+	TekkenAnimInstance->PlayMontageModule(TEXT("GetUp"), 1.0f, FName("Default"));
 }
 
 void UGetupState::Update()

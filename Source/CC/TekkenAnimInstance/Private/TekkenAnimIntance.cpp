@@ -94,6 +94,24 @@ UTekkenAnimIntance::UTekkenAnimIntance()
 	{
 		MontageMap.Add(TEXT("BodyHitRight"), BodyHitRight.Object);
 	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AirBornMontage
+	(TEXT("/Game/Animations/Montages/Tekken_Hit_Airborne.Tekken_Hit_Airborne"));
+	if (AirBornMontage.Succeeded())
+	{
+		MontageMap.Add(TEXT("AirBorn"), AirBornMontage.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> GetupMontage
+	(TEXT("/Game/Animations/Montages/Tekken_Get_Up_Seq_Montage.Tekken_Get_Up_Seq_Montage"));
+	if (GetupMontage.Succeeded())
+	{
+		MontageMap.Add(TEXT("GetUp"), GetupMontage.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> KOAnimation
+	(TEXT("/Game/Animations/Montages/Tekken_Hit_Death_Seq_Montage.Tekken_Hit_Death_Seq_Montage"));
+	if (KOAnimation.Succeeded())
+	{
+		MontageMap.Add(TEXT("KO"), KOAnimation.Object);
+	}
 }
 
 void UTekkenAnimIntance::AnimNotify_RestartMovement()

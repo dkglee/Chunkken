@@ -22,8 +22,8 @@ void UDamageComponent::TakeDamage(int32 Damage)
 	HP -= Damage;
 	if (HP <= 0)
 	{
-		// 죽음 처리
-		// FSM에서 죽음 상태로 변경
+		FFastLogger::LogConsole(TEXT("HP is less than 0"));
+		Me->CharacterState.bKO = true;
 	}
 }
 
@@ -99,6 +99,12 @@ void UDamageComponent::UpdateHitInfo(class ABaseCharacter* Target)
 	if (Target->CharacterState.bCanBeDamaged == false)
 	{
 		FFastLogger::LogConsole(TEXT("Target cannot be damaged"));
+		return;
+	}
+
+	if (Target->CharacterState.bKO)
+	{
+		FFastLogger::LogConsole(TEXT("Target is already KO"));
 		return;
 	}
 

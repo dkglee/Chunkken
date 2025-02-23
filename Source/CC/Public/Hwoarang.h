@@ -14,6 +14,8 @@ public:
 	// Sets default values for this character's properties
 	AHwoarang();
 
+	virtual bool IsLeftPlayer() override { return true; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
