@@ -57,6 +57,13 @@ void UAttackStartupState::Enter()
 	float PlayRate = FAnimUtils::CalculateAnimPlayRate(StartUpFrame, Montage->GetSectionLength(0));
 	FFastLogger::LogConsole(TEXT("PlayRate: %f: StartUpFrame: %d: Montage Play : %f"), PlayRate, StartUpFrame, Montage->GetSectionLength(0));
 	TekkenAnimInstance->PlayMontageModule(ExecutingMove.AnimationRef, PlayRate, FName(TEXT("Startup")));
+
+	FVector LaunchDirection = {0.0f, 300.0f, 0.0f};
+	if (!Me->IsLeftPlayer())
+	{
+		LaunchDirection *= -1;
+	}
+	Me->LaunchCharacter(LaunchDirection, true, true);
 }
 
 void UAttackStartupState::Update()

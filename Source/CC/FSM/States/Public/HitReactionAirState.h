@@ -30,8 +30,7 @@ protected:
 	UPROPERTY()
 	FTimerHandle TimerHandle;
 	UPROPERTY()
-	float MaxHeight = 200.0f;
-
+	float MaxHeight = 300.0f;
 	UPROPERTY()
 	bool bIsGrounded = false;
 	UPROPERTY()
@@ -40,4 +39,6 @@ protected:
 	int32 CurrentFrameAirBorne = 0;
 	UPROPERTY()
 	FVector Location;
+	UPROPERTY()
+	bool bMaxHeight = false;
 };

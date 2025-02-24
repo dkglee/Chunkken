@@ -55,12 +55,14 @@ bool UDamageComponent::DetectCollision(const FString& SocketName)
 {
 	FVector Start = Me->GetMesh()->GetSocketLocation(*SocketName);
 	FVector End   = Start + (Me->GetActorForwardVector() * 100.0f);
+	Start.Z += 100.0f;
 	
 	FHitResult HitResult;
 	TArray<AActor*> ActorsToIgnore;
 
 	ActorsToIgnore.Add(Me);
-	UKismetSystemLibrary::SphereTraceSingle(GetWorld(), Start, Start, SphereRadius, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
+	// UKismetSystemLibrary::SphereTraceSingle(GetWorld(), Start, Start, SphereRadius, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
+	UKismetSystemLibrary::BoxTraceSingle(GetWorld(), Start, Start, FVector(25.0f, 25.0f, 100.0f), FRotator::ZeroRotator, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
 
 	if (!HitResult.bBlockingHit)
 	{

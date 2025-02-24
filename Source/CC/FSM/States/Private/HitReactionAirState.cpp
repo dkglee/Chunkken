@@ -4,6 +4,7 @@
 #include "CC/FSM/States/Public/HitReactionAirState.h"
 
 #include "BaseCharacter.h"
+#include "EasingAlphaBlend.h"
 #include "FastLogger.h"
 #include "TekkenAnimIntance.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -20,6 +21,7 @@ void UHitReactionAirState::Exit()
 	Super::Exit();
 
 	bIsGrounded = false;
+	bMaxHeight = false;
 	CurrentFrameAirBorne = 0;
 	Location = FVector::ZeroVector;
 	Me->CharacterState.bGround = true;
@@ -29,6 +31,7 @@ void UHitReactionAirState::Enter()
 {
 	Super::Enter();
 
+	bMaxHeight = false;
 	FFastLogger::LogScreen(FColor::Cyan, TEXT("HitReactionAirBorne Enter"));
 	
 	// Airborne 애니메이션 재생
@@ -37,10 +40,14 @@ void UHitReactionAirState::Enter()
 	CurrentFrameAirBorne = 0;
 
 	bool bIsLeft = Me->IsLeftPlayer();
+
+	// 최종 높이 설정
 	Location = Me->GetActorLocation();
-	Location.Z = MaxHeight;
-	Location.Y = bIsLeft ? Location.Y - 25.0f : Location.Y + 25.0f;
-	Me->SetActorLocation(Location);
+	// Location.Z = MaxHeight;
+	Location.Z = 400.0f;
+	Location.Y = bIsLeft ? Location.Y - 40.0f : Location.Y + 40.0f;
+	
+	// Me->SetActorLocation(Location);
 
 	Me->CharacterState.bGround = false;
 
@@ -53,9 +60,10 @@ void UHitReactionAirState::Update()
 	Super::Update();
 
 	CurrentFrameAirBorne++;
-	if (CurrentFrameAirBorne < MaxFrameAirBorne)
+	if (CurrentFrameAirBorne < MaxFrameAirBorne && !bMaxHeight)
 	{
-		Me->SetActorLocation(Location);
+		FVector InterpLocation = FEasingAlphaBlend::EasingVectorBlend(Me->GetActorLocation(), Location, (float)CurrentFrameAirBorne / (float)MaxFrameAirBorne, 0.1f, bMaxHeight);
+		Me->SetActorLocation(InterpLocation);
 	}
 	
 	// 2. 공중에서 떨어짐 (땅에 닿으면 애니메이션의 KnockDown 부분을 재생함)

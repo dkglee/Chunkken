@@ -16,6 +16,7 @@ void UHitReactionBaseState::Exit()
 	
 	Me->CharacterState.bFrameOver = false;
 	Me->CharacterState.HitStun = -1;
+	Me->CharacterState.HitReaction = "";
 	Me->ClearMoveSetForce();
 }
 
