@@ -60,4 +60,7 @@ struct FCharacterState
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="State")
 	bool bKO = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="State")
+	FVector AttackDirection = FVector::ZeroVector;
 };

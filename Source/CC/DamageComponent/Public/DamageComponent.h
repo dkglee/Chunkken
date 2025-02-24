@@ -7,6 +7,7 @@
 #include "Components/ActorComponent.h"
 #include "DamageComponent.generated.h"
 
+#define MAX_NS_SIZE 10
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class CC_API UDamageComponent : public UActorComponent
@@ -17,14 +18,18 @@ public:
 	UDamageComponent();
 
 	void TakeDamage(int32 Damage);
-	void UpdateHitCombo(const FMoveDataStruct* MoveData);
-	void UpdateHitReaction(class ABaseCharacter* Target, const FMoveDataStruct* MoveData);
-	void UpdateHitInfo(class ABaseCharacter* Target);
-	bool DetectCollision(const FString& SocketName);
+	bool DetectCollision(const FString& InSocketName);
+	void ReleaseEffect(class UNiagaraComponent* NiagaraComponent, int32 Index);
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	void ResetHitCombo();
+	void ChangeColor(UNiagaraComponent* HitNS, const FMoveDataStruct* MoveData);
+	void SpawnHitEffect(const FMoveDataStruct* MoveData);
+	void UpdateHitCombo(const FMoveDataStruct* MoveData);
+	void UpdateHitReaction(class ABaseCharacter* Target, const FMoveDataStruct* MoveData);
+	void UpdateHitInfo(class ABaseCharacter* Target);
 
 	UPROPERTY()
 	class ABaseCharacter* Me = nullptr;
@@ -43,4 +48,15 @@ protected:
 
 	UPROPERTY()
 	float HitComboResetDelay = 2.0f;
+
+	UPROPERTY()
+	TArray<class UNiagaraComponent*> HitEffectsComponents;
+
+	UPROPERTY()
+	class UNiagaraSystem* HitEffectSystem = nullptr;
+	UPROPERTY()
+	TArray<FTimerHandle> HitEffectTimers;
+
+	UPROPERTY()
+	FString SocketName;
 };

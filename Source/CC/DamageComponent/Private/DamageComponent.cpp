@@ -9,12 +9,69 @@
 #include "HitEffectStruct.h"
 #include "MoveDataStruct.h"
 #include "MoveParser.h"
+#include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 
 // Sets default values for this component's properties
 UDamageComponent::UDamageComponent()
 {
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NS_Effect
+	(TEXT("/Game/sA_ItemDropFx/Fx/NS_Epic_System.NS_Epic_System"));
+	if (NS_Effect.Succeeded())
+	{
+		HitEffectSystem = NS_Effect.Object;
+	}
+}
+
+void UDamageComponent::SpawnHitEffect(const FMoveDataStruct* MoveData)
+{
+	int32 Index = 0;
+	UNiagaraComponent* HitNS = nullptr;
+	for (UNiagaraComponent* Effect : HitEffectsComponents)
+	{
+		if (!Effect->IsActive())
+		{
+			HitNS = Effect;
+			break;
+		}
+		Index++;
+	}
+
+	if (HitNS)
+	{
+		HitNS->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+
+		HitNS->SetUsingAbsoluteLocation(true);
+		HitNS->SetUsingAbsoluteRotation(true);
+		HitNS->SetUsingAbsoluteScale(true);
+
+		FVector Location = Me->GetMesh()->GetSocketLocation(*SocketName);
+		FRotator Rotation = Me->CharacterState.AttackDirection.Rotation();
+		Rotation.Pitch -= 90.0f;
+
+		HitNS->SetWorldLocation(Location);
+		HitNS->SetWorldRotation(Rotation);
+
+		ChangeColor(HitNS, MoveData);
+
+		HitNS->Activate();
+
+		// 0.5초 후에 비활성화
+		TWeakObjectPtr<UNiagaraComponent> WeakHitNS = HitNS;
+		TWeakObjectPtr<UDamageComponent> WeakThis = this;
+		GetWorld()->GetTimerManager().SetTimer(HitEffectTimers[Index], FTimerDelegate::CreateLambda([WeakThis, WeakHitNS, Index]()
+		{
+			UNiagaraComponent* StrongHitNS = WeakHitNS.Get();
+			UDamageComponent* StrongThis = WeakThis.Get();
+			if (!(StrongHitNS && StrongThis))
+			{
+				return;
+			}
+			StrongThis->ReleaseEffect(StrongHitNS, Index);
+		}), 2.0f, false);
+	}
 }
 
 void UDamageComponent::TakeDamage(int32 Damage)
@@ -42,6 +99,36 @@ void UDamageComponent::BeginPlay()
 	Super::BeginPlay();
 
 	Me = Cast<ABaseCharacter>(GetOwner());
+
+	for (int32 i = 0; i < MAX_NS_SIZE; i++)
+	{
+		UNiagaraComponent* HitNS = NewObject<UNiagaraComponent>(this, UNiagaraComponent::StaticClass());
+		HitNS->SetAsset(HitEffectSystem);
+		HitNS->RegisterComponent();
+		HitNS->SetAutoActivate(false);
+		HitNS->Deactivate();
+		HitNS->SetRelativeScale3D({0.7f, 0.7f, 0.7f});
+		HitEffectsComponents.Add(HitNS);
+	}
+	for (int32 i = 0; i < MAX_NS_SIZE; i++)
+	{
+		FTimerHandle Timer;
+		HitEffectTimers.Add(Timer);
+	}
+}
+
+void UDamageComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	if (EndPlayReason == EEndPlayReason::Destroyed)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(HitComboResetTimer);
+		for (int32 i = 0; i < MAX_NS_SIZE; i++)
+		{
+			GetWorld()->GetTimerManager().ClearTimer(HitEffectTimers[i]);
+		}
+	}
 }
 
 void UDamageComponent::ResetHitCombo()
@@ -50,9 +137,45 @@ void UDamageComponent::ResetHitCombo()
 	// UI에 표시되는 Combo를 초기화
 }
 
-// SphereTrace를 활성화 하는 함수
-bool UDamageComponent::DetectCollision(const FString& SocketName)
+void UDamageComponent::ChangeColor(UNiagaraComponent* HitNS, const FMoveDataStruct* MoveData)
 {
+	if (!HitNS || !MoveData)
+	{
+		return;
+	}
+
+	FString HitLevel = MoveData->HitLevel.ToUpper(); // 대소문자 구분 방지
+	FLinearColor NewColor;
+
+	if (HitLevel == TEXT("HIGH"))
+	{
+		NewColor = FLinearColor::Red; // 높은 공격은 빨강
+	}
+	else if (HitLevel == TEXT("MIDDLE"))
+	{
+		NewColor = FLinearColor::Yellow; // 중간 공격은 노랑
+	}
+	else if (HitLevel == TEXT("LOW"))
+	{
+		NewColor = FLinearColor::Blue; // 낮은 공격은 파랑
+	}
+	else
+	{
+		NewColor = FLinearColor::White; // 기본값 (예외 처리)
+	}
+
+	// Niagara의 User Parameter 설정
+	HitNS->SetNiagaraVariableLinearColor(TEXT("User.Color"), NewColor);
+
+	// 디버깅용 로그 출력
+	FFastLogger::LogConsole(TEXT("Niagara Effect Color Changed: %s"), *NewColor.ToString());
+
+}
+
+// SphereTrace를 활성화 하는 함수
+bool UDamageComponent::DetectCollision(const FString& InSocketName)
+{
+	SocketName = InSocketName;
 	FVector Start = Me->GetMesh()->GetSocketLocation(*SocketName);
 	FVector End   = Start + (Me->GetActorForwardVector() * 100.0f);
 	Start.Z += 100.0f;
@@ -79,6 +202,18 @@ bool UDamageComponent::DetectCollision(const FString& SocketName)
 	UpdateHitInfo(Target);
 	
 	return true;
+}
+
+void UDamageComponent::ReleaseEffect(class UNiagaraComponent* NiagaraComponent, int32 Index)
+{
+	FFastLogger::LogConsole(TEXT("ReleaseEffect"));
+	NiagaraComponent->Deactivate();
+	
+	GetWorld()->GetTimerManager().ClearTimer(HitEffectTimers[Index]);
+	// 상대 좌표 모드로 복귀
+	NiagaraComponent->SetUsingAbsoluteLocation(false);
+	NiagaraComponent->SetUsingAbsoluteRotation(false);
+	NiagaraComponent->SetUsingAbsoluteScale(false);
 }
 
 void UDamageComponent::UpdateHitInfo(class ABaseCharacter* Target)
@@ -114,6 +249,8 @@ void UDamageComponent::UpdateHitInfo(class ABaseCharacter* Target)
 	// 아래에 계속해서 추가적인 작업을 함. (HitReaction 등) 근데 죽음 이후에 아래의 처리를 하는 것이 과연 옳을까? 근데 상관 없음
 	// 왜냐하면 FSM의 우선순위를 두면 되기 때문임
 
+	// Effect Spawn
+	SpawnHitEffect(MoveData);
 	// Hit Combo 처리 (UI에 표시) : 시간이 지나면 사라짐
 	UpdateHitCombo(MoveData);
 	UpdateHitReaction(Target, MoveData);

@@ -94,6 +94,13 @@ void UHitReactionNormalState::Enter()
 	int32 SocketID = HitAnimData.second;
 
 	PlayAnimation(HitLevel, SocketID);
+
+	FVector LaunchDirection = {0.0f, 300.0f, 0.0f};
+	if (Me->IsLeftPlayer())
+	{
+		LaunchDirection *= -1;
+	}
+	Me->LaunchCharacter(LaunchDirection, true, true);
 }
 
 void UHitReactionNormalState::Update()

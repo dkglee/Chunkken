@@ -51,7 +51,6 @@ void AMyGameMode::BeginPlay()
 	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	if (PC && CameraManager)
 	{
-		FFastLogger::LogScreen(FColor::Red, TEXT("Camera Manager"));
 		// PC->SetViewTarget(CameraManager);
 		CameraManager->RegisterPlayers(Player1, Player2);
 		PC->Possess(CameraManager);
