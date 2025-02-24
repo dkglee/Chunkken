@@ -3,14 +3,75 @@
 
 #include "CC/FSM/States/Public/HitReactionNormalState.h"
 
+#include "AnimUtils.h"
 #include "BaseCharacter.h"
+#include "EditorAnimUtils.h"
 #include "FastLogger.h"
+#include "TekkenAnimIntance.h"
 
 FString UHitReactionNormalState::StateName = TEXT("HIT_REACTION_NORMAL");
 
 FString UHitReactionNormalState::GetStateName()
 {
 	return StateName;
+}
+
+void UHitReactionNormalState::PlayAnimation(const FString& String, int32 INT32)
+{
+	if (String.IsEmpty() || INT32 < 0)
+	{
+		FFastLogger::LogConsole(TEXT("String is Empty or INT32 is less than 0"));
+		return;
+	}
+
+	// SocketID = Odd : Left | Even : Right // 애니메이션 재생
+	FString Anim = TEXT("");
+	if (String.Equals(TEXT("HIGH")))
+	{
+		if (INT32 % 2 == 0)
+		{
+			Anim = TEXT("HeadHitRight");
+		}
+		else
+		{
+			Anim = TEXT("HeadHitLeft");
+		}
+	}
+	else if (String.Equals(TEXT("MIDDLE")))
+	{
+		if (INT32 % 2 == 0)
+		{
+			Anim = TEXT("BodyHitRight");
+		}
+		else
+		{
+			Anim = TEXT("BodyHitLeft");
+		}
+	}
+	else if (String.Equals(TEXT("LOW")))
+	{
+		// Low에 대한 처리를 여기에 작성
+	}
+	else
+	{
+		// 그 외의 처리를 여기에 작성
+	}
+
+	if (Anim.IsEmpty())
+	{
+		FFastLogger::LogConsole(TEXT("Anim is Empty"));
+		return;
+	}
+
+	UAnimMontage* Montage = TekkenAnimInstance->GetMontageFromName(Anim);
+	if (!Montage)
+	{
+		FFastLogger::LogConsole(TEXT("Montage is nullptr"));
+		return;
+	}
+
+	float PlayRate = FAnimUtils::CalculateAnimPlayRate(30, Montage->GetSectionLength(0));
+	TekkenAnimInstance->PlayMontageModule(Anim, PlayRate);
 }
 
 void UHitReactionNormalState::Exit()
@@ -23,6 +84,7 @@ void UHitReactionNormalState::Enter()
 	Super::Enter();
 
 	HitAnimData = Me->CharacterState.HitAnimInfo;
+	StunFrame = Me->CharacterState.HitStun;
 	Me->CharacterState.HitAnimInfo = std::pair<FString, int32>(TEXT(""), -1);
 
 	FFastLogger::LogScreen(FColor::Cyan, TEXT("HitReactionNormalState Enter"));
@@ -31,20 +93,7 @@ void UHitReactionNormalState::Enter()
 	FString HitLevel = HitAnimData.first;
 	int32 SocketID = HitAnimData.second;
 
-	// SocketID = Odd : Left | Even : Right // 애니메이션 재생
-
-	
-	/* TEST */
-	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-	TWeakObjectPtr<UHitReactionNormalState> WeakThis = TWeakObjectPtr<UHitReactionNormalState>(this);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakThis]()
-	{
-		if (WeakThis.IsValid())
-		{
-			UHitReactionNormalState* HitReactionNormalState = WeakThis.Get();
-			HitReactionNormalState->Me->CharacterState.bFrameOver = true;
-		}
-	}), 2.0f, false);
+	PlayAnimation(HitLevel, SocketID);
 }
 
 void UHitReactionNormalState::Update()

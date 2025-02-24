@@ -50,6 +50,13 @@ UDamageComponent* ABaseCharacter::GetDamageComponent()
 	return DamageComponent;
 }
 
+void ABaseCharacter::ClearMoveSetForce()
+{
+	Moveset.Empty();
+	MoveIndex = 0;
+	bResetMoveSet = false;
+}
+
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -102,7 +109,6 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
 {
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
-
 
 void ABaseCharacter::UpdateMovement(uint64 FrameIndex, const FExecutingMove& ExecutingMove)
 {

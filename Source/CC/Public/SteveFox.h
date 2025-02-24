@@ -16,6 +16,8 @@ public:
 	// Sets default values for this character's properties
 	ASteveFox();
 
+	virtual bool IsLeftPlayer() override { return false; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

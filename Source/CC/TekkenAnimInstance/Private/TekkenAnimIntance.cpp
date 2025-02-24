@@ -58,6 +58,60 @@ UTekkenAnimIntance::UTekkenAnimIntance()
 	{
 		MontageMap.Add(TEXT("DuckingBodyBlow"), SteveDuckingBodyBlow.Object);
 	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> ConquerorCombo1
+	(TEXT("/Game/Animations/Montages/Tekken_ConquerorComb1_Montage.Tekken_ConquerorComb1_Montage"));
+	if (ConquerorCombo1.Succeeded())
+	{
+		MontageMap.Add(TEXT("ConquerorCombo1"), ConquerorCombo1.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> ConquerorComboRightHook1
+	(TEXT("/Game/Animations/Montages/Tekken_ConquerorCombHook_Montage.Tekken_ConquerorCombHook_Montage"));
+	if (ConquerorComboRightHook1.Succeeded())
+	{
+		MontageMap.Add(TEXT("ConquerorComboRightHook1"), ConquerorComboRightHook1.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> HeadHitLeft
+	(TEXT("/Game/Animations/Montages/Tekken_Head_Hit_Left_Montage.Tekken_Head_Hit_Left_Montage"));
+	if (HeadHitLeft.Succeeded())
+	{
+		MontageMap.Add(TEXT("HeadHitLeft"), HeadHitLeft.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> HeadHitRight
+	(TEXT("/Game/Animations/Montages/Tekken_Head_Hit_Right_Montage.Tekken_Head_Hit_Right_Montage"));
+	if (HeadHitRight.Succeeded())
+	{
+		MontageMap.Add(TEXT("HeadHitRight"), HeadHitRight.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> BodyHitLeft
+	(TEXT("/Game/Animations/Montages/Tekken_Hit_Body_Left_Montage.Tekken_Hit_Body_Left_Montage"));
+	if (BodyHitLeft.Succeeded())
+	{
+		MontageMap.Add(TEXT("BodyHitLeft"), BodyHitLeft.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> BodyHitRight
+	(TEXT("/Game/Animations/Montages/Tekken_Hit_Body_Right_Montage.Tekken_Hit_Body_Right_Montage"));
+	if (BodyHitRight.Succeeded())
+	{
+		MontageMap.Add(TEXT("BodyHitRight"), BodyHitRight.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AirBornMontage
+	(TEXT("/Game/Animations/Montages/Tekken_Hit_Airborne.Tekken_Hit_Airborne"));
+	if (AirBornMontage.Succeeded())
+	{
+		MontageMap.Add(TEXT("AirBorn"), AirBornMontage.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> GetupMontage
+	(TEXT("/Game/Animations/Montages/Tekken_Get_Up_Seq_Montage.Tekken_Get_Up_Seq_Montage"));
+	if (GetupMontage.Succeeded())
+	{
+		MontageMap.Add(TEXT("GetUp"), GetupMontage.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> KOAnimation
+	(TEXT("/Game/Animations/Montages/Tekken_Hit_Death_Seq_Montage.Tekken_Hit_Death_Seq_Montage"));
+	if (KOAnimation.Succeeded())
+	{
+		MontageMap.Add(TEXT("KO"), KOAnimation.Object);
+	}
 }
 
 void UTekkenAnimIntance::AnimNotify_RestartMovement()
@@ -96,6 +150,10 @@ void UTekkenAnimIntance::PlayMontageModule(const FString& MontageName, float InP
 	if (MontageMap.Contains(MontageName))
 	{
 		PlayMontage(MontageMap[MontageName], InPlayRate, StartSectionName);
+	}
+	else
+	{
+		FFastLogger::LogConsole(TEXT("MontageName is not valid"));
 	}
 }
 

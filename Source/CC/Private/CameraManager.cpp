@@ -20,7 +20,7 @@ ACameraManager::ACameraManager()
 	// Spring Arm 생성
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
-	SpringArm->TargetArmLength = 1200.0f; // 기본 거리 설정
+	SpringArm->TargetArmLength = 250.0f; // 기본 거리 설정
 	SpringArm->bDoCollisionTest = false;
 
 	// 카메라 생성 및 Spring Arm에 연결
@@ -30,8 +30,8 @@ ACameraManager::ACameraManager()
 	// 카메라 거리 및 속도 설정
 	DefaultCameraDistance = 500.0f;
 	ZoomSpeed = 5.0f;
-	MaxCameraDistance = 1000.0f;
-	MinCameraDistance = 400.0f;
+	MaxCameraDistance = 400.0f;
+	MinCameraDistance = 250.0f;
 }
 
 void ACameraManager::RegisterPlayers(class ABaseCharacter* Left, class ABaseCharacter* Right)
@@ -51,7 +51,6 @@ void ACameraManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// FFastLogger::LogScreen(FColor::Cyan, TEXT("Tick %d %d"), Player1 ? 1 : 0, Player2 ? 1 : 0);
 	if (Player1 && Player2)
 	{
 		UpdateCameraPosition();
@@ -68,6 +67,7 @@ void ACameraManager::UpdateCameraPosition()
 
 	// 두 플레이어의 중간 지점 계산
 	FVector NewCameraLocation = (Player1Location + Player2Location) / 2;
+	NewCameraLocation.Z += 40.0f;
 	SetActorLocation(NewCameraLocation);
 }
 

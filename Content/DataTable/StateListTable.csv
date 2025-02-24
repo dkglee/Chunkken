@@ -25,3 +25,4 @@ StateID,StateName,StateGroup,ParentStateID,DefaultDuration,AnimationRef,Notes
 700,GUARD,Guard,-1,0,NULL,?? SuperState
 20,GUARD_STAND,Guard,700,0,GuardStand,?? ??
 21,GUARD_CROUCH,Guard,700,0,GuardCrouch,??? ??
+800,KO,Ko,-1,0,KO,KO

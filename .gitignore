@@ -75,3 +75,9 @@ DerivedDataCache/*
 
 # .idea
 .idea/
+
+# Animations
+Content/Fighter_Animations/
+
+# VFX
+Content/sA_ItemDropFx/

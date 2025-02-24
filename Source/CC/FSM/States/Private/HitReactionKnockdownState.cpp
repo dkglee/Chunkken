@@ -5,6 +5,7 @@
 
 #include "BaseCharacter.h"
 #include "FastLogger.h"
+#include "TekkenAnimIntance.h"
 
 FString UHitReactionKnockdownState::StateName = TEXT("HIT_REACTION_KNOCKDOWN");
 
@@ -25,19 +26,7 @@ void UHitReactionKnockdownState::Enter()
 	Me->CharacterState.bCanBeDamaged = false;
 	
 	FFastLogger::LogScreen(FColor::Cyan, TEXT("HitReactionKnockDown Enter"));
-	
-	// Airborne 애니메이션 재생
-	/* TEST */
-	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-	TWeakObjectPtr<UHitReactionKnockdownState> WeakThis = TWeakObjectPtr<UHitReactionKnockdownState>(this);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakThis]()
-	{
-		if (WeakThis.IsValid())
-		{
-			UHitReactionKnockdownState* KnockDown = WeakThis.Get();
-			KnockDown->Me->CharacterState.bFrameOver = true;
-		}
-	}), 2.0f, false);
+	TekkenAnimInstance->PlayMontageModule(TEXT("KO"), 1.0f, FName("Default"));
 }
 
 void UHitReactionKnockdownState::Update()

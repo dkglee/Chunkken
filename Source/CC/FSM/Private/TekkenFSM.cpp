@@ -8,6 +8,7 @@
 #include "HitReactionFSM.h"
 #include "IdleFSM.h"
 #include "JumpFSM.h"
+#include "KoFSM.h"
 #include "MovementFSM.h"
 #include "StateParser.h"
 #include "TransitionParser.h"
@@ -89,6 +90,7 @@ void UTekkenFSM::InitializeFSM()
 	SubFSMs.Add(UStateParser::GetStateKey(UJumpFSM::StateName), NewObject<UJumpFSM>(this, UJumpFSM::StaticClass()));
 	SubFSMs.Add(UStateParser::GetStateKey(UAttackFSM::StateName), NewObject<UAttackFSM>(this, UAttackFSM::StaticClass()));
 	SubFSMs.Add(UStateParser::GetStateKey(UHitReactionFSM::StateName), NewObject<UHitReactionFSM>(this, UHitReactionFSM::StaticClass()));
+	SubFSMs.Add(UStateParser::GetStateKey(UKoFSM::StateName), NewObject<UKoFSM>(this, UKoFSM::StaticClass()));
 
 	for (auto& [Key, Value] : SubFSMs)
 	{
@@ -155,6 +157,7 @@ FString UTekkenFSM::WrapJsonString()
 	JsonObject->SetBoolField("bAttackAvailable", CharacterState.bAttackAvailable);
 	JsonObject->SetBoolField("bCanBeDamaged", CharacterState.bCanBeDamaged);
 	JsonObject->SetBoolField("bFrameOver", CharacterState.bFrameOver);
+	JsonObject->SetBoolField("bKO", CharacterState.bKO);
 
 	JsonObject->SetStringField("HitReaction", CharacterState.HitReaction);
 	JsonObject->SetStringField("PrevState", CharacterState.PrevState);

@@ -22,8 +22,8 @@ void UDamageComponent::TakeDamage(int32 Damage)
 	HP -= Damage;
 	if (HP <= 0)
 	{
-		// 죽음 처리
-		// FSM에서 죽음 상태로 변경
+		FFastLogger::LogConsole(TEXT("HP is less than 0"));
+		Me->CharacterState.bKO = true;
 	}
 }
 
@@ -55,16 +55,17 @@ bool UDamageComponent::DetectCollision(const FString& SocketName)
 {
 	FVector Start = Me->GetMesh()->GetSocketLocation(*SocketName);
 	FVector End   = Start + (Me->GetActorForwardVector() * 100.0f);
+	Start.Z += 100.0f;
 	
 	FHitResult HitResult;
 	TArray<AActor*> ActorsToIgnore;
 
 	ActorsToIgnore.Add(Me);
-	UKismetSystemLibrary::SphereTraceSingle(GetWorld(), Start, Start, SphereRadius, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
+	// UKismetSystemLibrary::SphereTraceSingle(GetWorld(), Start, Start, SphereRadius, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
+	UKismetSystemLibrary::BoxTraceSingle(GetWorld(), Start, Start, FVector(25.0f, 25.0f, 100.0f), FRotator::ZeroRotator, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
 
 	if (!HitResult.bBlockingHit)
 	{
-		FFastLogger::LogScreen(FColor::Cyan, TEXT("No Hit"));
 		return false;
 	}
 
@@ -103,6 +104,12 @@ void UDamageComponent::UpdateHitInfo(class ABaseCharacter* Target)
 		return;
 	}
 
+	if (Target->CharacterState.bKO)
+	{
+		FFastLogger::LogConsole(TEXT("Target is already KO"));
+		return;
+	}
+
 	TargetDamageComponent->TakeDamage(MoveData->Damage); // 데미지 적용
 	// 아래에 계속해서 추가적인 작업을 함. (HitReaction 등) 근데 죽음 이후에 아래의 처리를 하는 것이 과연 옳을까? 근데 상관 없음
 	// 왜냐하면 FSM의 우선순위를 두면 되기 때문임
@@ -132,7 +139,7 @@ void UDamageComponent::UpdateHitReaction(ABaseCharacter* Target, const FMoveData
 
 	Target->CharacterState.HitReaction = HitReaction;
 	Target->CharacterState.HitAnimInfo = {MoveData->HitLevel, MoveData->SocketID};
-
+	Target->CharacterState.HitStun = HitEffect->StunFrames;
 	// UI에 HitLevel 표시 : High, Mid, Low
 	return ;
 }

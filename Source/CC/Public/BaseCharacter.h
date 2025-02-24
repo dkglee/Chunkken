@@ -22,6 +22,8 @@ public:
 	virtual void OnReleasedInput(int32 InputID, uint64 FrameIndex, bool bLeft);
 	virtual void Update(uint64 FrameIndex);
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+	virtual bool IsLeftPlayer(){return false;};
 	
 	UFUNCTION()
 	class UBaseState* GetCurrentState();
@@ -29,7 +31,8 @@ public:
 	class USubFSM* GetSubFSM();
 	UFUNCTION()
 	class UDamageComponent* GetDamageComponent();
-	
+	UFUNCTION()
+	void ClearMoveSetForce();
 
 protected:
 	// Called when the game starts or when spawned

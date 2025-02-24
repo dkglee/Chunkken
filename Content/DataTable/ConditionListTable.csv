@@ -17,3 +17,4 @@ ConditionID,ConditionName,ConditionChecker,ConditionData,ConditionGroup,Notes
 16,IsGrounded,StateConditionChecker,"{""bGround"": true}",State,?? ?? ????
 17,IsPossibleAttack,StateConditionChecker,"{""bAttackAvailable"": true}",State,??? ??? ?????
 18,CanBeDamaged,StateConditionChecker,"{""bCanBeDamaged"": true}",State,??? ??? ????? (KnockDown? ? ???)
+19,IsKO,StateConditionChecker,"{""bKO"": true}",State,??? 0???

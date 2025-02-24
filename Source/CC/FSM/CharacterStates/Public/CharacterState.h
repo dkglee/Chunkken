@@ -56,4 +56,8 @@ struct FCharacterState
 	FString Direction = "";
 
 	std::pair<FString, int32> HitAnimInfo = {TEXT(""), 0};
+	int32 HitStun = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="State")
+	bool bKO = false;
 };
