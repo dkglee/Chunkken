@@ -70,7 +70,7 @@ void UHitReactionNormalState::PlayAnimation(const FString& String, int32 INT32)
 		return;
 	}
 
-	float PlayRate = FAnimUtils::CalculateAnimPlayRate(30, Montage->GetSectionLength(0));
+	float PlayRate = FAnimUtils::CalculateAnimPlayRate(25, Montage->GetSectionLength(0));
 	TekkenAnimInstance->PlayMontageModule(Anim, PlayRate);
 }
 

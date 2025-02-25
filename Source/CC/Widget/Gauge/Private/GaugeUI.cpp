@@ -11,6 +11,7 @@ void UGaugeUI::UpdateHP(int32 HP, int32 MaxHP)
 	float Percent = (float)HP / (float)MaxHP;
 	Percent = 1.0f - Percent; // HP가 감소하는 방향으로 설정
 	RedBar->SetPercent(Percent);
+	bShouldUpdateBlackBar = false;
 
 	// 0.5초 후에 BlackBar 감소 시작
 	TWeakObjectPtr<UGaugeUI> WeakThis = this;

@@ -344,49 +344,61 @@ void UDamageComponent::SpawnHitLevelUI(const FMoveDataStruct* MoveData)
 		Index++;
 	}
 
-	if (HitUI)
+	if (!HitUI)
 	{
-		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
-		if (!PlayerController)
-		{
-			return;
-		}
-		FVector WorldLocation = Me->GetMesh()->GetSocketLocation(*SocketName);
-		FVector2D ScreenPosition;
-		// 월드 위치를 화면 좌표로 변환
-		bool bProjected = PlayerController->ProjectWorldLocationToScreen(WorldLocation, ScreenPosition);
-		if (!bProjected)
-		{
-			return ;
-		}
-		int32 ScreenWidth, ScreenHeight;
-		PlayerController->GetViewportSize(ScreenWidth, ScreenHeight);
+		return;
+	}
 
-		// UI 중앙 정렬
-		FVector2D AdjustedPosition = ScreenPosition - FVector2D(50, 50);
-		HitUI->SetAlignmentInViewport(FVector2D(0.5f, 0.5f)); // 중앙 정렬
-		HitUI->SetPositionInViewport(AdjustedPosition, false);
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	if (!PlayerController)
+	{
+		return;
+	}
 
-		// 화면 안에 있는 경우만 표시
-		if (ScreenPosition.X >= 0 && ScreenPosition.X <= ScreenWidth &&
-			ScreenPosition.Y >= 0 && ScreenPosition.Y <= ScreenHeight)
-		{
-			HitUI->SetVisibility(ESlateVisibility::Visible);
-		}
-		else
-		{
-			HitUI->SetVisibility(ESlateVisibility::Hidden);
-		}
-		
-		// UI 위치 업데이트
-		HitUI->SetPositionInViewport(ScreenPosition, false);
-		HitUI->SetHitLevel(MoveData->HitLevel.ToUpper());
-		HitUI->SetVisibility(ESlateVisibility::Visible);
-		
-		// 0.5초 후에 비활성화
-		TWeakObjectPtr<UHitLevelUI> WeakHitLevelUI = HitUI;
-		TWeakObjectPtr<UDamageComponent> WeakThis = this;
-		GetWorld()->GetTimerManager().SetTimer(HitLevelUITimers[Index], FTimerDelegate::CreateLambda([WeakThis, WeakHitLevelUI, Index]()
+	// 소켓 위치 -> 화면 좌표 변환
+	FVector WorldLocation = Me->GetMesh()->GetSocketLocation(*SocketName);
+	FVector2D ScreenPosition;
+	bool bProjected = PlayerController->ProjectWorldLocationToScreen(WorldLocation, ScreenPosition, true);
+	if (!bProjected)
+	{
+		return;
+	}
+
+	// 화면 크기 가져오기
+	int32 ScreenWidth = 0;
+	int32 ScreenHeight = 0;
+	PlayerController->GetViewportSize(ScreenWidth, ScreenHeight);
+	FFastLogger::LogScreen(FColor::Red, TEXT("ScreenSize: %d, %d"), ScreenWidth, ScreenHeight);
+	FFastLogger::LogScreen(FColor::Green, TEXT("ScreenPosition: %f, %f"), ScreenPosition.X, ScreenPosition.Y);
+	FFastLogger::LogScreen(FColor::Cyan, TEXT("WorldLocation: %f, %f, %f"), WorldLocation.X, WorldLocation.Y, WorldLocation.Z);
+
+	// 중앙 정렬(위젯의 중앙이 좌표에 맞춰짐)
+	// HitUI->SetAlignmentInViewport(FVector2D(0.5f, 0.5f));
+
+	// 화면 범위 안에 있는지 체크
+	if (ScreenPosition.X < 0 || ScreenPosition.X > ScreenWidth ||
+		ScreenPosition.Y < 0 || ScreenPosition.Y > ScreenHeight)
+	{
+		// 화면 밖이면 숨기고 종료 (원한다면 그냥 숨기기만 하고 return 안 해도 됨)
+		HitUI->SetVisibility(ESlateVisibility::Hidden);
+		return;
+	}
+
+	// **중앙 정렬**이므로, 오프셋 없이 SetPositionInViewport를 한 번만 호출
+	HitUI->SetPositionInViewport(ScreenPosition, true);
+
+	// HitLevel 설정
+	HitUI->SetHitLevel(MoveData->HitLevel.ToUpper());
+
+	// 화면에 표시
+	HitUI->SetVisibility(ESlateVisibility::Visible);
+
+	// 일정 시간 후 UI 숨기기(0.4초 예시)
+	TWeakObjectPtr<UHitLevelUI> WeakHitLevelUI = HitUI;
+	TWeakObjectPtr<UDamageComponent> WeakThis = this;
+	GetWorld()->GetTimerManager().SetTimer(
+		HitLevelUITimers[Index],
+		FTimerDelegate::CreateLambda([WeakThis, WeakHitLevelUI, Index]()
 		{
 			UHitLevelUI* StrongHitUI = WeakHitLevelUI.Get();
 			UDamageComponent* StrongThis = WeakThis.Get();
@@ -395,6 +407,9 @@ void UDamageComponent::SpawnHitLevelUI(const FMoveDataStruct* MoveData)
 				return;
 			}
 			StrongThis->ReleaseUI(StrongHitUI, Index);
-		}), 0.4f, false);
-	}
+		}),
+		0.4f,
+		false
+	);
+
 }
