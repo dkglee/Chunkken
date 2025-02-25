@@ -29,7 +29,8 @@ protected:
 	void ResetHitCombo();
 	void ChangeColor(UNiagaraComponent* HitNS, const FMoveDataStruct* MoveData);
 	void SpawnHitEffect(const FMoveDataStruct* MoveData);
-	void UpdateHitCombo(const FMoveDataStruct* MoveData);
+	void UpdateHitInfo(const FMoveDataStruct* MoveData);
+	void UpdateHitInfoUI(const FMoveDataStruct* MoveData);
 	void UpdateHitReaction(class ABaseCharacter* Target, const FMoveDataStruct* MoveData);
 	void SpawnHitLevelUI(const FMoveDataStruct* MoveData);
 	void UpdateHitInfo(class ABaseCharacter* Target);
@@ -47,12 +48,14 @@ protected:
 
 	UPROPERTY()
 	int32 HitCombo = 0;
+	UPROPERTY()
+	int32 HitDamage = 0;
 
 	UPROPERTY()
-	FTimerHandle HitComboResetTimer;
+	FTimerHandle HitInfoResetTimer;
 
 	UPROPERTY()
-	float HitComboResetDelay = 2.0f;
+	float HitInfoResetDelay = 1.0f;
 
 	UPROPERTY()
 	TArray<class UNiagaraComponent*> HitEffectsComponents;

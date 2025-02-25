@@ -12,6 +12,7 @@
 #include "MoveDataStruct.h"
 #include "MoveParser.h"
 #include "MyGameMode.h"
+#include "NetworkMessage.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
@@ -119,13 +120,32 @@ void UDamageComponent::TakeDamage(int32 Damage)
 	}
 }
 
-void UDamageComponent::UpdateHitCombo(const FMoveDataStruct* MoveData)
+void UDamageComponent::UpdateHitInfoUI(const FMoveDataStruct* MoveData)
 {
-	HitCombo += MoveData->Hits;
-
+	HitCombo += 1;
+	HitDamage += MoveData->Damage;
+	FFastLogger::LogScreen(FColor::Red, TEXT("HitCombo: %d, HitDamage: %d"), HitCombo, HitDamage);
 	// UI에 표시되는 Combo를 업데이트
-	GetWorld()->GetTimerManager().ClearTimer(HitComboResetTimer);
-	GetWorld()->GetTimerManager().SetTimer(HitComboResetTimer, this, &UDamageComponent::ResetHitCombo, HitComboResetDelay, false);
+	if (!MainUI)
+	{
+		return;
+	}
+
+	if (HitCombo < 2)
+	{
+		return;
+	}
+	if (HitCombo == 2)
+	{
+		MainUI->UpdateHitInfo(HitCombo, HitDamage, Me->IsLeftPlayer(), false);
+	}
+	else
+	{
+		MainUI->UpdateHitInfo(HitCombo, HitDamage, Me->IsLeftPlayer(), true);
+	}
+	
+	GetWorld()->GetTimerManager().ClearTimer(HitInfoResetTimer);
+	GetWorld()->GetTimerManager().SetTimer(HitInfoResetTimer, this, &UDamageComponent::ResetHitCombo, HitInfoResetDelay, false);
 }
 
 // Called when the game starts
@@ -180,7 +200,7 @@ void UDamageComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 	if (EndPlayReason == EEndPlayReason::Destroyed)
 	{
-		GetWorld()->GetTimerManager().ClearTimer(HitComboResetTimer);
+		GetWorld()->GetTimerManager().ClearTimer(HitInfoResetTimer);
 		for (int32 i = 0; i < MAX_NS_SIZE; i++)
 		{
 			GetWorld()->GetTimerManager().ClearTimer(HitEffectTimers[i]);
@@ -191,7 +211,12 @@ void UDamageComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void UDamageComponent::ResetHitCombo()
 {
 	HitCombo = 0;
+	HitDamage = 0;
 	// UI에 표시되는 Combo를 초기화
+	if (MainUI)
+	{
+		MainUI->HideHitInfo(Me->IsLeftPlayer());
+	}
 }
 
 void UDamageComponent::ChangeColor(UNiagaraComponent* HitNS, const FMoveDataStruct* MoveData)
@@ -316,7 +341,7 @@ void UDamageComponent::UpdateHitInfo(ABaseCharacter* Target)
 	SpawnHitEffect(MoveData);
 	// Hit Combo 처리 (UI에 표시) : 시간이 지나면 사라짐
 	SpawnHitLevelUI(MoveData);
-	UpdateHitCombo(MoveData);
+	UpdateHitInfoUI(MoveData);
 	UpdateHitReaction(Target, MoveData);
 }
 
