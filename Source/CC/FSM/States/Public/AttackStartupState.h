@@ -23,4 +23,7 @@ public:
 	static FString StateName;
 
 	virtual FString GetStateName() override;
+	
+protected:
+	FVector PreviousSocketLocation;
 };

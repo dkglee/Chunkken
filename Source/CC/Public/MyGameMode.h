@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DamageComponent.h"
 #include "GameFramework/GameMode.h"
 #include "MyGameMode.generated.h"
 
@@ -17,6 +18,8 @@ class CC_API AMyGameMode : public AGameMode
 
 public:
 	virtual void BeginPlay() override;
+	class UMainUI* GetMainUI();
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
 	TSubclassOf<class AHwoarang>	HwoarangClass;
@@ -27,6 +30,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
 	TSubclassOf<class ACameraActor> CameraClass;
 
+	UPROPERTY()
+	TSubclassOf<class UMainUI> MainUIClass;
 
-	
+	UPROPERTY()
+	class UMainUI* MainUI = nullptr;
 };

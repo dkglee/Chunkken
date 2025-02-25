@@ -70,7 +70,7 @@ void UHitReactionNormalState::PlayAnimation(const FString& String, int32 INT32)
 		return;
 	}
 
-	float PlayRate = FAnimUtils::CalculateAnimPlayRate(30, Montage->GetSectionLength(0));
+	float PlayRate = FAnimUtils::CalculateAnimPlayRate(25, Montage->GetSectionLength(0));
 	TekkenAnimInstance->PlayMontageModule(Anim, PlayRate);
 }
 
@@ -94,6 +94,13 @@ void UHitReactionNormalState::Enter()
 	int32 SocketID = HitAnimData.second;
 
 	PlayAnimation(HitLevel, SocketID);
+
+	FVector LaunchDirection = {0.0f, 300.0f, 0.0f};
+	if (Me->IsLeftPlayer())
+	{
+		LaunchDirection *= -1;
+	}
+	Me->LaunchCharacter(LaunchDirection, true, true);
 }
 
 void UHitReactionNormalState::Update()
