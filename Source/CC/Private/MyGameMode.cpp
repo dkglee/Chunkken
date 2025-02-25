@@ -7,6 +7,7 @@
 #include "FastLogger.h"
 #include "MyPlayerController.h"
 #include "Hwoarang.h"
+#include "MainUI.h"
 #include "SteveFox.h"
 #include "Camera/CameraActor.h"
 #include "Kismet/GameplayStatics.h"
@@ -17,6 +18,13 @@ AMyGameMode::AMyGameMode()
 	PlayerControllerClass = AMyPlayerController::StaticClass();
 
 	DefaultPawnClass = nullptr;
+	
+	static ConstructorHelpers::FClassFinder<UMainUI> WBP_MainUI
+	(TEXT("/Game/Widget/MainHUD/WBP_MainUI.WBP_MainUI_C"));
+	if (WBP_MainUI.Succeeded())
+	{
+		MainUIClass = WBP_MainUI.Class;
+	}
 }
 
 void AMyGameMode::BeginPlay()
@@ -26,7 +34,7 @@ void AMyGameMode::BeginPlay()
 	//플레이어1,2 스폰
 	FRotator SpawnRotation = FRotator::ZeroRotator;
 
-	FVector Player1Location(0,-200,100);
+	FVector Player1Location(0,-50,100);
 	FRotator Player1Rotation({0, 90, 0});
 	ABaseCharacter* Player1 = GetWorld()->SpawnActor<ABaseCharacter>(HwoarangClass, Player1Location, Player1Rotation);
 	if(Player1)
@@ -34,7 +42,7 @@ void AMyGameMode::BeginPlay()
 		Player1->Tags.Add(FName("Player1")); // 태그 추가 (수정된 부분)
 	}
 	
-	FVector Player2Location(0,200,100);
+	FVector Player2Location(0,50,100);
 	FRotator Player2Rotation({0, -90, 0});
 	ABaseCharacter* Player2 = GetWorld()->SpawnActor<ABaseCharacter>(SteveFoxClass, Player2Location, Player2Rotation);
 	if(Player2)
@@ -61,5 +69,22 @@ void AMyGameMode::BeginPlay()
 	{
 		MyPC->RegisterPlayers(Player1, Player2);
 	}
+	
+}
+
+UMainUI* AMyGameMode::GetMainUI()
+{
+	// UI 생성
+	if (!MainUI)
+	{
+		if (!MainUIClass)
+		{
+			FFastLogger::LogConsole(TEXT("MainUIClass is nullptr"));
+			return nullptr;
+		}
+		MainUI = CreateWidget<UMainUI>(GetWorld(), MainUIClass);
+		MainUI->AddToViewport();
+	}
+	return MainUI;
 }
 

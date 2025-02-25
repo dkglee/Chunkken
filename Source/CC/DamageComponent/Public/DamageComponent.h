@@ -8,6 +8,7 @@
 #include "DamageComponent.generated.h"
 
 #define MAX_NS_SIZE 10
+#define MAX_HIT_LEVEL_UI 10
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class CC_API UDamageComponent : public UActorComponent
@@ -20,6 +21,7 @@ public:
 	void TakeDamage(int32 Damage);
 	bool DetectCollision(const FString& InSocketName);
 	void ReleaseEffect(class UNiagaraComponent* NiagaraComponent, int32 Index);
+	void ReleaseUI(class UHitLevelUI* HitLevelUI, int32 Index);
 
 protected:
 	virtual void BeginPlay() override;
@@ -29,6 +31,7 @@ protected:
 	void SpawnHitEffect(const FMoveDataStruct* MoveData);
 	void UpdateHitCombo(const FMoveDataStruct* MoveData);
 	void UpdateHitReaction(class ABaseCharacter* Target, const FMoveDataStruct* MoveData);
+	void SpawnHitLevelUI(const FMoveDataStruct* MoveData);
 	void UpdateHitInfo(class ABaseCharacter* Target);
 
 	UPROPERTY()
@@ -39,6 +42,8 @@ protected:
 
 	UPROPERTY()
 	int32 HP = 100.0f;
+	UPROPERTY()
+	int32 MaxHP = 100.0f;
 
 	UPROPERTY()
 	int32 HitCombo = 0;
@@ -59,4 +64,14 @@ protected:
 
 	UPROPERTY()
 	FString SocketName;
+
+	UPROPERTY()
+	class UMainUI* MainUI = nullptr;
+
+	UPROPERTY()
+	TArray<class UHitLevelUI*> HitLevelUIs;
+	UPROPERTY()
+	TArray<FTimerHandle> HitLevelUITimers;
+	UPROPERTY()
+	TSubclassOf<class UHitLevelUI> HitLevelUIClass;
 };

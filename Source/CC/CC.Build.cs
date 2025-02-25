@@ -8,7 +8,7 @@ public class CC : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Json", "JsonUtilities", "Niagara" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Json", "JsonUtilities", "Niagara", "UMG" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "TraceInsights" });
 		
@@ -27,7 +27,10 @@ public class CC : ModuleRules
 			"CC/FSM/Conditions/Public/",
 			"CC/FSM/SubFSM/Public/",
 			"CC/TekkenAnimInstance/Public",
-			"CC/DamageComponent/Public"
+			"CC/DamageComponent/Public",
+			"CC/Widget/Gauge/Public",
+			"CC/Widget/Main/Public",
+			"CC/Widget/HitLevel/Public"
 		});
 
 		// Uncomment if you are using Slate UI

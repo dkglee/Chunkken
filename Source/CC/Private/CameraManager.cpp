@@ -28,10 +28,10 @@ ACameraManager::ACameraManager()
 	Camera->SetupAttachment(SpringArm);
 
 	// 카메라 거리 및 속도 설정
-	DefaultCameraDistance = 500.0f;
+	DefaultCameraDistance = 250.0f;
 	ZoomSpeed = 5.0f;
 	MaxCameraDistance = 400.0f;
-	MinCameraDistance = 250.0f;
+	MinCameraDistance = 220.0f;
 }
 
 void ACameraManager::RegisterPlayers(class ABaseCharacter* Left, class ABaseCharacter* Right)
@@ -67,7 +67,7 @@ void ACameraManager::UpdateCameraPosition()
 
 	// 두 플레이어의 중간 지점 계산
 	FVector NewCameraLocation = (Player1Location + Player2Location) / 2;
-	NewCameraLocation.Z += 40.0f;
+	NewCameraLocation.Z += 20.0f;
 	SetActorLocation(NewCameraLocation);
 }
 

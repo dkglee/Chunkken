@@ -7,10 +7,16 @@
 #include "FastLogger.h"
 #include "HitEffectParser.h"
 #include "HitEffectStruct.h"
+#include "HitLevelUI.h"
+#include "MainUI.h"
 #include "MoveDataStruct.h"
 #include "MoveParser.h"
+#include "MyGameMode.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+#include "Components/CanvasPanelSlot.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 
@@ -22,6 +28,12 @@ UDamageComponent::UDamageComponent()
 	if (NS_Effect.Succeeded())
 	{
 		HitEffectSystem = NS_Effect.Object;
+	}
+	static ConstructorHelpers::FClassFinder<UHitLevelUI> WBP_HitLevelUIClass
+	(TEXT("/Game/Widget/HitLevel/WBP_HitLevel.WBP_HitLevel_C"));
+	if (WBP_HitLevelUIClass.Succeeded())
+	{
+		HitLevelUIClass = WBP_HitLevelUIClass.Class;
 	}
 }
 
@@ -81,6 +93,14 @@ void UDamageComponent::TakeDamage(int32 Damage)
 	{
 		FFastLogger::LogConsole(TEXT("HP is less than 0"));
 		Me->CharacterState.bKO = true;
+		HP = 0;
+	}
+
+	// UI에 표시되는 HP를 업데이트
+	if (MainUI)
+	{
+		FFastLogger::LogConsole(TEXT("UpdateHP"));
+		MainUI->UpdateHP(HP, MaxHP, Me->IsLeftPlayer());
 	}
 }
 
@@ -114,6 +134,28 @@ void UDamageComponent::BeginPlay()
 	{
 		FTimerHandle Timer;
 		HitEffectTimers.Add(Timer);
+	}
+
+	AMyGameMode* GameMode = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+	if (GameMode)
+	{
+		MainUI = GameMode->GetMainUI();
+	}
+
+	for (int32 i = 0; i < MAX_HIT_LEVEL_UI; i++)
+	{
+		UHitLevelUI* HitLevelUI = CreateWidget<UHitLevelUI>(GetWorld(), HitLevelUIClass);
+		if (HitLevelUI)
+		{
+			HitLevelUI->AddToViewport();
+			HitLevelUI->SetVisibility(ESlateVisibility::Hidden);
+			HitLevelUIs.Add(HitLevelUI);
+		}
+	}
+	for (int32 i = 0; i < MAX_HIT_LEVEL_UI; i++)
+	{
+		FTimerHandle Timer;
+		HitLevelUITimers.Add(Timer);
 	}
 }
 
@@ -204,7 +246,7 @@ bool UDamageComponent::DetectCollision(const FString& InSocketName)
 	return true;
 }
 
-void UDamageComponent::ReleaseEffect(class UNiagaraComponent* NiagaraComponent, int32 Index)
+void UDamageComponent::ReleaseEffect(UNiagaraComponent* NiagaraComponent, int32 Index)
 {
 	FFastLogger::LogConsole(TEXT("ReleaseEffect"));
 	NiagaraComponent->Deactivate();
@@ -216,7 +258,13 @@ void UDamageComponent::ReleaseEffect(class UNiagaraComponent* NiagaraComponent, 
 	NiagaraComponent->SetUsingAbsoluteScale(false);
 }
 
-void UDamageComponent::UpdateHitInfo(class ABaseCharacter* Target)
+void UDamageComponent::ReleaseUI(UHitLevelUI* HitUI, int32 Index)
+{
+	HitUI->SetVisibility(ESlateVisibility::Hidden);
+	GetWorld()->GetTimerManager().ClearTimer(HitEffectTimers[Index]);
+}
+
+void UDamageComponent::UpdateHitInfo(ABaseCharacter* Target)
 {
 	FExecutingMove ExecutingMove = Me->CurrentExecutingMove;
 	const FMoveDataStruct* MoveData = UMoveParser::GetMoveDataByMoveID(ExecutingMove.MoveID);
@@ -252,6 +300,7 @@ void UDamageComponent::UpdateHitInfo(class ABaseCharacter* Target)
 	// Effect Spawn
 	SpawnHitEffect(MoveData);
 	// Hit Combo 처리 (UI에 표시) : 시간이 지나면 사라짐
+	SpawnHitLevelUI(MoveData);
 	UpdateHitCombo(MoveData);
 	UpdateHitReaction(Target, MoveData);
 }
@@ -279,4 +328,73 @@ void UDamageComponent::UpdateHitReaction(ABaseCharacter* Target, const FMoveData
 	Target->CharacterState.HitStun = HitEffect->StunFrames;
 	// UI에 HitLevel 표시 : High, Mid, Low
 	return ;
+}
+
+void UDamageComponent::SpawnHitLevelUI(const FMoveDataStruct* MoveData)
+{
+	int32 Index = 0;
+	UHitLevelUI* HitUI = nullptr;
+	for (UHitLevelUI* InHitUI : HitLevelUIs)
+	{
+		if (InHitUI->GetVisibility() == ESlateVisibility::Hidden)
+		{
+			HitUI = InHitUI;
+			break;
+		}
+		Index++;
+	}
+
+	if (HitUI)
+	{
+		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+		if (!PlayerController)
+		{
+			return;
+		}
+		FVector WorldLocation = Me->GetMesh()->GetSocketLocation(*SocketName);
+		FVector2D ScreenPosition;
+		// 월드 위치를 화면 좌표로 변환
+		bool bProjected = PlayerController->ProjectWorldLocationToScreen(WorldLocation, ScreenPosition);
+		if (!bProjected)
+		{
+			return ;
+		}
+		int32 ScreenWidth, ScreenHeight;
+		PlayerController->GetViewportSize(ScreenWidth, ScreenHeight);
+
+		// UI 중앙 정렬
+		FVector2D AdjustedPosition = ScreenPosition - FVector2D(50, 50);
+		HitUI->SetAlignmentInViewport(FVector2D(0.5f, 0.5f)); // 중앙 정렬
+		HitUI->SetPositionInViewport(AdjustedPosition, false);
+
+		// 화면 안에 있는 경우만 표시
+		if (ScreenPosition.X >= 0 && ScreenPosition.X <= ScreenWidth &&
+			ScreenPosition.Y >= 0 && ScreenPosition.Y <= ScreenHeight)
+		{
+			HitUI->SetVisibility(ESlateVisibility::Visible);
+		}
+		else
+		{
+			HitUI->SetVisibility(ESlateVisibility::Hidden);
+		}
+		
+		// UI 위치 업데이트
+		HitUI->SetPositionInViewport(ScreenPosition, false);
+		HitUI->SetHitLevel(MoveData->HitLevel.ToUpper());
+		HitUI->SetVisibility(ESlateVisibility::Visible);
+		
+		// 0.5초 후에 비활성화
+		TWeakObjectPtr<UHitLevelUI> WeakHitLevelUI = HitUI;
+		TWeakObjectPtr<UDamageComponent> WeakThis = this;
+		GetWorld()->GetTimerManager().SetTimer(HitLevelUITimers[Index], FTimerDelegate::CreateLambda([WeakThis, WeakHitLevelUI, Index]()
+		{
+			UHitLevelUI* StrongHitUI = WeakHitLevelUI.Get();
+			UDamageComponent* StrongThis = WeakThis.Get();
+			if (!(StrongHitUI && StrongThis))
+			{
+				return;
+			}
+			StrongThis->ReleaseUI(StrongHitUI, Index);
+		}), 0.4f, false);
+	}
 }
