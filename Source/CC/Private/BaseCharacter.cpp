@@ -126,8 +126,6 @@ void ABaseCharacter::UpdateMovement(uint64 FrameIndex, const FExecutingMove& Exe
 	bool bBack  = (BitMask & UInputParser::GetBitmask(UInputParser::GetIndex(LEFT))) != 0;
 	bool bForward = (BitMask & UInputParser::GetBitmask(UInputParser::GetIndex(RIGHT))) != 0;
 
-	// FFastLogger::LogScreen(FColor::Cyan, TEXT("CharID: %d, bUp: %d, bDown: %d, bBack: %d, bForward: %d"), CharID, bUp, bDown, bBack, bForward);
-	
 	// 위아래가 동시에 눌린 경우, 둘 다 무시
 	if(bUp && bDown)
 	{

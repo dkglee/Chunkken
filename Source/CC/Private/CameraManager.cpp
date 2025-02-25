@@ -5,6 +5,7 @@
 
 
 #include "BaseCharacter.h"
+#include "FastLogger.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -23,17 +24,17 @@ ACameraManager::ACameraManager()
 	SpringArm->bDoCollisionTest = false;
 
 	// 카메라 생성 및 Spring Arm에 연결
-	//RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 
 	// 카메라 거리 및 속도 설정
-	DefaultCameraDistance = 500.0f;
+	DefaultCameraDistance = 250.0f;
 	ZoomSpeed = 5.0f;
 	MaxCameraDistance = 400.0f;
 	MinCameraDistance = 250.0f;
 
 	//static ConstructorHelpers::FObjectFinder<ACameraManager>
+	MinCameraDistance = 220.0f;
 }
 
 void ACameraManager::RegisterPlayers(class ABaseCharacter* Left, class ABaseCharacter* Right)
@@ -71,7 +72,7 @@ void ACameraManager::UpdateCameraPosition()
 
 	// 두 플레이어의 중간 지점 계산
 	FVector NewCameraLocation = (Player1Location + Player2Location) / 2;
-	NewCameraLocation.Z += 40.0f;
+	NewCameraLocation.Z += 20.0f;
 	SetActorLocation(NewCameraLocation);
 }
 
@@ -88,63 +89,4 @@ void ACameraManager::UpdateCameraZoom(float DeltaTime)
 	// 부드러운 보간 (FInterpTo)
 	float NewArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, TargetDistance, DeltaTime, ZoomSpeed);
 	SpringArm->TargetArmLength = NewArmLength;
-}
-
-
-//카메라 쉐이크
-// void ACameraManager::ShakeCamera()
-// {
-// 	if (CameraShakeClass)
-// 	{
-// 		APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-// 		if (PC && PC->PlayerCameraManager)
-// 		{
-// 			PC->PlayerCameraManager->StartCameraShake(CameraShakeClass, 1.0f);
-// 		}
-// 	}
-// }
-
-
-void ACameraManager::TriggerWeakShake()
-{
-	if (!WeakShakeClass)
-	{
-		UE_LOG(LogTemp, Error, TEXT("WeakShakeClass is not assigned!"));
-		return;
-	}
-
-	
-	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
-	if (PC && PC->PlayerCameraManager)
-	{
-		
-		PC->PlayerCameraManager->StartCameraShake(WeakShakeClass, 1.0f);
-		UE_LOG(LogTemp, Log, TEXT("TriggerWeakShake executed"));
-	}
-}
-
-void ACameraManager::TriggerStrongShake()
-{
-	if (!StrongSequence) return;
-	PlaySequenceShake(StrongSequence, 2.0f, 1.0f,3.0f);
-	UE_LOG(LogTemp, Display, TEXT("strong"));
-}
-
-void ACameraManager::TriggerLandingShake()
-{
-	if (!LandingSequence) return;
-	PlaySequenceShake(LandingSequence, 3.0f, 0.0f, 4.0f);
-	UE_LOG(LogTemp, Display, TEXT("landing"));
-}
-
-
-void ACameraManager::PlaySequenceShake(ULevelSequence* Sequence, float Scale, float BlendInTime, float BlendOutTime)
-{
-	if (!SequenceCameraShakeClass) return;
-
-	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
-	if (!PC || !PC->PlayerCameraManager) return;
-
-	
-	PC->PlayerCameraManager->StartCameraShake(SequenceCameraShakeClass, Scale);
 }
