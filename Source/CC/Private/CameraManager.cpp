@@ -33,8 +33,14 @@ ACameraManager::ACameraManager()
 	MaxCameraDistance = 400.0f;
 	MinCameraDistance = 250.0f;
 
-	//static ConstructorHelpers::FObjectFinder<ACameraManager>
 	MinCameraDistance = 220.0f;
+
+	static ConstructorHelpers::FClassFinder<UCameraShakeBase>
+	WeakShakeClassFinder(TEXT("/Game/Camera/CS_MyCameraShake.CS_MyCameraShake_C"));
+	if (WeakShakeClassFinder.Succeeded())
+	{
+		WeakShakeClass = WeakShakeClassFinder.Class;
+	}
 }
 
 void ACameraManager::RegisterPlayers(class ABaseCharacter* Left, class ABaseCharacter* Right)
@@ -48,7 +54,6 @@ void ACameraManager::RegisterPlayers(class ABaseCharacter* Left, class ABaseChar
 void ACameraManager::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorldTimerManager().SetTimer(WeakShakeTimerHandle, this, &ACameraManager::TriggerWeakShake, 5.0f, true, 3.0f);
 }
 
 // Called every frame
@@ -99,11 +104,9 @@ void ACameraManager::TriggerWeakShake()
 		return;
 	}
 
-
 	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
 	if (PC && PC->PlayerCameraManager)
 	{
-
 		PC->PlayerCameraManager->StartCameraShake(WeakShakeClass, 1.0f);
 		UE_LOG(LogTemp, Log, TEXT("TriggerWeakShake executed"));
 	}
@@ -112,7 +115,7 @@ void ACameraManager::TriggerWeakShake()
 void ACameraManager::TriggerStrongShake()
 {
 	if (!StrongSequence) return;
-	PlaySequenceShake(StrongSequence, 2.0f, 1.0f,3.0f);
+	PlaySequenceShake(StrongSequence, 2.0f, 0.0f,3.0f);
 	UE_LOG(LogTemp, Display, TEXT("strong"));
 }
 
@@ -122,7 +125,6 @@ void ACameraManager::TriggerLandingShake()
 	PlaySequenceShake(LandingSequence, 3.0f, 0.0f, 4.0f);
 	UE_LOG(LogTemp, Display, TEXT("landing"));
 }
-
 
 void ACameraManager::PlaySequenceShake(ULevelSequence* Sequence, float Scale, float BlendInTime, float BlendOutTime)
 {

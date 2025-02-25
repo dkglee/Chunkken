@@ -1,5 +1,7 @@
 #include "KoFSM.h"
 
+#include "CameraManager.h"
+
 FString UKoFSM::StateName = TEXT("KO");
 
 void UKoFSM::Enter(int32 ChildID)
@@ -7,6 +9,7 @@ void UKoFSM::Enter(int32 ChildID)
 	Super::Enter(ChildID);
 
 	TekkenAnimInstance->PlayMontageModule(TEXT("KO"), 1.0f, FName("Default"));
+	CameraManager->TriggerWeakShake();
 }
 
 void UKoFSM::Update()

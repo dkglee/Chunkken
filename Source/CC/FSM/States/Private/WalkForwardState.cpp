@@ -30,7 +30,6 @@ void UWalkForwardState::Enter()
 {
 	Super::Enter();
 
-	FFastLogger::LogScreen(FColor::Red, TEXT("Enter WalkForwardState"));
 	MoveSpeed = 0.0f;
 }
 

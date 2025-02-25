@@ -5,6 +5,7 @@
 
 #include "AnimUtils.h"
 #include "BaseCharacter.h"
+#include "CameraManager.h"
 #include "EditorAnimUtils.h"
 #include "FastLogger.h"
 #include "TekkenAnimIntance.h"
@@ -87,8 +88,6 @@ void UHitReactionNormalState::Enter()
 	StunFrame = Me->CharacterState.HitStun;
 	Me->CharacterState.HitAnimInfo = std::pair<FString, int32>(TEXT(""), -1);
 
-	FFastLogger::LogScreen(FColor::Cyan, TEXT("HitReactionNormalState Enter"));
-	
 	// Hit Level과 SocketType을 이용해서 애니메이션을 찾는다.
 	FString HitLevel = HitAnimData.first;
 	int32 SocketID = HitAnimData.second;
@@ -101,6 +100,9 @@ void UHitReactionNormalState::Enter()
 		LaunchDirection *= -1;
 	}
 	Me->LaunchCharacter(LaunchDirection, true, true);
+
+	// Camera Shake
+	CameraManager->TriggerWeakShake();
 }
 
 void UHitReactionNormalState::Update()

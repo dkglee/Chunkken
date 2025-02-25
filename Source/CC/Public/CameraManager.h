@@ -66,7 +66,6 @@ public:
 	//카메라 쉐이크
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraShake")
 	TSubclassOf<UCameraShakeBase> WeakShakeClass;
-
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraShake")
 	TSubclassOf<class UCameraShakeBase> SequenceCameraShakeClass;

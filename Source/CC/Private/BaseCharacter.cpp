@@ -144,7 +144,7 @@ void ABaseCharacter::UpdateMovement(uint64 FrameIndex, const FExecutingMove& Exe
 	if(bUp)
 	{
 		// 점프 처리
-		this->Jump();
+		// this->Jump();
 	}
 	else if(bDown)
 	{
@@ -157,7 +157,7 @@ void ABaseCharacter::UpdateMovement(uint64 FrameIndex, const FExecutingMove& Exe
 	CharacterState.bBackward = bBack;
 	CharacterState.bJump = bUp;
 	CharacterState.bCrouching = bDown;
-	CharacterState.bGround = GetCharacterMovement()->IsMovingOnGround();
+	// CharacterState.bGround = GetCharacterMovement()->IsMovingOnGround();
 }
 
 void ABaseCharacter::UpdateAttack(uint64 FrameIndex, const FExecutingMove& ExecutingMove)

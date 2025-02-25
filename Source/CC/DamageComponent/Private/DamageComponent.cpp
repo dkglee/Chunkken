@@ -94,6 +94,21 @@ void UDamageComponent::TakeDamage(int32 Damage)
 		FFastLogger::LogConsole(TEXT("HP is less than 0"));
 		Me->CharacterState.bKO = true;
 		HP = 0;
+
+		// 게임 속도를 느리게(슬로우 모션) 만들기
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.2f);
+
+		// 2초 후 원래 속도로 복구하기 위한 타이머 설정
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(
+			TimerHandle,
+			FTimerDelegate::CreateLambda([this]()
+			{
+				UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+			}),
+			0.5f,    // 2초 뒤에
+			false    // 반복 여부(false = 한 번만 실행)
+		);
 	}
 
 	// UI에 표시되는 HP를 업데이트
@@ -368,10 +383,6 @@ void UDamageComponent::SpawnHitLevelUI(const FMoveDataStruct* MoveData)
 	int32 ScreenWidth = 0;
 	int32 ScreenHeight = 0;
 	PlayerController->GetViewportSize(ScreenWidth, ScreenHeight);
-	FFastLogger::LogScreen(FColor::Red, TEXT("ScreenSize: %d, %d"), ScreenWidth, ScreenHeight);
-	FFastLogger::LogScreen(FColor::Green, TEXT("ScreenPosition: %f, %f"), ScreenPosition.X, ScreenPosition.Y);
-	FFastLogger::LogScreen(FColor::Cyan, TEXT("WorldLocation: %f, %f, %f"), WorldLocation.X, WorldLocation.Y, WorldLocation.Z);
-
 	// 중앙 정렬(위젯의 중앙이 좌표에 맞춰짐)
 	// HitUI->SetAlignmentInViewport(FVector2D(0.5f, 0.5f));
 

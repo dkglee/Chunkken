@@ -2,11 +2,21 @@
 
 #include "BaseCharacter.h"
 #include "BaseState.h"
+#include "CameraManager.h"
 #include "CharacterState.h"
 #include "ConditionManager.h"
 #include "FastLogger.h"
 #include "StateParser.h"
 #include "TekkenFSM.h"
+#include "Kismet/GameplayStatics.h"
+
+void USubFSM::Initialize(class ABaseCharacter* InMe, class UTekkenFSM* InOwnerFSM)
+{
+	Me = InMe;
+	OwnerFSM = InOwnerFSM;
+	TekkenAnimInstance = Cast<UTekkenAnimIntance>(Me->GetMesh()->GetAnimInstance());
+	CameraManager = Cast<ACameraManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ACameraManager::StaticClass()));
+}
 
 void USubFSM::Enter(int32 ChildID)
 {

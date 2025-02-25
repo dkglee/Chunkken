@@ -5,8 +5,10 @@
 
 #include "BaseCharacter.h"
 #include "BaseState.h"
+#include "CameraManager.h"
 #include "FastLogger.h"
 #include "SubFSM.h"
+#include "Kismet/GameplayStatics.h"
 
 UTekkenAnimIntance::UTekkenAnimIntance()
 {
@@ -143,6 +145,16 @@ void UTekkenAnimIntance::AnimNotify_ComboRestart()
 	{
 		BaseCharacter->CharacterState.bAttackAvailable = true;
 	}
+}
+
+void UTekkenAnimIntance::AnimNotify_CameraShake()
+{
+	if (!CameraManager)
+	{
+		CameraManager = Cast<ACameraManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ACameraManager::StaticClass()));
+	}
+	FFastLogger::LogConsole(TEXT("CameraShake"));
+	CameraManager->TriggerWeakShake();
 }
 
 void UTekkenAnimIntance::PlayMontageModule(const FString& MontageName, float InPlayRate, FName StartSectionName)

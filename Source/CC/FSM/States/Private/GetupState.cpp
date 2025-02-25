@@ -27,8 +27,6 @@ void UGetupState::Enter()
 
 	Me->CharacterState.bCanBeDamaged = false;
 
-	FFastLogger::LogScreen(FColor::Cyan, TEXT("Getup Enter"));
-	
 	// Airborne 애니메이션 재생
 	TekkenAnimInstance->PlayMontageModule(TEXT("GetUp"), 1.0f, FName("Default"));
 }

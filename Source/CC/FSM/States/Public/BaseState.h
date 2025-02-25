@@ -37,4 +37,6 @@ protected:
 	class UTekkenAnimIntance* TekkenAnimInstance = nullptr;
 	UPROPERTY()
 	bool bRestartMovement = true;
+	UPROPERTY()
+	class ACameraManager* CameraManager = nullptr;
 };

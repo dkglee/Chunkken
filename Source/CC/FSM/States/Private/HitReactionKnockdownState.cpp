@@ -25,7 +25,6 @@ void UHitReactionKnockdownState::Enter()
 
 	Me->CharacterState.bCanBeDamaged = false;
 	
-	FFastLogger::LogScreen(FColor::Cyan, TEXT("HitReactionKnockDown Enter"));
 	TekkenAnimInstance->PlayMontageModule(TEXT("KO"), 1.0f, FName("Default"));
 }
 
