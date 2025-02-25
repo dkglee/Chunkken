@@ -6,6 +6,14 @@
 #include "Camera/CameraActor.h"
 #include "CameraManager.generated.h"
 
+
+class USpringArmComponent;
+class UCameraComponent;
+class ULevelSequence;
+class UCameraShakeBase;
+class ULevelSequence;
+
+
 UCLASS()
 class CC_API ACameraManager : public APawn
 {
@@ -36,6 +44,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class ABaseCharacter* Player2;
 
+	//카메라 테스트
+	FTimerHandle WeakShakeTimerHandle;
+
 	// 카메라 위치 조정
 	void UpdateCameraPosition();
 
@@ -51,5 +62,37 @@ public:
 	float MaxCameraDistance;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MinCameraDistance;
+
+	//카메라 쉐이크
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraShake")
+	TSubclassOf<UCameraShakeBase> WeakShakeClass;
+
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraShake")
+	TSubclassOf<class UCameraShakeBase> SequenceCameraShakeClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraShake")
+	ULevelSequence* WeakSequence;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraShake")
+	ULevelSequence* StrongSequence;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraShake")
+	ULevelSequence* LandingSequence;
+
+	// 약한 흔들림
+	UFUNCTION(BlueprintCallable, Category = "CameraShake")
+	void TriggerWeakShake();
+
+	// 강한 흔들림
+	UFUNCTION(BlueprintCallable, Category = "CameraShake")
+	void TriggerStrongShake();
+
+	// 캐릭터 착지 시 흔들림
+	UFUNCTION(BlueprintCallable, Category = "CameraShake")
+	void TriggerLandingShake();
+
+private:
+	void PlaySequenceShake(ULevelSequence* Sequence, float Scale, float BlendInTime, float BlendOutTime);
 	
 };

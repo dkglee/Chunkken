@@ -9,7 +9,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "GameFramework/Character.h"
+
 
 // Sets default values
 ACameraManager::ACameraManager()
@@ -31,6 +31,9 @@ ACameraManager::ACameraManager()
 	DefaultCameraDistance = 250.0f;
 	ZoomSpeed = 5.0f;
 	MaxCameraDistance = 400.0f;
+	MinCameraDistance = 250.0f;
+
+	//static ConstructorHelpers::FObjectFinder<ACameraManager>
 	MinCameraDistance = 220.0f;
 }
 
@@ -40,10 +43,12 @@ void ACameraManager::RegisterPlayers(class ABaseCharacter* Left, class ABaseChar
 	Player2 = Right;
 }
 
+
 // Called when the game starts or when spawned
 void ACameraManager::BeginPlay()
 {
 	Super::BeginPlay();
+	GetWorldTimerManager().SetTimer(WeakShakeTimerHandle, this, &ACameraManager::TriggerWeakShake, 5.0f, true, 3.0f);
 }
 
 // Called every frame

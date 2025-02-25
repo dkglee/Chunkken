@@ -8,6 +8,9 @@
 #include "InputMappingContext.h"
 #include "MyPlayerController.generated.h"
 
+class ACameraManager;
+class UInputAction;
+
 UCLASS()
 class CC_API AMyPlayerController : public APlayerController
 {
@@ -55,7 +58,23 @@ protected:
 	void OnRPSteveReleased(const FInputActionValue& InputActionValue);
 	void OnLKSteveReleased(const FInputActionValue& InputActionValue);
 	void OnRKSteveReleased(const FInputActionValue& InputActionValue);
-	
+
+
+	//카메라 쉐이크 테스트
+	void TriggerWeakShake(const FInputActionValue& Value);
+	void TriggerStrongShake(const FInputActionValue& Value);
+	void TriggerLandingShake(const FInputActionValue& Value);
+	ACameraManager* CameraManager;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_CameraWeakShake;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_CameraStrongShake;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_CameraLandingShake;
+
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputMappingContext* IMC_CameraManager;
 	// 화랑 입력 매핑
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputMappingContext* IMC_Hwoarang;
@@ -106,7 +125,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input|Hwarang")
 	UInputAction* IA_RK_Steve;
 	
-	
+
 public:
 	void RegisterPlayers(class ABaseCharacter* InPlayer1, class ABaseCharacter* InPlayer2) ;
 
