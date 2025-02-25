@@ -10,7 +10,7 @@ public class CC : ModuleRules
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Json", "JsonUtilities" });
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "TraceInsights" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "TraceInsights", "LevelSequence" });
 		
 		PublicIncludePaths.AddRange(new string[]
 		{

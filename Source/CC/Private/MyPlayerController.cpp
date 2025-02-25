@@ -7,6 +7,8 @@
 #include "InputParser.h"
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/Pawn.h"
+#include "CameraManager.h"
+#include "Kismet/GameplayStatics.h"
 
 AMyPlayerController::AMyPlayerController()
 {
@@ -120,6 +122,10 @@ AMyPlayerController::AMyPlayerController()
 void AMyPlayerController::BeginPlay()
 {
     Super::BeginPlay();
+    
+   
+
+    
     if (ULocalPlayer* LocalPlayer = GetLocalPlayer())
     {
         if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
@@ -132,6 +138,17 @@ void AMyPlayerController::BeginPlay()
             {
                 Subsystem->AddMappingContext(IMC_SteveFox, 0);
             }
+            if (IMC_CameraManager)
+            {
+                Subsystem->AddMappingContext(IMC_CameraManager, 0);
+            }
+        }
+    }
+    if (ULocalPlayer* LocalPlayer = GetLocalPlayer())
+    {
+        if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Enhanced Input System Activated"));
         }
     }
 }
@@ -141,6 +158,24 @@ void AMyPlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
     if (UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(InputComponent))
     {
+        //카메라 테스트
+     
+        if (IA_CameraWeakShake)
+        {
+            EnhancedInput->BindAction(IA_CameraWeakShake, ETriggerEvent::Triggered, this, &AMyPlayerController::TriggerWeakShake);
+        }
+        if (IA_CameraStrongShake)
+        {
+            EnhancedInput->BindAction(IA_CameraStrongShake, ETriggerEvent::Triggered, this, &AMyPlayerController::TriggerStrongShake);
+        }
+        if (IA_CameraLandingShake)
+        {
+            EnhancedInput->BindAction(IA_CameraLandingShake, ETriggerEvent::Triggered, this, &AMyPlayerController::TriggerLandingShake);
+        }
+
+        UE_LOG(LogTemp, Warning, TEXT("Camera shake input actions successfully bound."));
+    
+   
         // 화랑 입력 바인딩
         if (IA_MoveLeft_Hwoarang)
         {
@@ -224,8 +259,54 @@ void AMyPlayerController::SetupInputComponent()
             EnhancedInput->BindAction(IA_RK_Steve, ETriggerEvent::Triggered, this, &AMyPlayerController::OnRKSteve);
             EnhancedInput->BindAction(IA_RK_Steve, ETriggerEvent::Completed, this, &AMyPlayerController::OnRKSteveReleased);
         }
+
+        
     }
 }
+
+void AMyPlayerController::TriggerWeakShake(const FInputActionValue& Value)
+{
+    if (CameraManager)
+    {
+        CameraManager->TriggerWeakShake();
+        UE_LOG(LogTemp, Warning, TEXT("TriggerWeakShake called"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("TriggerWeakShake failed - CameraManager is NULL!"));
+    }
+}
+
+void AMyPlayerController::TriggerStrongShake(const FInputActionValue& Value)
+{
+    if (CameraManager)
+    {
+        CameraManager->TriggerStrongShake();
+        UE_LOG(LogTemp, Warning, TEXT("TriggerStrongShake called"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("TriggerStrongShake failed - CameraManager is NULL!"));
+    }
+}
+
+void AMyPlayerController::TriggerLandingShake(const FInputActionValue& Value)
+{
+    if (CameraManager)
+    {
+        CameraManager->TriggerLandingShake();
+        UE_LOG(LogTemp, Warning, TEXT("TriggerLandingShake called"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("TriggerLandingShake failed - CameraManager is NULL!"));
+    }
+}
+
+
+
+
+
 
 void AMyPlayerController::Tick(float DeltaTime)
 {
