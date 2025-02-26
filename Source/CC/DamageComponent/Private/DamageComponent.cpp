@@ -4,6 +4,7 @@
 #include "DamageComponent.h"
 
 #include "BaseCharacter.h"
+#include "CameraManager.h"
 #include "FastLogger.h"
 #include "HitEffectParser.h"
 #include "HitEffectStruct.h"
@@ -87,7 +88,7 @@ void UDamageComponent::SpawnHitEffect(const FMoveDataStruct* MoveData)
 	}
 }
 
-void UDamageComponent::TakeDamage(int32 Damage)
+int32 UDamageComponent::TakeDamage(int32 Damage)
 {
 	HP -= Damage;
 	if (HP <= 0)
@@ -96,8 +97,11 @@ void UDamageComponent::TakeDamage(int32 Damage)
 		Me->CharacterState.bKO = true;
 		HP = 0;
 
+		CameraManager->SetGameDone(true);
+		
 		// 게임 속도를 느리게(슬로우 모션) 만들기
-		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.2f);
+		// UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.05f);
+		Me->CustomTimeDilation = 0.05f;
 
 		// 2초 후 원래 속도로 복구하기 위한 타이머 설정
 		FTimerHandle TimerHandle;
@@ -105,9 +109,10 @@ void UDamageComponent::TakeDamage(int32 Damage)
 			TimerHandle,
 			FTimerDelegate::CreateLambda([this]()
 			{
-				UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+				// UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+				Me->CustomTimeDilation = 1.0f;
 			}),
-			0.5f,    // 2초 뒤에
+			5.0f,    // 2초 뒤에
 			false    // 반복 여부(false = 한 번만 실행)
 		);
 	}
@@ -118,13 +123,14 @@ void UDamageComponent::TakeDamage(int32 Damage)
 		FFastLogger::LogConsole(TEXT("UpdateHP"));
 		MainUI->UpdateHP(HP, MaxHP, Me->IsLeftPlayer());
 	}
+	
+	return HP;
 }
 
 void UDamageComponent::UpdateHitInfoUI(const FMoveDataStruct* MoveData)
 {
 	HitCombo += 1;
 	HitDamage += MoveData->Damage;
-	FFastLogger::LogScreen(FColor::Red, TEXT("HitCombo: %d, HitDamage: %d"), HitCombo, HitDamage);
 	// UI에 표시되는 Combo를 업데이트
 	if (!MainUI)
 	{
@@ -154,6 +160,7 @@ void UDamageComponent::BeginPlay()
 	Super::BeginPlay();
 
 	Me = Cast<ABaseCharacter>(GetOwner());
+	CameraManager = Cast<ACameraManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ACameraManager::StaticClass()));
 
 	for (int32 i = 0; i < MAX_NS_SIZE; i++)
 	{
@@ -192,6 +199,8 @@ void UDamageComponent::BeginPlay()
 		FTimerHandle Timer;
 		HitLevelUITimers.Add(Timer);
 	}
+
+	
 }
 
 void UDamageComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -333,7 +342,22 @@ void UDamageComponent::UpdateHitInfo(ABaseCharacter* Target)
 		return;
 	}
 
-	TargetDamageComponent->TakeDamage(MoveData->Damage); // 데미지 적용
+	if (TargetDamageComponent->TakeDamage(MoveData->Damage) <= 0) // 데미지 적용
+	{
+		// KO 처리
+		Me->CustomTimeDilation = 0.05f;
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(
+			TimerHandle,
+			FTimerDelegate::CreateLambda([this]()
+			{
+				// UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+				Me->CustomTimeDilation = 1.0f;
+			}),
+			5.0f,    // 2초 뒤에
+			false    // 반복 여부(false = 한 번만 실행)
+		);
+	}
 	// 아래에 계속해서 추가적인 작업을 함. (HitReaction 등) 근데 죽음 이후에 아래의 처리를 하는 것이 과연 옳을까? 근데 상관 없음
 	// 왜냐하면 FSM의 우선순위를 두면 되기 때문임
 

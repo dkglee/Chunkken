@@ -18,7 +18,7 @@ class CC_API UDamageComponent : public UActorComponent
 public:
 	UDamageComponent();
 
-	void TakeDamage(int32 Damage);
+	int32 TakeDamage(int32 Damage);
 	bool DetectCollision(const FString& InSocketName);
 	void ReleaseEffect(class UNiagaraComponent* NiagaraComponent, int32 Index);
 	void ReleaseUI(class UHitLevelUI* HitLevelUI, int32 Index);
@@ -77,4 +77,7 @@ protected:
 	TArray<FTimerHandle> HitLevelUITimers;
 	UPROPERTY()
 	TSubclassOf<class UHitLevelUI> HitLevelUIClass;
+
+	UPROPERTY()
+	class ACameraManager* CameraManager = nullptr;
 };

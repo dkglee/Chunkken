@@ -31,6 +31,11 @@ void AMyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//카메라 스폰
+	FVector CameraLocation(0,0,90);
+	FRotator CameraRotation(0,0,0);
+	ACameraManager* CameraManager = GetWorld()->SpawnActor<ACameraManager>(CameraClass, CameraLocation, CameraRotation);
+	
 	//플레이어1,2 스폰
 	FRotator SpawnRotation = FRotator::ZeroRotator;
 
@@ -49,11 +54,6 @@ void AMyGameMode::BeginPlay()
 	{
 		Player2->Tags.Add(FName("Player2")); // 태그 추가 (수정된 부분)
 	}
-	
-	//카메라 스폰
-	FVector CameraLocation(0,0,90);
-	FRotator CameraRotation(0,0,0);
-	ACameraManager* CameraManager = GetWorld()->SpawnActor<ACameraManager>(ACameraManager::StaticClass(), CameraLocation, CameraRotation);
 	
 	//카메라 뷰포트 설정
 	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
