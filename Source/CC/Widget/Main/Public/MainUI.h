@@ -27,6 +27,10 @@ public:
 	class UHitComboUI* WBP_DamageL;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget))
 	class UHitComboUI* WBP_DamageR;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget))
+	class UKOUI* WBP_KOUI;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget))
+	class UReadyFightUI* WBP_ReadyFight;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidgetAnim), Transient)
 	class UWidgetAnimation* LeftDamaged;
@@ -48,5 +52,7 @@ public:
 	void UpdateHP(int32 HP, int32 MaxHP, bool bIsLeftPlayer);
 	void UpdateHitInfo(int32 HitCombo, int32 Damage, bool bIsLeftPlayer, bool bActive);
 	UWidgetAnimation* GetDamageAnimation(bool bIsLeftPlayer, bool bActive) const;
-	void HideHitInfo(bool bIsLeftPlayer);	
+	void HideHitInfo(bool bIsLeftPlayer);
+	void PlayKOAnim();
+	void PlayReadyRightAnim();
 };

@@ -5,6 +5,8 @@
 
 #include "GaugeUI.h"
 #include "HitComboUI.h"
+#include "KOUI.h"
+#include "ReadyFightUI.h"
 
 void UMainUI::UpdateHP(int32 HP, int32 MaxHP, bool bIsLeftPlayer)
 {
@@ -69,4 +71,16 @@ void UMainUI::HideHitInfo(bool bIsLeftPlayer)
 	{
 		PlayAnimation(HideRight);
 	}
+}
+
+void UMainUI::PlayKOAnim()
+{
+	WBP_KOUI->SetVisibility(ESlateVisibility::Visible);
+	WBP_KOUI->PlayKOAnim();
+}
+
+void UMainUI::PlayReadyRightAnim()
+{
+	WBP_ReadyFight->SetVisibility(ESlateVisibility::Visible);
+	WBP_ReadyFight->PlayReadyFightAnim();
 }

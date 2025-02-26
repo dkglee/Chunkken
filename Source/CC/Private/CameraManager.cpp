@@ -136,7 +136,7 @@ void ACameraManager::UpdateCameraZoom(float DeltaTime)
 	SpringArm->TargetArmLength = NewArmLength;
 }
 
-void ACameraManager::TriggerWeakShake()
+void ACameraManager::TriggerWeakShake(float Scale)
 {
 	if (!WeakShakeClass)
 	{
@@ -147,7 +147,7 @@ void ACameraManager::TriggerWeakShake()
 	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
 	if (PC && PC->PlayerCameraManager)
 	{
-		PC->PlayerCameraManager->StartCameraShake(WeakShakeClass, 1.0f);
+		PC->PlayerCameraManager->StartCameraShake(WeakShakeClass, Scale);
 		UE_LOG(LogTemp, Log, TEXT("TriggerWeakShake executed"));
 	}
 }

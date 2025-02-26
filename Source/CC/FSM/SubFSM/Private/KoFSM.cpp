@@ -9,7 +9,7 @@ void UKoFSM::Enter(int32 ChildID)
 	Super::Enter(ChildID);
 
 	TekkenAnimInstance->PlayMontageModule(TEXT("KO"), 1.0f, FName("Default"));
-	CameraManager->TriggerWeakShake();
+	CameraManager->TriggerWeakShake(1.0f);
 }
 
 void UKoFSM::Update()

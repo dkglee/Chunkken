@@ -19,6 +19,7 @@ class CC_API AMyGameMode : public AGameMode
 public:
 	virtual void BeginPlay() override;
 	class UMainUI* GetMainUI();
+	bool IsGameStarted();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
@@ -35,4 +36,7 @@ protected:
 
 	UPROPERTY()
 	class UMainUI* MainUI = nullptr;
+
+	UPROPERTY()
+	bool bGameStart = false;
 };

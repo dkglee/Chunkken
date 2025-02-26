@@ -154,7 +154,7 @@ void UTekkenAnimIntance::AnimNotify_CameraShake()
 		CameraManager = Cast<ACameraManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ACameraManager::StaticClass()));
 	}
 	FFastLogger::LogConsole(TEXT("CameraShake"));
-	CameraManager->TriggerWeakShake();
+	CameraManager->TriggerWeakShake(1.0f);
 }
 
 void UTekkenAnimIntance::PlayMontageModule(const FString& MontageName, float InPlayRate, FName StartSectionName)

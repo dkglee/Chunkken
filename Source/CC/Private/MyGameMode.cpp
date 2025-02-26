@@ -69,7 +69,8 @@ void AMyGameMode::BeginPlay()
 	{
 		MyPC->RegisterPlayers(Player1, Player2);
 	}
-	
+
+	MyPC->SetInputMode(FInputModeGameOnly());
 }
 
 UMainUI* AMyGameMode::GetMainUI()
@@ -84,7 +85,25 @@ UMainUI* AMyGameMode::GetMainUI()
 		}
 		MainUI = CreateWidget<UMainUI>(GetWorld(), MainUIClass);
 		MainUI->AddToViewport();
+
+		// 게임 시작 애니메이션 동작
+		MainUI->PlayReadyRightAnim();
+
+		FTimerHandle TimerHandle;
+		TWeakObjectPtr<AMyGameMode> WeakThis = this;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakThis]()
+		{
+			if (WeakThis.IsValid())
+			{
+				WeakThis->bGameStart = true;
+			}
+		}), 2.5f, false);
 	}
 	return MainUI;
+}
+
+bool AMyGameMode::IsGameStarted()
+{
+	return bGameStart;
 }
 

@@ -86,7 +86,7 @@ public:
 
 	// 약한 흔들림
 	UFUNCTION(BlueprintCallable, Category = "CameraShake")
-	void TriggerWeakShake();
+	void TriggerWeakShake(float Scale);
 
 	// 강한 흔들림
 	UFUNCTION(BlueprintCallable, Category = "CameraShake")

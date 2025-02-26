@@ -78,6 +78,6 @@ void UHitReactionAirState::Update()
 		// Getup으로 가야함
 		Me->CharacterState.bCanBeDamaged = false;
 		Me->CharacterState.bGround = true;
-		CameraManager->TriggerWeakShake();
+		CameraManager->TriggerWeakShake(1.0f);
 	}
 }

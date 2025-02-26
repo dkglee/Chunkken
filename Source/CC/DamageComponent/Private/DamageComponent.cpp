@@ -98,9 +98,14 @@ int32 UDamageComponent::TakeDamage(int32 Damage)
 		HP = 0;
 
 		CameraManager->SetGameDone(true);
+		// TODO: 카메라 쉐이킹 (구조를 변경할 필요가 있음)
+		CameraManager->TriggerWeakShake(1.0f);
 		
 		// 게임 속도를 느리게(슬로우 모션) 만들기
 		// UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.05f);
+
+		MainUI->PlayKOAnim();
+		
 		Me->CustomTimeDilation = 0.05f;
 
 		// 2초 후 원래 속도로 복구하기 위한 타이머 설정

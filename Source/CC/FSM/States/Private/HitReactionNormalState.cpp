@@ -102,7 +102,7 @@ void UHitReactionNormalState::Enter()
 	Me->LaunchCharacter(LaunchDirection, true, true);
 
 	// Camera Shake
-	CameraManager->TriggerWeakShake();
+	CameraManager->TriggerWeakShake(1.0f);
 }
 
 void UHitReactionNormalState::Update()
