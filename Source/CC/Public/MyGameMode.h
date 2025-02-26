@@ -28,7 +28,7 @@ protected:
 	TSubclassOf<class ASteveFox>	SteveFoxClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
-	TSubclassOf<class ACameraActor> CameraClass;
+	TSubclassOf<class ACameraManager> CameraClass;
 
 	UPROPERTY()
 	TSubclassOf<class UMainUI> MainUIClass;

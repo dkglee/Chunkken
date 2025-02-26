@@ -10,23 +10,23 @@ struct FHitEffectStruct
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 HitEffectID;
+	int32 HitEffectID = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 MoveID;
+	int32 MoveID = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString Condition;
+	FString Condition = TEXT("");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 ExtraDamage;
+	int32 ExtraDamage = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Launch;
+	int32 Launch = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 StunFrames;
+	int32 StunFrames = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString HitReaction;
+	FString HitReaction = TEXT("");
 };

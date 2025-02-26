@@ -9,17 +9,17 @@ struct FComboDetailStruct
 	GENERATED_BODY()
 public:
 	UPROPERTY()
-	int32 ComboID;
+	int32 ComboID = -1;
 
 	UPROPERTY()
-	int32 StepOrder;
+	int32 StepOrder = -1;
 
 	UPROPERTY()
-	int32 MoveID;
+	int32 MoveID = -1;
 
 	UPROPERTY()
-	bool bDashEvent;
+	bool bDashEvent = false;
 
 	UPROPERTY()
-	bool bTailSpinEvent;
+	bool bTailSpinEvent = false;
 };

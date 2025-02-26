@@ -12,20 +12,20 @@ struct FInputDataTableStruct : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
-	int32 InputID;
+	int32 InputID = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
-	FString Name;
+	FString Name = TEXT("");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Bitmask")
-	int32 BitIndex;
+	int32 BitIndex = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Bitmask")
-	int32 BitMaskDec;
+	int32 BitMaskDec = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Bitmask")
-	FString BitMaskHex;
+	FString BitMaskHex = TEXT("");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Bitmask")
-	FString BitMaskBin;
+	FString BitMaskBin = TEXT("");
 };

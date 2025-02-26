@@ -34,13 +34,6 @@ ACameraManager::ACameraManager()
 	MinCameraDistance = 250.0f;
 
 	MinCameraDistance = 220.0f;
-
-	static ConstructorHelpers::FClassFinder<UCameraShakeBase>
-	WeakShakeClassFinder(TEXT("/Game/Camera/CS_MyCameraShake.CS_MyCameraShake_C"));
-	if (WeakShakeClassFinder.Succeeded())
-	{
-		WeakShakeClass = WeakShakeClassFinder.Class;
-	}
 }
 
 void ACameraManager::RegisterPlayers(class ABaseCharacter* Left, class ABaseCharacter* Right)
