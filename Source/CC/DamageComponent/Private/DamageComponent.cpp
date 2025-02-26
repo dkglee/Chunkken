@@ -20,7 +20,7 @@
 #include "Components/CanvasPanelSlot.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
-
+#include "Sound/SoundCue.h"
 
 // Sets default values for this component's properties
 UDamageComponent::UDamageComponent()
@@ -37,6 +37,19 @@ UDamageComponent::UDamageComponent()
 	{
 		HitLevelUIClass = WBP_HitLevelUIClass.Class;
 	}
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_Hit
+	(TEXT("/Game/Sound/C_Punch.C_Punch"));
+	if (SC_Hit.Succeeded())
+	{
+		HitSound = SC_Hit.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_KO
+	(TEXT("/Game/Sound/C_KO.C_KO"));
+	if (SC_KO.Succeeded())
+	{
+		KOSound = SC_KO.Object;
+	}
+	
 }
 
 void UDamageComponent::SpawnHitEffect(const FMoveDataStruct* MoveData)
@@ -100,9 +113,9 @@ int32 UDamageComponent::TakeDamage(int32 Damage)
 		CameraManager->SetGameDone(true);
 		// TODO: 카메라 쉐이킹 (구조를 변경할 필요가 있음)
 		CameraManager->TriggerWeakShake(1.0f);
-		
-		// 게임 속도를 느리게(슬로우 모션) 만들기
-		// UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.05f);
+
+		// KO 사운드 재생
+		UGameplayStatics::PlaySound2D(GetWorld(), KOSound, 0.5f, 1.0f, 0.0f, nullptr, nullptr);
 
 		MainUI->PlayKOAnim();
 		
@@ -281,7 +294,7 @@ bool UDamageComponent::DetectCollision(const FString& InSocketName)
 
 	ActorsToIgnore.Add(Me);
 	// UKismetSystemLibrary::SphereTraceSingle(GetWorld(), Start, Start, SphereRadius, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
-	UKismetSystemLibrary::BoxTraceSingle(GetWorld(), Start, Start, FVector(25.0f, 25.0f, 100.0f), FRotator::ZeroRotator, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
+	UKismetSystemLibrary::BoxTraceSingle(GetWorld(), Start, Start, FVector(25.0f, 25.0f, 100.0f), FRotator::ZeroRotator, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::None, HitResult, true);
 
 	if (!HitResult.bBlockingHit)
 	{
@@ -372,6 +385,8 @@ void UDamageComponent::UpdateHitInfo(ABaseCharacter* Target)
 	SpawnHitLevelUI(MoveData);
 	UpdateHitInfoUI(MoveData);
 	UpdateHitReaction(Target, MoveData);
+	// 사운드 재생
+	UGameplayStatics::PlaySound2D(GetWorld(), HitSound, 0.5f, 1.0f, 0.0f, nullptr, nullptr);
 }
 
 void UDamageComponent::UpdateHitReaction(ABaseCharacter* Target, const FMoveDataStruct* MoveData)

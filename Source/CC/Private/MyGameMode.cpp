@@ -11,6 +11,7 @@
 #include "SteveFox.h"
 #include "Camera/CameraActor.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 
 AMyGameMode::AMyGameMode()
@@ -25,6 +26,14 @@ AMyGameMode::AMyGameMode()
 	{
 		MainUIClass = WBP_MainUI.Class;
 	}
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_ReadyFight
+	(TEXT("/Game/Sound/C_ReadyFight.C_ReadyFight.C_ReadyFight"));
+	if (SC_ReadyFight.Succeeded())
+	{
+		ReadyFightSound = SC_ReadyFight.Object;
+	}
+		
 }
 
 void AMyGameMode::BeginPlay()
@@ -88,6 +97,8 @@ UMainUI* AMyGameMode::GetMainUI()
 
 		// 게임 시작 애니메이션 동작
 		MainUI->PlayReadyRightAnim();
+		UGameplayStatics::PlaySound2D(GetWorld(), ReadyFightSound, 0.5f, 1.0f, 0.0f, nullptr, nullptr);
+
 
 		FTimerHandle TimerHandle;
 		TWeakObjectPtr<AMyGameMode> WeakThis = this;

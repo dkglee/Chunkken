@@ -39,4 +39,7 @@ protected:
 
 	UPROPERTY()
 	bool bGameStart = false;
+
+	UPROPERTY()
+	class USoundCue* ReadyFightSound;
 };

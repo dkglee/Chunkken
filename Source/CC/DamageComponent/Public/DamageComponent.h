@@ -80,4 +80,9 @@ protected:
 
 	UPROPERTY()
 	class ACameraManager* CameraManager = nullptr;
+
+	UPROPERTY()
+	class USoundCue* HitSound = nullptr;
+	UPROPERTY()
+	class USoundCue* KOSound = nullptr;
 };
