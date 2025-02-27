@@ -20,6 +20,7 @@ public:
 	virtual void BeginPlay() override;
 	class UMainUI* GetMainUI();
 	bool IsGameStarted();
+	void GameEnd();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
