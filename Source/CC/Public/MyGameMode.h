@@ -43,4 +43,6 @@ protected:
 
 	UPROPERTY()
 	class USoundCue* ReadyFightSound;
+	UPROPERTY()
+	class USoundCue* BackGroundSound;
 };

@@ -42,9 +42,9 @@ protected:
 	float SphereRadius = 100.0f;
 
 	UPROPERTY()
-	int32 HP = 200.0f;
+	int32 HP = 300.0f;
 	UPROPERTY()
-	int32 MaxHP = 200.0f;
+	int32 MaxHP = 300.0f;
 
 	UPROPERTY()
 	int32 HitCombo = 0;
