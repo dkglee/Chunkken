@@ -9,20 +9,20 @@ struct FCharacterDataStruct
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 CharID;
+	int32 CharID = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString CharName;
+	FString CharName = TEXT("");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString Title;
+	FString Title = TEXT("");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 HP;
+	int32 HP = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 BaseSpeed;
+	int32 BaseSpeed = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 WakeupSpeed;
+	int32 WakeupSpeed = 0;
 };

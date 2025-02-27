@@ -47,10 +47,10 @@ struct FTransitionListDataStruct
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transition Data")
-	int32 TransitionID;
+	int32 TransitionID = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transition Data")
-	int32 FromStateID;
+	int32 FromStateID = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transition Data")
 	TArray<FString> ConditionTokens;
@@ -58,11 +58,11 @@ struct FTransitionListDataStruct
 	struct FLogicNode* ConditionLogic;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transition Data")
-	int32 ToStateID;
+	int32 ToStateID = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transition Data")
-	int32 Priority;
+	int32 Priority = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transition Data")
-	FString OnTransitionAction;
+	FString OnTransitionAction = TEXT("");
 };

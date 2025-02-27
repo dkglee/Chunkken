@@ -12,8 +12,6 @@ FString UAttackFSM::StateName = TEXT("ATTACK");
 void UAttackFSM::Enter(int32 ChildID)
 {
 	Super::Enter(ChildID);
-
-	FFastLogger::LogScreen(FColor::Cyan, TEXT("Enter AttackFSM"));
 }
 
 void UAttackFSM::Update()

@@ -9,8 +9,8 @@ struct FAnimationDataStruct
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 AnimID;
+	int32 AnimID = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString AnimName;
+	FString AnimName = TEXT("");
 };

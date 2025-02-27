@@ -32,10 +32,10 @@ public:
 
 	static FVector EasingVectorBlend(FVector Start, FVector End, float Delta, float InterpSpeed, bool& bEnd)
 	{
-		bool temp;
+		bool Temp;
 		FVector EasedValue = FVector(
-			EasingAlphaBlend(Start.X, End.X, Delta, InterpSpeed, temp),
-			EasingAlphaBlend(Start.Y, End.Y, Delta, InterpSpeed, bEnd),
+			EasingAlphaBlend(Start.X, End.X, Delta, InterpSpeed, Temp),
+			EasingAlphaBlend(Start.Y, End.Y, Delta, InterpSpeed, Temp),
 			EasingAlphaBlend(Start.Z, End.Z, Delta, InterpSpeed, bEnd)
 		);
 		return EasedValue;

@@ -5,4 +5,6 @@ AnimID,Name
 1004,DuckingBodyBlow
 1005,ConquerorCombo1
 1006,ConquerorComboRightHook1
-2001,Kick
+2001,RightKick
+2002,RightKick2
+2003,RightKick3

@@ -30,7 +30,10 @@ public class CC : ModuleRules
 			"CC/DamageComponent/Public",
 			"CC/Widget/Gauge/Public",
 			"CC/Widget/Main/Public",
-			"CC/Widget/HitLevel/Public"
+			"CC/Widget/HitLevel/Public",
+			"CC/Widget/HitCombo/Public",
+			"CC/Widget/KO/Public",
+			"CC/Widget/ReadyFight/Public"
 		});
 
 		// Uncomment if you are using Slate UI

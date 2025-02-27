@@ -19,6 +19,7 @@ class CC_API AMyGameMode : public AGameMode
 public:
 	virtual void BeginPlay() override;
 	class UMainUI* GetMainUI();
+	bool IsGameStarted();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
@@ -28,11 +29,17 @@ protected:
 	TSubclassOf<class ASteveFox>	SteveFoxClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
-	TSubclassOf<class ACameraActor> CameraClass;
+	TSubclassOf<class ACameraManager> CameraClass;
 
 	UPROPERTY()
 	TSubclassOf<class UMainUI> MainUIClass;
 
 	UPROPERTY()
 	class UMainUI* MainUI = nullptr;
+
+	UPROPERTY()
+	bool bGameStart = false;
+
+	UPROPERTY()
+	class USoundCue* ReadyFightSound;
 };

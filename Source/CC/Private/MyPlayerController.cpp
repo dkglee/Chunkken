@@ -8,6 +8,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/Pawn.h"
 #include "CameraManager.h"
+#include "MyGameMode.h"
 #include "Kismet/GameplayStatics.h"
 
 AMyPlayerController::AMyPlayerController()
@@ -123,9 +124,6 @@ void AMyPlayerController::BeginPlay()
 {
     Super::BeginPlay();
     
-   
-
-    
     if (ULocalPlayer* LocalPlayer = GetLocalPlayer())
     {
         if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
@@ -159,7 +157,6 @@ void AMyPlayerController::SetupInputComponent()
     if (UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(InputComponent))
     {
         //카메라 테스트
-     
         if (IA_CameraWeakShake)
         {
             EnhancedInput->BindAction(IA_CameraWeakShake, ETriggerEvent::Triggered, this, &AMyPlayerController::TriggerWeakShake);
@@ -173,9 +170,6 @@ void AMyPlayerController::SetupInputComponent()
             EnhancedInput->BindAction(IA_CameraLandingShake, ETriggerEvent::Triggered, this, &AMyPlayerController::TriggerLandingShake);
         }
 
-        UE_LOG(LogTemp, Warning, TEXT("Camera shake input actions successfully bound."));
-    
-   
         // 화랑 입력 바인딩
         if (IA_MoveLeft_Hwoarang)
         {
@@ -259,8 +253,6 @@ void AMyPlayerController::SetupInputComponent()
             EnhancedInput->BindAction(IA_RK_Steve, ETriggerEvent::Triggered, this, &AMyPlayerController::OnRKSteve);
             EnhancedInput->BindAction(IA_RK_Steve, ETriggerEvent::Completed, this, &AMyPlayerController::OnRKSteveReleased);
         }
-
-        
     }
 }
 
@@ -268,7 +260,7 @@ void AMyPlayerController::TriggerWeakShake(const FInputActionValue& Value)
 {
     if (CameraManager)
     {
-        CameraManager->TriggerWeakShake();
+        CameraManager->TriggerWeakShake(1.0f);
         UE_LOG(LogTemp, Warning, TEXT("TriggerWeakShake called"));
     }
     else
@@ -303,11 +295,6 @@ void AMyPlayerController::TriggerLandingShake(const FInputActionValue& Value)
     }
 }
 
-
-
-
-
-
 void AMyPlayerController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
@@ -328,12 +315,16 @@ void AMyPlayerController::RegisterPlayers(ABaseCharacter* InPlayer1, ABaseCharac
     Player2 = InPlayer2;
 }
 
-
 //화랑 입력 함수
 void AMyPlayerController::OnMoveRightHwoarang(const FInputActionValue& Value)
 {
     float ActionValue = Value.Get<float>();
-
+    
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player1)
     {
         return ;
@@ -346,17 +337,27 @@ void AMyPlayerController::OnMoveLeftHwoarang(const FInputActionValue& Value)
 {
     float ActionValue = Value.Get<float>();
     
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player1)
     {
         return ;
     }
-
+    
     int32 InputID = UInputParser::GetIndex(LEFT);
     Player1->OnPressedInput(InputID, FrameManager->GetFrameIndex(), true);
 }
 
 void AMyPlayerController::OnJumpHwoarang(const FInputActionValue& Value)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player1)
     {
         return ;
@@ -367,6 +368,11 @@ void AMyPlayerController::OnJumpHwoarang(const FInputActionValue& Value)
 
 void AMyPlayerController::OnDownHwoarang(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player1)
     {
         return ;
@@ -378,7 +384,12 @@ void AMyPlayerController::OnDownHwoarang(const FInputActionValue& InputActionVal
 //스티브폭스 입력 함수
 void AMyPlayerController::OnMoveRightSteveFox(const FInputActionValue& Value)
 {
-    float ActionValue = Value.Get<float>();
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());float ActionValue = Value.Get<float>();
+    
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player2)
     {
         return ;
@@ -390,7 +401,12 @@ void AMyPlayerController::OnMoveRightSteveFox(const FInputActionValue& Value)
 void AMyPlayerController::OnMoveLeftSteveFox(const FInputActionValue& Value)
 {
     float ActionValue = Value.Get<float>();
-
+    
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player2)
     {
         return ;
@@ -401,17 +417,27 @@ void AMyPlayerController::OnMoveLeftSteveFox(const FInputActionValue& Value)
 
 void AMyPlayerController::OnJumpSteveFox(const FInputActionValue& Value)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player2)
     {
         return ;
     }
-
+    
     int32 InputID = UInputParser::GetIndex(UP);
     Player2->OnPressedInput(InputID, FrameManager->GetFrameIndex(), false);
 }
 
 void AMyPlayerController::OnDownSteveFox(const FInputActionValue& Value)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player2)
     {
         return ;
@@ -422,6 +448,11 @@ void AMyPlayerController::OnDownSteveFox(const FInputActionValue& Value)
 
 void AMyPlayerController::OnLPHwoarang(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player1)
     {
         return ;
@@ -432,6 +463,11 @@ void AMyPlayerController::OnLPHwoarang(const FInputActionValue& InputActionValue
 
 void AMyPlayerController::OnRPHwoarang(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player1)
     {
         return ;
@@ -442,6 +478,11 @@ void AMyPlayerController::OnRPHwoarang(const FInputActionValue& InputActionValue
 
 void AMyPlayerController::OnLKHwoarang(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player1)
     {
         return ;
@@ -452,6 +493,11 @@ void AMyPlayerController::OnLKHwoarang(const FInputActionValue& InputActionValue
 
 void AMyPlayerController::OnRKHwoarang(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player1)
     {
         return ;
@@ -462,6 +508,11 @@ void AMyPlayerController::OnRKHwoarang(const FInputActionValue& InputActionValue
 
 void AMyPlayerController::OnLPSteve(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player2)
     {
         return ;
@@ -472,6 +523,11 @@ void AMyPlayerController::OnLPSteve(const FInputActionValue& InputActionValue)
 
 void AMyPlayerController::OnRPSteve(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player2)
     {
         return ;
@@ -482,6 +538,11 @@ void AMyPlayerController::OnRPSteve(const FInputActionValue& InputActionValue)
 
 void AMyPlayerController::OnLKSteve(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player2)
     {
         return ;
@@ -492,6 +553,11 @@ void AMyPlayerController::OnLKSteve(const FInputActionValue& InputActionValue)
 
 void AMyPlayerController::OnRKSteve(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player2)
     {
         return ;
@@ -502,6 +568,11 @@ void AMyPlayerController::OnRKSteve(const FInputActionValue& InputActionValue)
 
 void AMyPlayerController::OnMoveLeftHwoarangReleased(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player1)
     {
         return ;
@@ -512,6 +583,11 @@ void AMyPlayerController::OnMoveLeftHwoarangReleased(const FInputActionValue& In
 
 void AMyPlayerController::OnMoveRightHwoarangReleased(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player1)
     {
         return ;
@@ -522,6 +598,11 @@ void AMyPlayerController::OnMoveRightHwoarangReleased(const FInputActionValue& I
 
 void AMyPlayerController::OnJumpHwoarangReleased(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player1)
     {
         return ;
@@ -532,6 +613,11 @@ void AMyPlayerController::OnJumpHwoarangReleased(const FInputActionValue& InputA
 
 void AMyPlayerController::OnDownHwoarangReleased(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player1)
     {
         return ;
@@ -542,6 +628,11 @@ void AMyPlayerController::OnDownHwoarangReleased(const FInputActionValue& InputA
 
 void AMyPlayerController::OnLPHwoarangReleased(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player1)
     {
         return ;
@@ -552,6 +643,11 @@ void AMyPlayerController::OnLPHwoarangReleased(const FInputActionValue& InputAct
 
 void AMyPlayerController::OnRPHwoarangReleased(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player1)
     {
         return ;
@@ -562,6 +658,11 @@ void AMyPlayerController::OnRPHwoarangReleased(const FInputActionValue& InputAct
 
 void AMyPlayerController::OnLKHwoarangReleased(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player1)
     {
         return ;
@@ -572,6 +673,11 @@ void AMyPlayerController::OnLKHwoarangReleased(const FInputActionValue& InputAct
 
 void AMyPlayerController::OnRKHwoarangReleased(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player1)
     {
         return ;
@@ -582,6 +688,11 @@ void AMyPlayerController::OnRKHwoarangReleased(const FInputActionValue& InputAct
 
 void AMyPlayerController::OnMoveLeftSteveFoxReleased(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player2)
     {
         return ;
@@ -592,6 +703,11 @@ void AMyPlayerController::OnMoveLeftSteveFoxReleased(const FInputActionValue& In
 
 void AMyPlayerController::OnMoveRightSteveFoxReleased(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player2)
     {
         return ;
@@ -602,6 +718,11 @@ void AMyPlayerController::OnMoveRightSteveFoxReleased(const FInputActionValue& I
 
 void AMyPlayerController::OnJumpSteveFoxReleased(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player2)
     {
         return ;
@@ -612,6 +733,11 @@ void AMyPlayerController::OnJumpSteveFoxReleased(const FInputActionValue& InputA
 
 void AMyPlayerController::OnDownSteveFoxReleased(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player2)
     {
         return ;
@@ -622,6 +748,11 @@ void AMyPlayerController::OnDownSteveFoxReleased(const FInputActionValue& InputA
 
 void AMyPlayerController::OnLPSteveReleased(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player2)
     {
         return ;
@@ -632,6 +763,11 @@ void AMyPlayerController::OnLPSteveReleased(const FInputActionValue& InputAction
 
 void AMyPlayerController::OnRPSteveReleased(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player2)
     {
         return ;
@@ -642,6 +778,11 @@ void AMyPlayerController::OnRPSteveReleased(const FInputActionValue& InputAction
 
 void AMyPlayerController::OnLKSteveReleased(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player2)
     {
         return ;
@@ -652,6 +793,11 @@ void AMyPlayerController::OnLKSteveReleased(const FInputActionValue& InputAction
 
 void AMyPlayerController::OnRKSteveReleased(const FInputActionValue& InputActionValue)
 {
+    AMyGameMode* GM = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+    if (!GM->IsGameStarted())
+    {
+        return ;
+    }
     if (!Player2)
     {
         return ;

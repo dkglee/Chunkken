@@ -4,6 +4,7 @@
 #include "DamageComponent.h"
 
 #include "BaseCharacter.h"
+#include "CameraManager.h"
 #include "FastLogger.h"
 #include "HitEffectParser.h"
 #include "HitEffectStruct.h"
@@ -12,13 +13,14 @@
 #include "MoveDataStruct.h"
 #include "MoveParser.h"
 #include "MyGameMode.h"
+#include "NetworkMessage.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
-
+#include "Sound/SoundCue.h"
 
 // Sets default values for this component's properties
 UDamageComponent::UDamageComponent()
@@ -35,6 +37,19 @@ UDamageComponent::UDamageComponent()
 	{
 		HitLevelUIClass = WBP_HitLevelUIClass.Class;
 	}
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_Hit
+	(TEXT("/Game/Sound/C_Punch.C_Punch"));
+	if (SC_Hit.Succeeded())
+	{
+		HitSound = SC_Hit.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_KO
+	(TEXT("/Game/Sound/C_KO.C_KO"));
+	if (SC_KO.Succeeded())
+	{
+		KOSound = SC_KO.Object;
+	}
+	
 }
 
 void UDamageComponent::SpawnHitEffect(const FMoveDataStruct* MoveData)
@@ -86,7 +101,7 @@ void UDamageComponent::SpawnHitEffect(const FMoveDataStruct* MoveData)
 	}
 }
 
-void UDamageComponent::TakeDamage(int32 Damage)
+int32 UDamageComponent::TakeDamage(int32 Damage)
 {
 	HP -= Damage;
 	if (HP <= 0)
@@ -94,6 +109,30 @@ void UDamageComponent::TakeDamage(int32 Damage)
 		FFastLogger::LogConsole(TEXT("HP is less than 0"));
 		Me->CharacterState.bKO = true;
 		HP = 0;
+
+		CameraManager->SetGameDone(true);
+		// TODO: 카메라 쉐이킹 (구조를 변경할 필요가 있음)
+		CameraManager->TriggerWeakShake(1.0f);
+
+		// KO 사운드 재생
+		UGameplayStatics::PlaySound2D(GetWorld(), KOSound, 0.5f, 1.0f, 0.0f, nullptr, nullptr);
+
+		MainUI->PlayKOAnim();
+		
+		Me->CustomTimeDilation = 0.05f;
+
+		// 2초 후 원래 속도로 복구하기 위한 타이머 설정
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(
+			TimerHandle,
+			FTimerDelegate::CreateLambda([this]()
+			{
+				// UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+				Me->CustomTimeDilation = 1.0f;
+			}),
+			5.0f,    // 2초 뒤에
+			false    // 반복 여부(false = 한 번만 실행)
+		);
 	}
 
 	// UI에 표시되는 HP를 업데이트
@@ -102,15 +141,35 @@ void UDamageComponent::TakeDamage(int32 Damage)
 		FFastLogger::LogConsole(TEXT("UpdateHP"));
 		MainUI->UpdateHP(HP, MaxHP, Me->IsLeftPlayer());
 	}
+	
+	return HP;
 }
 
-void UDamageComponent::UpdateHitCombo(const FMoveDataStruct* MoveData)
+void UDamageComponent::UpdateHitInfoUI(const FMoveDataStruct* MoveData)
 {
-	HitCombo += MoveData->Hits;
-
+	HitCombo += 1;
+	HitDamage += MoveData->Damage;
 	// UI에 표시되는 Combo를 업데이트
-	GetWorld()->GetTimerManager().ClearTimer(HitComboResetTimer);
-	GetWorld()->GetTimerManager().SetTimer(HitComboResetTimer, this, &UDamageComponent::ResetHitCombo, HitComboResetDelay, false);
+	if (!MainUI)
+	{
+		return;
+	}
+
+	if (HitCombo < 2)
+	{
+		return;
+	}
+	if (HitCombo == 2)
+	{
+		MainUI->UpdateHitInfo(HitCombo, HitDamage, Me->IsLeftPlayer(), false);
+	}
+	else
+	{
+		MainUI->UpdateHitInfo(HitCombo, HitDamage, Me->IsLeftPlayer(), true);
+	}
+	
+	GetWorld()->GetTimerManager().ClearTimer(HitInfoResetTimer);
+	GetWorld()->GetTimerManager().SetTimer(HitInfoResetTimer, this, &UDamageComponent::ResetHitCombo, HitInfoResetDelay, false);
 }
 
 // Called when the game starts
@@ -119,6 +178,7 @@ void UDamageComponent::BeginPlay()
 	Super::BeginPlay();
 
 	Me = Cast<ABaseCharacter>(GetOwner());
+	CameraManager = Cast<ACameraManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ACameraManager::StaticClass()));
 
 	for (int32 i = 0; i < MAX_NS_SIZE; i++)
 	{
@@ -165,7 +225,7 @@ void UDamageComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 	if (EndPlayReason == EEndPlayReason::Destroyed)
 	{
-		GetWorld()->GetTimerManager().ClearTimer(HitComboResetTimer);
+		GetWorld()->GetTimerManager().ClearTimer(HitInfoResetTimer);
 		for (int32 i = 0; i < MAX_NS_SIZE; i++)
 		{
 			GetWorld()->GetTimerManager().ClearTimer(HitEffectTimers[i]);
@@ -176,7 +236,12 @@ void UDamageComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void UDamageComponent::ResetHitCombo()
 {
 	HitCombo = 0;
+	HitDamage = 0;
 	// UI에 표시되는 Combo를 초기화
+	if (MainUI)
+	{
+		MainUI->HideHitInfo(Me->IsLeftPlayer());
+	}
 }
 
 void UDamageComponent::ChangeColor(UNiagaraComponent* HitNS, const FMoveDataStruct* MoveData)
@@ -219,15 +284,15 @@ bool UDamageComponent::DetectCollision(const FString& InSocketName)
 {
 	SocketName = InSocketName;
 	FVector Start = Me->GetMesh()->GetSocketLocation(*SocketName);
-	FVector End   = Start + (Me->GetActorForwardVector() * 100.0f);
-	Start.Z += 100.0f;
+	FVector End   = Start + (Me->GetActorForwardVector() * -100.0f);
+	Start.Z += 50.0f;
 	
 	FHitResult HitResult;
 	TArray<AActor*> ActorsToIgnore;
 
 	ActorsToIgnore.Add(Me);
 	// UKismetSystemLibrary::SphereTraceSingle(GetWorld(), Start, Start, SphereRadius, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
-	UKismetSystemLibrary::BoxTraceSingle(GetWorld(), Start, Start, FVector(25.0f, 25.0f, 100.0f), FRotator::ZeroRotator, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
+	UKismetSystemLibrary::BoxTraceSingle(GetWorld(), Start, End, FVector(25.0f, 25.0f, 100.0f), FRotator::ZeroRotator, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::None, HitResult, true);
 
 	if (!HitResult.bBlockingHit)
 	{
@@ -293,7 +358,22 @@ void UDamageComponent::UpdateHitInfo(ABaseCharacter* Target)
 		return;
 	}
 
-	TargetDamageComponent->TakeDamage(MoveData->Damage); // 데미지 적용
+	if (TargetDamageComponent->TakeDamage(MoveData->Damage) <= 0) // 데미지 적용
+	{
+		// KO 처리
+		Me->CustomTimeDilation = 0.05f;
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(
+			TimerHandle,
+			FTimerDelegate::CreateLambda([this]()
+			{
+				// UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+				Me->CustomTimeDilation = 1.0f;
+			}),
+			5.0f,    // 2초 뒤에
+			false    // 반복 여부(false = 한 번만 실행)
+		);
+	}
 	// 아래에 계속해서 추가적인 작업을 함. (HitReaction 등) 근데 죽음 이후에 아래의 처리를 하는 것이 과연 옳을까? 근데 상관 없음
 	// 왜냐하면 FSM의 우선순위를 두면 되기 때문임
 
@@ -301,8 +381,10 @@ void UDamageComponent::UpdateHitInfo(ABaseCharacter* Target)
 	SpawnHitEffect(MoveData);
 	// Hit Combo 처리 (UI에 표시) : 시간이 지나면 사라짐
 	SpawnHitLevelUI(MoveData);
-	UpdateHitCombo(MoveData);
+	UpdateHitInfoUI(MoveData);
 	UpdateHitReaction(Target, MoveData);
+	// 사운드 재생
+	UGameplayStatics::PlaySound2D(GetWorld(), HitSound, 0.5f, 1.0f, 0.0f, nullptr, nullptr);
 }
 
 void UDamageComponent::UpdateHitReaction(ABaseCharacter* Target, const FMoveDataStruct* MoveData)
@@ -368,10 +450,6 @@ void UDamageComponent::SpawnHitLevelUI(const FMoveDataStruct* MoveData)
 	int32 ScreenWidth = 0;
 	int32 ScreenHeight = 0;
 	PlayerController->GetViewportSize(ScreenWidth, ScreenHeight);
-	FFastLogger::LogScreen(FColor::Red, TEXT("ScreenSize: %d, %d"), ScreenWidth, ScreenHeight);
-	FFastLogger::LogScreen(FColor::Green, TEXT("ScreenPosition: %f, %f"), ScreenPosition.X, ScreenPosition.Y);
-	FFastLogger::LogScreen(FColor::Cyan, TEXT("WorldLocation: %f, %f, %f"), WorldLocation.X, WorldLocation.Y, WorldLocation.Z);
-
 	// 중앙 정렬(위젯의 중앙이 좌표에 맞춰짐)
 	// HitUI->SetAlignmentInViewport(FVector2D(0.5f, 0.5f));
 

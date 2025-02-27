@@ -10,17 +10,17 @@ struct FConditionStruct
 
 public:
 	UPROPERTY()
-	int32 ConditionID;
+	int32 ConditionID = -1;
 
 	UPROPERTY()
-	FString ConditionName;
+	FString ConditionName = TEXT("");
 
 	UPROPERTY()
-	FString ConditionChecker;
+	FString ConditionChecker = TEXT("");
 
 	UPROPERTY()
-	FString ConditionData; // JSON 형태로 저장
+	FString ConditionData = TEXT(""); // JSON 형태로 저장
 
 	UPROPERTY()
-	FString ConditionGroup;
+	FString ConditionGroup = TEXT("");
 };

@@ -9,21 +9,20 @@ struct FStateDataStruct
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 StateID;
+	int32 StateID = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString Name;
+	FString Name = TEXT("");
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 ParentStateID;
+	int32 ParentStateID = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString StateGroup;
+	FString StateGroup = TEXT("");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 DefaultDuration;
+	int32 DefaultDuration = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString AnimationRef;
-
+	FString AnimationRef = TEXT("");
 };

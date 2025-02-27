@@ -33,7 +33,6 @@ ACameraManager::ACameraManager()
 	MaxCameraDistance = 400.0f;
 	MinCameraDistance = 250.0f;
 
-	//static ConstructorHelpers::FObjectFinder<ACameraManager>
 	MinCameraDistance = 220.0f;
 }
 
@@ -41,14 +40,53 @@ void ACameraManager::RegisterPlayers(class ABaseCharacter* Left, class ABaseChar
 {
 	Player1 = Left;
 	Player2 = Right;
+	bRegistered = true;
 }
-
 
 // Called when the game starts or when spawned
 void ACameraManager::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorldTimerManager().SetTimer(WeakShakeTimerHandle, this, &ACameraManager::TriggerWeakShake, 5.0f, true, 3.0f);
+}
+
+void ACameraManager::UpdateCameraGameOver()
+{
+	if (!bGameDone) return ;
+	
+	if (bZoom)
+	{
+		// Closeup Camera
+		float InterpFOV = FMath::FInterpTo(Camera->FieldOfView, 60.0f, GetWorld()->GetDeltaSeconds(), 3.0f);
+		Camera->SetFieldOfView(InterpFOV);
+		if (Camera->FieldOfView <= 61.0f && !DoOnce)
+		{
+			FFastLogger::LogScreen(FColor::Red, TEXT("Im Here"));
+			DoOnce = true;
+			FTimerHandle TimerHandle;
+			TWeakObjectPtr<ACameraManager> WeakThis = this;
+
+			bStopZoomDistance = true;
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakThis]()
+			{
+				if (WeakThis.IsValid())
+				{
+					ACameraManager* StrongThis = WeakThis.Get();
+					StrongThis->bZoom = false;
+					StrongThis->bStopZoomDistance = false;
+				}
+			}), 1.0f, false);
+		}
+	}
+	else
+	{
+		float InterpFOV = FMath::FInterpTo(Camera->FieldOfView, 90.0f, GetWorld()->GetDeltaSeconds(), 0.3f);
+		Camera->SetFieldOfView(InterpFOV);
+		if (Camera->FieldOfView >= 89.0f)
+		{
+			Camera->SetFieldOfView(90.0f);
+			bGameDone = false;
+		}
+	}
 }
 
 // Called every frame
@@ -56,11 +94,17 @@ void ACameraManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (Player1 && Player2)
+	// FFastLogger::LogConsole(TEXT("Camera Tick: %p | %p | %p"), this, Player1, Player2);
+	
+	if (!bRegistered) return;
+
+	
+	UpdateCameraPosition();
+	if (!bStopZoomDistance)
 	{
-		UpdateCameraPosition();
 		UpdateCameraZoom(DeltaTime);
 	}
+	UpdateCameraGameOver();
 }
 // 플레이어 중간 지점에 카메라 배치
 void ACameraManager::UpdateCameraPosition()
@@ -73,6 +117,7 @@ void ACameraManager::UpdateCameraPosition()
 	// 두 플레이어의 중간 지점 계산
 	FVector NewCameraLocation = (Player1Location + Player2Location) / 2;
 	NewCameraLocation.Z += 20.0f;
+
 	SetActorLocation(NewCameraLocation);
 }
 
@@ -91,7 +136,7 @@ void ACameraManager::UpdateCameraZoom(float DeltaTime)
 	SpringArm->TargetArmLength = NewArmLength;
 }
 
-void ACameraManager::TriggerWeakShake()
+void ACameraManager::TriggerWeakShake(float Scale)
 {
 	if (!WeakShakeClass)
 	{
@@ -99,12 +144,10 @@ void ACameraManager::TriggerWeakShake()
 		return;
 	}
 
-
 	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
 	if (PC && PC->PlayerCameraManager)
 	{
-
-		PC->PlayerCameraManager->StartCameraShake(WeakShakeClass, 1.0f);
+		PC->PlayerCameraManager->StartCameraShake(WeakShakeClass, Scale);
 		UE_LOG(LogTemp, Log, TEXT("TriggerWeakShake executed"));
 	}
 }
@@ -112,7 +155,7 @@ void ACameraManager::TriggerWeakShake()
 void ACameraManager::TriggerStrongShake()
 {
 	if (!StrongSequence) return;
-	PlaySequenceShake(StrongSequence, 2.0f, 1.0f,3.0f);
+	PlaySequenceShake(StrongSequence, 2.0f, 0.0f,3.0f);
 	UE_LOG(LogTemp, Display, TEXT("strong"));
 }
 
@@ -122,7 +165,6 @@ void ACameraManager::TriggerLandingShake()
 	PlaySequenceShake(LandingSequence, 3.0f, 0.0f, 4.0f);
 	UE_LOG(LogTemp, Display, TEXT("landing"));
 }
-
 
 void ACameraManager::PlaySequenceShake(ULevelSequence* Sequence, float Scale, float BlendInTime, float BlendOutTime)
 {

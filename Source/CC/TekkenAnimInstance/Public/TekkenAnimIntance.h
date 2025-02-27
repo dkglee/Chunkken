@@ -25,6 +25,8 @@ public:
 	UFUNCTION()
 	void AnimNotify_ComboRestart();
 	UFUNCTION()
+	void AnimNotify_CameraShake();
+	UFUNCTION()
 	void PlayMontageModule(const FString& MontageName, float InPlayRate = 1.0f, FName StartSectionName = NAME_None);
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlayAnim")
 	void PlayMontage(class UAnimMontage* Montage, float InPlayRate = 1.0f, FName StartSectionName = NAME_None);
@@ -33,4 +35,6 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage")
 	TMap<FString, class UAnimMontage*> MontageMap;
+	UPROPERTY()
+	class ACameraManager* CameraManager = nullptr;
 };

@@ -28,6 +28,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void UpdateCameraGameOver();
 	void Tick(float DeltaTime);
 
 public:
@@ -43,6 +44,10 @@ public:
 	class ABaseCharacter* Player1;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class ABaseCharacter* Player2;
+	bool bRegistered = false;
+	bool DoOnce = false;
+	bool bZoom = true;
+	bool bStopZoomDistance = false;
 
 	//카메라 테스트
 	FTimerHandle WeakShakeTimerHandle;
@@ -66,7 +71,6 @@ public:
 	//카메라 쉐이크
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraShake")
 	TSubclassOf<UCameraShakeBase> WeakShakeClass;
-
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraShake")
 	TSubclassOf<class UCameraShakeBase> SequenceCameraShakeClass;
@@ -82,7 +86,7 @@ public:
 
 	// 약한 흔들림
 	UFUNCTION(BlueprintCallable, Category = "CameraShake")
-	void TriggerWeakShake();
+	void TriggerWeakShake(float Scale);
 
 	// 강한 흔들림
 	UFUNCTION(BlueprintCallable, Category = "CameraShake")
@@ -92,7 +96,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CameraShake")
 	void TriggerLandingShake();
 
+	void SetGameDone(bool bDone) { bGameDone = bDone; }
 private:
 	void PlaySequenceShake(ULevelSequence* Sequence, float Scale, float BlendInTime, float BlendOutTime);
-	
+
+	bool bGameDone = false;
 };

@@ -11,6 +11,7 @@
 #include "SteveFox.h"
 #include "Camera/CameraActor.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 
 AMyGameMode::AMyGameMode()
@@ -25,12 +26,25 @@ AMyGameMode::AMyGameMode()
 	{
 		MainUIClass = WBP_MainUI.Class;
 	}
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_ReadyFight
+	(TEXT("/Game/Sound/C_ReadyFight.C_ReadyFight.C_ReadyFight"));
+	if (SC_ReadyFight.Succeeded())
+	{
+		ReadyFightSound = SC_ReadyFight.Object;
+	}
+		
 }
 
 void AMyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//카메라 스폰
+	FVector CameraLocation(0,0,90);
+	FRotator CameraRotation(0,0,0);
+	ACameraManager* CameraManager = GetWorld()->SpawnActor<ACameraManager>(CameraClass, CameraLocation, CameraRotation);
+	
 	//플레이어1,2 스폰
 	FRotator SpawnRotation = FRotator::ZeroRotator;
 
@@ -50,11 +64,6 @@ void AMyGameMode::BeginPlay()
 		Player2->Tags.Add(FName("Player2")); // 태그 추가 (수정된 부분)
 	}
 	
-	//카메라 스폰
-	FVector CameraLocation(0,0,90);
-	FRotator CameraRotation(0,0,0);
-	ACameraManager* CameraManager = GetWorld()->SpawnActor<ACameraManager>(ACameraManager::StaticClass(), CameraLocation, CameraRotation);
-	
 	//카메라 뷰포트 설정
 	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	if (PC && CameraManager)
@@ -69,7 +78,8 @@ void AMyGameMode::BeginPlay()
 	{
 		MyPC->RegisterPlayers(Player1, Player2);
 	}
-	
+
+	MyPC->SetInputMode(FInputModeGameOnly());
 }
 
 UMainUI* AMyGameMode::GetMainUI()
@@ -84,7 +94,27 @@ UMainUI* AMyGameMode::GetMainUI()
 		}
 		MainUI = CreateWidget<UMainUI>(GetWorld(), MainUIClass);
 		MainUI->AddToViewport();
+
+		// 게임 시작 애니메이션 동작
+		MainUI->PlayReadyRightAnim();
+		UGameplayStatics::PlaySound2D(GetWorld(), ReadyFightSound, 0.5f, 1.0f, 0.0f, nullptr, nullptr);
+
+
+		FTimerHandle TimerHandle;
+		TWeakObjectPtr<AMyGameMode> WeakThis = this;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakThis]()
+		{
+			if (WeakThis.IsValid())
+			{
+				WeakThis->bGameStart = true;
+			}
+		}), 2.5f, false);
 	}
 	return MainUI;
+}
+
+bool AMyGameMode::IsGameStarted()
+{
+	return bGameStart;
 }
 

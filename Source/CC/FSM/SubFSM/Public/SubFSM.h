@@ -17,12 +17,7 @@ class USubFSM : public UObject
 public:
 	USubFSM() {}
 
-	virtual void Initialize(class ABaseCharacter* InMe, class UTekkenFSM* InOwnerFSM)
-	{
-		Me = InMe;
-		OwnerFSM = InOwnerFSM;
-		TekkenAnimInstance = Cast<UTekkenAnimIntance>(Me->GetMesh()->GetAnimInstance());
-	}
+	virtual void Initialize(class ABaseCharacter* InMe, class UTekkenFSM* InOwnerFSM);
 	virtual void Enter(int32 ChildID);
 	virtual void Update();
 	virtual void Exit();
@@ -41,6 +36,8 @@ protected:
 	class UTekkenFSM* OwnerFSM = nullptr;
 	UPROPERTY()
 	class UTekkenAnimIntance* TekkenAnimInstance = nullptr;
+	UPROPERTY()
+	class ACameraManager* CameraManager = nullptr;
 	UPROPERTY()
 	class UBaseState* CurrentState = nullptr;
 

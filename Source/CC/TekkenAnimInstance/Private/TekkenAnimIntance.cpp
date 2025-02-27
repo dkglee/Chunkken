@@ -5,8 +5,10 @@
 
 #include "BaseCharacter.h"
 #include "BaseState.h"
+#include "CameraManager.h"
 #include "FastLogger.h"
 #include "SubFSM.h"
+#include "Kismet/GameplayStatics.h"
 
 UTekkenAnimIntance::UTekkenAnimIntance()
 {
@@ -112,6 +114,25 @@ UTekkenAnimIntance::UTekkenAnimIntance()
 	{
 		MontageMap.Add(TEXT("KO"), KOAnimation.Object);
 	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> RightKickMontage
+	(TEXT("/Game/Animations/Montages/Tekken_Mma_Kick_Montage.Tekken_Mma_Kick_Montage"));
+	if (RightKickMontage.Succeeded())
+	{
+		MontageMap.Add(TEXT("RightKick"), RightKickMontage.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> RightKickMontage2
+	(TEXT("/Game/Animations/Montages/Tekken_WHEEL_KICK_Montage.Tekken_WHEEL_KICK_Montage"));
+	if (RightKickMontage2.Succeeded())
+	{
+		MontageMap.Add(TEXT("RightKick2"), RightKickMontage2.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> RightKickMontage3
+	(TEXT("/Game/Animations/Montages/Tekken_540_kick_ROOT_MOTION_Montage.Tekken_540_kick_ROOT_MOTION_Montage"));
+	if (RightKickMontage3.Succeeded())
+	{
+		MontageMap.Add(TEXT("RightKick3"), RightKickMontage3.Object);
+	}
+	
 }
 
 void UTekkenAnimIntance::AnimNotify_RestartMovement()
@@ -143,6 +164,16 @@ void UTekkenAnimIntance::AnimNotify_ComboRestart()
 	{
 		BaseCharacter->CharacterState.bAttackAvailable = true;
 	}
+}
+
+void UTekkenAnimIntance::AnimNotify_CameraShake()
+{
+	if (!CameraManager)
+	{
+		CameraManager = Cast<ACameraManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ACameraManager::StaticClass()));
+	}
+	FFastLogger::LogConsole(TEXT("CameraShake"));
+	CameraManager->TriggerWeakShake(1.0f);
 }
 
 void UTekkenAnimIntance::PlayMontageModule(const FString& MontageName, float InPlayRate, FName StartSectionName)

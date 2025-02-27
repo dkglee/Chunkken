@@ -29,7 +29,7 @@ MoveID,CharID,Command,RelativeID,AttackType,Damage,Hits,HitLevel,StartUp,ActiveF
 1028,102,LP,0,Punch,5,1,High,10,2,10,1,8,1001,1,Jab
 1029,102,RP,0,Punch,12,1,High,12,2,14,-1,5,0,0,Right Jab
 1030,102,LK,0,Kick,10,1,High,12,2,14,-1,5,0,0,Left Kick
-1031,102,RK,0,Kick,15,1,High,14,2,16,-2,6,0,0,Right Kick
+1031,102,RK,0,Kick,15,1,High,14,2,16,-2,6,2001,4,Right Kick
 1032,102,f+LP,0,Punch,8,1,High,11,2,13,-1,6,0,0,Forward Left Punch
 1033,102,f+RP,0,Punch,14,1,Middle,13,2,16,-3,7,0,0,Ignition Barrage
 1034,102,f+LK,0,Kick,12,1,Middle,14,2,16,-3,7,0,0,Forward Left Kick

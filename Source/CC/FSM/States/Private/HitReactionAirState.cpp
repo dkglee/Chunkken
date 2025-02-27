@@ -4,6 +4,7 @@
 #include "CC/FSM/States/Public/HitReactionAirState.h"
 
 #include "BaseCharacter.h"
+#include "CameraManager.h"
 #include "EasingAlphaBlend.h"
 #include "FastLogger.h"
 #include "TekkenAnimIntance.h"
@@ -32,11 +33,7 @@ void UHitReactionAirState::Enter()
 	Super::Enter();
 
 	bMaxHeight = false;
-	FFastLogger::LogScreen(FColor::Cyan, TEXT("HitReactionAirBorne Enter"));
 	
-	// Airborne 애니메이션 재생
-	// 1. 공중에 띄움 // 2. 애니메이션 재생
-	// 현재 위치 가져오기
 	CurrentFrameAirBorne = 0;
 
 	bool bIsLeft = Me->IsLeftPlayer();
@@ -44,11 +41,10 @@ void UHitReactionAirState::Enter()
 	// 최종 높이 설정
 	Location = Me->GetActorLocation();
 	// Location.Z = MaxHeight;
-	Location.Z = 400.0f;
+	Location.Z = 250.0f;
 	Location.Y = bIsLeft ? Location.Y - 40.0f : Location.Y + 40.0f;
-	
-	// Me->SetActorLocation(Location);
 
+	// 공중 상태로 변경
 	Me->CharacterState.bGround = false;
 
 	// 애니메이션 재생
@@ -62,7 +58,15 @@ void UHitReactionAirState::Update()
 	CurrentFrameAirBorne++;
 	if (CurrentFrameAirBorne < MaxFrameAirBorne && !bMaxHeight)
 	{
-		FVector InterpLocation = FEasingAlphaBlend::EasingVectorBlend(Me->GetActorLocation(), Location, (float)CurrentFrameAirBorne / (float)MaxFrameAirBorne, 0.1f, bMaxHeight);
+		// FVector InterpLocation = FEasingAlphaBlend::EasingVectorBlend(Me->GetActorLocation(), Location, (float)CurrentFrameAirBorne / (float)MaxFrameAirBorne, 1.0f, bMaxHeight);
+		// Me->SetActorLocation(InterpLocation, true);
+		FFastLogger::LogConsole(TEXT("CurrentFrameAirBorne : %d, Me: %s, Target: %s"), CurrentFrameAirBorne, *Me->GetActorLocation().ToString(), *Location.ToString());
+		float Delta = (float)CurrentFrameAirBorne / (float)MaxFrameAirBorne;
+		FVector InterpLocation = FMath::VInterpTo(Me->GetActorLocation(), Location, Delta, 2.0f);
+		if (FMath::IsNearlyEqual(InterpLocation.Z, Location.Z, 1.0f))
+		{
+			bMaxHeight = true;
+		}
 		Me->SetActorLocation(InterpLocation);
 	}
 	
@@ -74,5 +78,6 @@ void UHitReactionAirState::Update()
 		// Getup으로 가야함
 		Me->CharacterState.bCanBeDamaged = false;
 		Me->CharacterState.bGround = true;
+		CameraManager->TriggerWeakShake(1.0f);
 	}
 }

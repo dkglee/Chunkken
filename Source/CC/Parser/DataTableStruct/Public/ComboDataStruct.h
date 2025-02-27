@@ -10,13 +10,13 @@ struct FComboDataStruct
 	GENERATED_BODY()
 public:
 	UPROPERTY()
-	int32 ComboID;
+	int32 ComboID = -1;
 
 	UPROPERTY()
-	int32 CharID;
+	int32 CharID = -1;
 
 	UPROPERTY()
-	FString ComboName;
+	FString ComboName = TEXT("");
 
 	UPROPERTY()
 	TArray<int32> Notation;
@@ -25,5 +25,5 @@ public:
 	TArray<FComboDetailStruct> ComboDetails;
 
 	UPROPERTY()
-	int32 EstimatedDamage;
+	int32 EstimatedDamage = 0;
 };
