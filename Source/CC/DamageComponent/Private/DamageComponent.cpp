@@ -389,7 +389,7 @@ void UDamageComponent::UpdateHitInfo(ABaseCharacter* Target)
 	UpdateHitInfoUI(MoveData);
 	UpdateHitReaction(Target, MoveData);
 	// 사운드 재생
-	UGameplayStatics::PlaySound2D(GetWorld(), HitSound, 0.5f, 1.0f, 0.0f, nullptr, nullptr);
+	UGameplayStatics::PlaySound2D(GetWorld(), HitSound, 0.3f, 1.0f, 0.0f, nullptr, nullptr);
 }
 
 void UDamageComponent::UpdateHitReaction(ABaseCharacter* Target, const FMoveDataStruct* MoveData)

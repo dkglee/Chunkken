@@ -34,7 +34,13 @@ AMyGameMode::AMyGameMode()
 	{
 		ReadyFightSound = SC_ReadyFight.Object;
 	}
-		
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_BackGround
+	(TEXT("/Game/Sound/C_BackGround.C_BackGround"));
+	if (SC_BackGround.Succeeded())
+	{
+		BackGroundSound = SC_BackGround.Object;
+	}
 }
 
 void AMyGameMode::BeginPlay()
@@ -99,6 +105,7 @@ UMainUI* AMyGameMode::GetMainUI()
 		// 게임 시작 애니메이션 동작
 		MainUI->PlayReadyRightAnim();
 		UGameplayStatics::PlaySound2D(GetWorld(), ReadyFightSound, 0.5f, 1.0f, 0.0f, nullptr, nullptr);
+		UGameplayStatics::PlaySound2D(GetWorld(), BackGroundSound, 0.7f, 1.0f, 0.0f, nullptr, nullptr);
 
 
 		FTimerHandle TimerHandle;
