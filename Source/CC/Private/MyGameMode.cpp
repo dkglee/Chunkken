@@ -8,6 +8,7 @@
 #include "MyPlayerController.h"
 #include "Hwoarang.h"
 #include "MainUI.h"
+#include "NetworkMessage.h"
 #include "SteveFox.h"
 #include "Camera/CameraActor.h"
 #include "Kismet/GameplayStatics.h"
@@ -116,5 +117,18 @@ UMainUI* AMyGameMode::GetMainUI()
 bool AMyGameMode::IsGameStarted()
 {
 	return bGameStart;
+}
+
+void AMyGameMode::GameEnd()
+{
+	FTimerHandle TimerHandle;
+	TWeakObjectPtr<AMyGameMode> WeakThis = this;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakThis]()
+	{
+		if (WeakThis.IsValid())
+		{
+			UGameplayStatics::OpenLevel(WeakThis->GetWorld(), "EndLevel");
+		}
+	}), 2.0f, false);
 }
 

@@ -129,6 +129,11 @@ int32 UDamageComponent::TakeDamage(int32 Damage)
 			{
 				// UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
 				Me->CustomTimeDilation = 1.0f;
+				AMyGameMode* GameMode = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+				if (GameMode)
+				{
+					GameMode->GameEnd();
+				}
 			}),
 			5.0f,    // 2초 뒤에
 			false    // 반복 여부(false = 한 번만 실행)
