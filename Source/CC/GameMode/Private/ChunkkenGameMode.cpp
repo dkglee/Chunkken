@@ -5,6 +5,7 @@
 
 #include "FastLogger.h"
 #include "FrameManager.h"
+#include "Kismet/GameplayStatics.h"
 
 AChunkkenGameMode::AChunkkenGameMode()
 {
