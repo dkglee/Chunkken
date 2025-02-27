@@ -57,6 +57,7 @@ void UAttackStartupState::Enter()
 		return;
 	}
 	float PlayRate = FAnimUtils::CalculateAnimPlayRate(StartUpFrame, Montage->GetSectionLength(0));
+	PlayRate = FMath::Clamp(PlayRate, 0.0f, 2.3f);
 	FFastLogger::LogConsole(TEXT("PlayRate: %f: StartUpFrame: %d: Montage Play : %f"), PlayRate, StartUpFrame, Montage->GetSectionLength(0));
 	TekkenAnimInstance->PlayMontageModule(ExecutingMove.AnimationRef, PlayRate, FName(TEXT("Startup")));
 

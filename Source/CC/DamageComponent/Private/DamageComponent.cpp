@@ -217,8 +217,6 @@ void UDamageComponent::BeginPlay()
 		FTimerHandle Timer;
 		HitLevelUITimers.Add(Timer);
 	}
-
-	
 }
 
 void UDamageComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)

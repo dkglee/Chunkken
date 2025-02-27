@@ -55,6 +55,7 @@ void UAttackRecoveryState::Enter()
 		return;
 	}
 	float PlayRate = FAnimUtils::CalculateAnimPlayRate(RecvoryFrame, Montage->GetSectionLength(2));
+	PlayRate = FMath::Clamp(PlayRate, 0.0f, 2.3f);
 	FFastLogger::LogConsole(TEXT("PlayRate: %f: Recovery: %d: Montage Play : %f"), PlayRate, RecvoryFrame, Montage->GetSectionLength(2));
 	TekkenAnimInstance->PlayMontageModule(ExecutingMove.AnimationRef, PlayRate, FName(TEXT("Recovery")));
 }
