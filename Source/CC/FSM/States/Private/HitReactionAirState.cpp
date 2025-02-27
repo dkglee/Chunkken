@@ -41,7 +41,7 @@ void UHitReactionAirState::Enter()
 	// 최종 높이 설정
 	Location = Me->GetActorLocation();
 	// Location.Z = MaxHeight;
-	Location.Z = 250.0f;
+	Location.Z = 0.0f;
 	Location.Y = bIsLeft ? Location.Y - 40.0f : Location.Y + 40.0f;
 
 	// 공중 상태로 변경

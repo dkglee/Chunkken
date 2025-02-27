@@ -20,7 +20,7 @@ ACameraManager::ACameraManager()
 	// Spring Arm 생성
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
-	SpringArm->TargetArmLength = 250.0f; // 기본 거리 설정
+	SpringArm->TargetArmLength = 400.0f; // 기본 거리 설정
 	SpringArm->bDoCollisionTest = false;
 
 	// 카메라 생성 및 Spring Arm에 연결
