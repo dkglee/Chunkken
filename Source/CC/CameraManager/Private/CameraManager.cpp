@@ -20,7 +20,7 @@ ACameraManager::ACameraManager()
 	// Spring Arm 생성
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
-	SpringArm->TargetArmLength = 400.0f; // 기본 거리 설정
+	SpringArm->TargetArmLength = 1000.0f; // 기본 거리 설정
 	SpringArm->bDoCollisionTest = false;
 
 	// 카메라 생성 및 Spring Arm에 연결
@@ -30,10 +30,8 @@ ACameraManager::ACameraManager()
 	// 카메라 거리 및 속도 설정
 	DefaultCameraDistance = 250.0f;
 	ZoomSpeed = 5.0f;
-	MaxCameraDistance = 400.0f;
+	MaxCameraDistance = 1000.0f;
 	MinCameraDistance = 250.0f;
-
-	MinCameraDistance = 220.0f;
 }
 
 void ACameraManager::RegisterPlayers(class ABaseCharacter* Left, class ABaseCharacter* Right)

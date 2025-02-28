@@ -55,7 +55,7 @@ void AMyGameMode::BeginPlay()
 	//플레이어1,2 스폰
 	FRotator SpawnRotation = FRotator::ZeroRotator;
 
-	FVector Player1Location(810, -50, -50);
+	FVector Player1Location(810, -50, -90);
 	FRotator Player1Rotation({0, 90, 0});
 	ABaseCharacter* Player1 = GetWorld()->SpawnActor<ABaseCharacter>(HwoarangClass, Player1Location, Player1Rotation);
 	if(Player1)
@@ -63,7 +63,7 @@ void AMyGameMode::BeginPlay()
 		Player1->Tags.Add(FName("Player1")); // 태그 추가 (수정된 부분)
 	}
 	
-	FVector Player2Location(810, 50, -50);
+	FVector Player2Location(810, 50, -90);
 	FRotator Player2Rotation({0, -90, 0});
 	ABaseCharacter* Player2 = GetWorld()->SpawnActor<ABaseCharacter>(SteveFoxClass, Player2Location, Player2Rotation);
 	if(Player2)
