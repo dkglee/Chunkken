@@ -39,4 +39,6 @@ protected:
 	bool bRestartMovement = true;
 	UPROPERTY()
 	class ACameraManager* CameraManager = nullptr;
+	UPROPERTY()
+	class UTekkenCameraShakeManager* CameraShakeManager = nullptr;
 };

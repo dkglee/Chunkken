@@ -6,9 +6,11 @@
 #include "AnimUtils.h"
 #include "BaseCharacter.h"
 #include "CameraManager.h"
+#include "ECameraSequence.h"
 #include "EditorAnimUtils.h"
 #include "FastLogger.h"
 #include "TekkenAnimIntance.h"
+#include "TekkenCameraShake.h"
 
 FString UHitReactionNormalState::StateName = TEXT("HIT_REACTION_NORMAL");
 
@@ -103,7 +105,7 @@ void UHitReactionNormalState::Enter()
 	Me->LaunchCharacter(LaunchDirection, true, true);
 
 	// Camera Shake
-	CameraManager->TriggerWeakShake(1.0f);
+	CameraShakeManager->PlayerCameraShake(ECameraSequence::ECS_None, 1.0f);
 }
 
 void UHitReactionNormalState::Update()

@@ -8,7 +8,7 @@ public class CC : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Json", "JsonUtilities", "Niagara", "UMG" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Json", "JsonUtilities", "Niagara", "UMG",  "GameplayCameras" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "TraceInsights", "LevelSequence" });
 		
@@ -33,7 +33,9 @@ public class CC : ModuleRules
 			"CC/Widget/HitLevel/Public",
 			"CC/Widget/HitCombo/Public",
 			"CC/Widget/KO/Public",
-			"CC/Widget/ReadyFight/Public"
+			"CC/Widget/ReadyFight/Public",
+			"CC/CameraManager/Public",
+			"CC/CameraManager/TekkenCameraShake/Public",
 		});
 
 		// Uncomment if you are using Slate UI

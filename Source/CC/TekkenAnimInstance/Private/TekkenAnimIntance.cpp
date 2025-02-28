@@ -6,8 +6,11 @@
 #include "BaseCharacter.h"
 #include "BaseState.h"
 #include "CameraManager.h"
+#include "ECameraSequence.h"
 #include "FastLogger.h"
+#include "MyPlayerController.h"
 #include "SubFSM.h"
+#include "TekkenCameraShake.h"
 #include "Kismet/GameplayStatics.h"
 
 UTekkenAnimIntance::UTekkenAnimIntance()
@@ -168,12 +171,12 @@ void UTekkenAnimIntance::AnimNotify_ComboRestart()
 
 void UTekkenAnimIntance::AnimNotify_CameraShake()
 {
-	if (!CameraManager)
+	if (!CameraShakeManager)
 	{
-		CameraManager = Cast<ACameraManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ACameraManager::StaticClass()));
+		AMyPlayerController* MyPlayerController = Cast<AMyPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		CameraShakeManager = MyPlayerController->GetCameraShakeManager();
 	}
-	FFastLogger::LogConsole(TEXT("CameraShake"));
-	CameraManager->TriggerWeakShake(1.0f);
+	CameraShakeManager->PlayerCameraShake(ECameraSequence::ECS_None, 1.0f);
 }
 
 void UTekkenAnimIntance::PlayMontageModule(const FString& MontageName, float InPlayRate, FName StartSectionName)

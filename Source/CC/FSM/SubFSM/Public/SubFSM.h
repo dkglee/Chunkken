@@ -37,10 +37,9 @@ protected:
 	UPROPERTY()
 	class UTekkenAnimIntance* TekkenAnimInstance = nullptr;
 	UPROPERTY()
-	class ACameraManager* CameraManager = nullptr;
-	UPROPERTY()
 	class UBaseState* CurrentState = nullptr;
-
+	UPROPERTY()
+	class UTekkenCameraShakeManager* CameraManager = nullptr;
 	std::map<int32, FTransitionRules> TransitionRules;
 	UPROPERTY()
 	TMap<int32, class UBaseState*> States;

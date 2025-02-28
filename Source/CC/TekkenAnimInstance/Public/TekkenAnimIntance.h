@@ -37,4 +37,6 @@ protected:
 	TMap<FString, class UAnimMontage*> MontageMap;
 	UPROPERTY()
 	class ACameraManager* CameraManager = nullptr;
+	UPROPERTY()
+	class UTekkenCameraShakeManager* CameraShakeManager = nullptr;
 };

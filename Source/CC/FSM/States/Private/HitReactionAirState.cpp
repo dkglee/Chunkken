@@ -6,8 +6,10 @@
 #include "BaseCharacter.h"
 #include "CameraManager.h"
 #include "EasingAlphaBlend.h"
+#include "ECameraSequence.h"
 #include "FastLogger.h"
 #include "TekkenAnimIntance.h"
+#include "TekkenCameraShake.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 FString UHitReactionAirState::StateName = TEXT("HIT_REACTION_AIR");
@@ -78,6 +80,6 @@ void UHitReactionAirState::Update()
 		// Getup으로 가야함
 		Me->CharacterState.bCanBeDamaged = false;
 		Me->CharacterState.bGround = true;
-		CameraManager->TriggerWeakShake(1.0f);
+		CameraShakeManager->PlayerCameraShake(ECameraSequence::ECS_None, 1.0f);
 	}
 }

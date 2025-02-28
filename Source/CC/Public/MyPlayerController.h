@@ -64,6 +64,7 @@ protected:
 	void TriggerWeakShake(const FInputActionValue& Value);
 	void TriggerStrongShake(const FInputActionValue& Value);
 	void TriggerLandingShake(const FInputActionValue& Value);
+	UPROPERTY()
 	ACameraManager* CameraManager;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* IA_CameraWeakShake;
@@ -124,7 +125,6 @@ protected:
 	UInputAction* IA_LK_Steve;
 	UPROPERTY(EditDefaultsOnly, Category="Input|Hwarang")
 	UInputAction* IA_RK_Steve;
-	
 
 public:
 	void RegisterPlayers(class ABaseCharacter* InPlayer1, class ABaseCharacter* InPlayer2) ;
@@ -135,7 +135,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player")
 	class ABaseCharacter* Player2;
 
+	class UTekkenCameraShakeManager* GetCameraShakeManager() const { return CameraShakeManager; }
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player")
 	class UFrameManager* FrameManager;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="CameraShake")
+	class UTekkenCameraShakeManager* CameraShakeManager;
 };
