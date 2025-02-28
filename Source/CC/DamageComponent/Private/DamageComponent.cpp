@@ -115,7 +115,7 @@ int32 UDamageComponent::TakeDamage(int32 Damage)
 
 		CameraManager->SetGameDone(true);
 		// TODO: 카메라 쉐이킹 (구조를 변경할 필요가 있음)
-		CameraShakeManager->PlayerCameraShake(ECameraSequence::ECS_None, 1.0f);
+		CameraShakeManager->PlayerCameraShake(ECameraSequence::ECS_StrongHit, 1.0f);
 
 		// KO 사운드 재생
 		UGameplayStatics::PlaySound2D(GetWorld(), KOSound, 0.5f, 1.0f, 0.0f, nullptr, nullptr);

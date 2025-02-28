@@ -20,27 +20,44 @@ void UTekkenCameraShakeManager::BeginPlay()
 void UTekkenCameraShakeManager::InitializeComponent()
 {
 	Super::InitializeComponent();
-	
-	// 1. 멤버 변수로 TSoftClassPtr을 선언 (Header)
-	TSoftClassPtr<UCameraShakeBase> TekkenCSBase;
 
-	// 2. 생성자 또는 적절한 위치에서 경로를 설정 (소프트 레퍼런스이므로 즉시 로드되지 않음)
-	TekkenCSBase = TSoftClassPtr<UCameraShakeBase>(FSoftObjectPath(TEXT("/Game/Camera/CS_MyCameraShake.CS_MyCameraShake_C")));
+	// 카메라 셰이크 데이터 매핑
+	TMap<ECameraSequence, FSoftObjectPath> CameraShakePaths = {
+		{ ECameraSequence::ECS_None, FSoftObjectPath(TEXT("/Game/Camera/CS_MyCameraShake.CS_MyCameraShake_C")) },
+		{ ECameraSequence::ECS_Airbone, FSoftObjectPath(TEXT("/Game/Camera/BP_AirboneShake.BP_AirboneShake_C")) },
+		{ ECameraSequence::ECS_KO, FSoftObjectPath(TEXT("/Game/Camera/BP_KOShake.BP_KOShake_C")) },
+		{ ECameraSequence::ECS_StrongHit, FSoftObjectPath(TEXT("/Game/Camera/BP_StrongShake.BP_StrongShake_C")) },
+		{ ECameraSequence::ECS_WeakHit, FSoftObjectPath(TEXT("/Game/Camera/BP_WeakShake.BP_WeakShake_C")) }
+	};
 
-	// 3. 실제 사용 시 로드
-	if (TekkenCSBase.IsValid()) // 이미 로드되었는지 확인
+	// 모든 카메라 셰이크 클래스 로드
+	for (const auto& Entry : CameraShakePaths)
 	{
-		CameraShakeSettings.Add(ECameraSequence::ECS_None, TekkenCSBase.Get());
+		LoadCameraShakeClass(Entry.Key, Entry.Value);
 	}
-	else // 로드되지 않았다면 로드 요청
+}
+
+/**
+ * 특정 카메라 셰이크 클래스를 로드하는 함수
+ */
+void UTekkenCameraShakeManager::LoadCameraShakeClass(ECameraSequence SequenceType, const FSoftObjectPath& ObjectPath)
+{
+	TSoftClassPtr<UCameraShakeBase> CameraShakeClass(ObjectPath);
+
+	if (CameraShakeClass.IsValid())
 	{
-		UClass* LoadedClass = TekkenCSBase.LoadSynchronous(); // 동기 로드 (비추천, 가능하면 비동기 사용)
+		CameraShakeSettings.Add(SequenceType, CameraShakeClass.Get());
+	}
+	else
+	{
+		UClass* LoadedClass = CameraShakeClass.LoadSynchronous(); // 동기 로드
 		if (LoadedClass)
 		{
-			CameraShakeSettings.Add(ECameraSequence::ECS_None, LoadedClass);
+			CameraShakeSettings.Add(SequenceType, LoadedClass);
 		}
 	}
 }
+
 
 void UTekkenCameraShakeManager::PlayerCameraShake(ECameraSequence CameraSequence, float Intensity)
 {

@@ -176,7 +176,7 @@ void UTekkenAnimIntance::AnimNotify_CameraShake()
 		AMyPlayerController* MyPlayerController = Cast<AMyPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 		CameraShakeManager = MyPlayerController->GetCameraShakeManager();
 	}
-	CameraShakeManager->PlayerCameraShake(ECameraSequence::ECS_None, 1.0f);
+	CameraShakeManager->PlayerCameraShake(ECameraSequence::ECS_Airbone, 1.0f);
 }
 
 void UTekkenAnimIntance::PlayMontageModule(const FString& MontageName, float InPlayRate, FName StartSectionName)

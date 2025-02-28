@@ -11,7 +11,7 @@ void UKoFSM::Enter(int32 ChildID)
 	Super::Enter(ChildID);
 
 	TekkenAnimInstance->PlayMontageModule(TEXT("KO"), 1.0f, FName("Default"));
-	CameraManager->PlayerCameraShake(ECameraSequence::ECS_None, 1.0f);
+	CameraManager->PlayerCameraShake(ECameraSequence::ECS_KO, 1.0f);
 }
 
 void UKoFSM::Update()

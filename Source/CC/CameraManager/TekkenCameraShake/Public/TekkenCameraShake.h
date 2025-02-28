@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ECameraSequence.h"
 #include "Components/ActorComponent.h"
 #include "TekkenCameraShake.generated.h"
 
@@ -16,6 +17,7 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void InitializeComponent() override;
+	void LoadCameraShakeClass(ECameraSequence SequenceType, const FSoftObjectPath& ObjectPath);
 
 	UFUNCTION(BlueprintCallable, Category = CameraShake)
 	void PlayerCameraShake(ECameraSequence CameraSequence, float Intensity);

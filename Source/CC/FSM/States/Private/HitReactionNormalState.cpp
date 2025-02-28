@@ -105,7 +105,7 @@ void UHitReactionNormalState::Enter()
 	Me->LaunchCharacter(LaunchDirection, true, true);
 
 	// Camera Shake
-	CameraShakeManager->PlayerCameraShake(ECameraSequence::ECS_None, 1.0f);
+	CameraShakeManager->PlayerCameraShake(ECameraSequence::ECS_StrongHit, 1.0f);
 }
 
 void UHitReactionNormalState::Update()

@@ -7,6 +7,8 @@ UENUM(BlueprintType)
 enum class ECameraSequence : uint8
 {
 	ECS_None,
-	ECS_Normal,
-	ECS_Strong
+	ECS_KO,
+	ECS_Airbone,
+	ECS_StrongHit,
+	ECS_WeakHit,
 };

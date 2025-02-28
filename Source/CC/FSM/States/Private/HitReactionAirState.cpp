@@ -80,6 +80,6 @@ void UHitReactionAirState::Update()
 		// Getup으로 가야함
 		Me->CharacterState.bCanBeDamaged = false;
 		Me->CharacterState.bGround = true;
-		CameraShakeManager->PlayerCameraShake(ECameraSequence::ECS_None, 1.0f);
+		CameraShakeManager->PlayerCameraShake(ECameraSequence::ECS_Airbone, 1.0f);
 	}
 }
