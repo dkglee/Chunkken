@@ -6,7 +6,9 @@
 #include "CharacterState.h"
 #include "ConditionManager.h"
 #include "FastLogger.h"
+#include "MyPlayerController.h"
 #include "StateParser.h"
+#include "TekkenCameraShake.h"
 #include "TekkenFSM.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -15,7 +17,8 @@ void USubFSM::Initialize(class ABaseCharacter* InMe, class UTekkenFSM* InOwnerFS
 	Me = InMe;
 	OwnerFSM = InOwnerFSM;
 	TekkenAnimInstance = Cast<UTekkenAnimIntance>(Me->GetMesh()->GetAnimInstance());
-	CameraManager = Cast<ACameraManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ACameraManager::StaticClass()));
+	AMyPlayerController* MyPlayerController = Cast<AMyPlayerController>(UGameplayStatics::GetPlayerController(Me->GetWorld(), 0));
+	CameraManager = MyPlayerController->GetCameraShakeManager();
 }
 
 void USubFSM::Enter(int32 ChildID)

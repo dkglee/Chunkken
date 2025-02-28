@@ -5,6 +5,7 @@
 
 #include "BaseCharacter.h"
 #include "CameraManager.h"
+#include "ECameraSequence.h"
 #include "FastLogger.h"
 #include "HitEffectParser.h"
 #include "HitEffectStruct.h"
@@ -13,9 +14,11 @@
 #include "MoveDataStruct.h"
 #include "MoveParser.h"
 #include "MyGameMode.h"
+#include "MyPlayerController.h"
 #include "NetworkMessage.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
+#include "TekkenCameraShake.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Kismet/GameplayStatics.h"
@@ -112,7 +115,7 @@ int32 UDamageComponent::TakeDamage(int32 Damage)
 
 		CameraManager->SetGameDone(true);
 		// TODO: 카메라 쉐이킹 (구조를 변경할 필요가 있음)
-		CameraManager->TriggerWeakShake(1.0f);
+		CameraShakeManager->PlayerCameraShake(ECameraSequence::ECS_StrongHit, 1.0f);
 
 		// KO 사운드 재생
 		UGameplayStatics::PlaySound2D(GetWorld(), KOSound, 0.5f, 1.0f, 0.0f, nullptr, nullptr);
@@ -184,6 +187,8 @@ void UDamageComponent::BeginPlay()
 
 	Me = Cast<ABaseCharacter>(GetOwner());
 	CameraManager = Cast<ACameraManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ACameraManager::StaticClass()));
+	AMyPlayerController* MyPlayerController = Cast<AMyPlayerController>(UGameplayStatics::GetPlayerController(Me->GetWorld(), 0));
+	CameraShakeManager = MyPlayerController->GetCameraShakeManager();
 
 	for (int32 i = 0; i < MAX_NS_SIZE; i++)
 	{

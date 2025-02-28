@@ -9,6 +9,7 @@
 #include "GameFramework/Pawn.h"
 #include "CameraManager.h"
 #include "MyGameMode.h"
+#include "TekkenCameraShake.h"
 #include "Kismet/GameplayStatics.h"
 
 AMyPlayerController::AMyPlayerController()
@@ -118,6 +119,7 @@ AMyPlayerController::AMyPlayerController()
     }
 
     FrameManager = CreateDefaultSubobject<UFrameManager>(TEXT("FrameManager"));
+    CameraShakeManager = CreateDefaultSubobject<UTekkenCameraShakeManager>(TEXT("CameraShakeManager"));
 }
 
 void AMyPlayerController::BeginPlay()
