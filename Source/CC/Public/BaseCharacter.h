@@ -44,11 +44,6 @@ protected:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character State")
 	FCharacterState CharacterState;
-
-	UPROPERTY(EditDefaultsOnly, Category="Anim")
-	TSubclassOf<class UTekkenAnimIntance> TekkenAnimClass;
-	// 충돌 및 데미지 처리 컴포넌트
-
 	
 	FExecutingMove CurrentExecutingMove;
 	bool bResetMoveSet = false;
