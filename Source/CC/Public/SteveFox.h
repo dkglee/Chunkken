@@ -3,8 +3,6 @@
 
 #include "CoreMinimal.h"
 #include "BaseCharacter.h"
-#include "GameFramework/Character.h"
-#include "GameCharacterState.h" 
 #include "SteveFox.generated.h"
 
 UCLASS()
@@ -22,4 +20,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditDefaultsOnly, Category="Anim")
+	TSubclassOf<class UTekkenAnimIntance> TekkenAnimClass;
 };

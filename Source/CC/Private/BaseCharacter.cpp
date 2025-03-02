@@ -21,23 +21,7 @@ ABaseCharacter::ABaseCharacter()
 	TekkenFSM = CreateDefaultSubobject<UTekkenFSM>(TEXT("TekkenFSM"));
 	DamageComponent = CreateDefaultSubobject<UDamageComponent>(TEXT("BaseCharacterDamageComponent"));
 
-	static ConstructorHelpers::FClassFinder<UAnimInstance> ABP_AnimInstace
-	(TEXT("/Game/Animations/ABP_TekkenAnimInstace.ABP_TekkenAnimInstace_C"));
-	if (ABP_AnimInstace.Succeeded())
-	{
-		TekkenAnimClass = ABP_AnimInstace.Class;
-	}
-
-	GetMesh()->SetAnimInstanceClass(TekkenAnimClass);
-
 	AutoPossessPlayer = EAutoReceiveInput::Disabled;
-
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SKM_Skeletal
-	(TEXT("/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny"));
-	if (SKM_Skeletal.Succeeded())
-	{
-		GetMesh()->SetSkeletalMesh(SKM_Skeletal.Object);
-	}
 
 	GetCharacterMovement()->bRunPhysicsWithNoController = true;
 

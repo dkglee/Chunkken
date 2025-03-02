@@ -19,15 +19,15 @@ public:
 	UTekkenAnimIntance();
 	
 	UFUNCTION()
-	void AnimNotify_RestartMovement();
+	virtual void AnimNotify_RestartMovement();
 	UFUNCTION()
-	void AnimNotify_ResetFrame();
+	virtual void AnimNotify_ResetFrame();
 	UFUNCTION()
-	void AnimNotify_ComboRestart();
+	virtual void AnimNotify_ComboRestart();
 	UFUNCTION()
-	void AnimNotify_CameraShake();
+	virtual void AnimNotify_CameraShake();
 	UFUNCTION()
-	void PlayMontageModule(const FString& MontageName, float InPlayRate = 1.0f, FName StartSectionName = NAME_None);
+	virtual void PlayMontageModule(const FString& MontageName, float InPlayRate = 1.0f, FName StartSectionName = NAME_None);
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlayAnim")
 	void PlayMontage(class UAnimMontage* Montage, float InPlayRate = 1.0f, FName StartSectionName = NAME_None);
 
