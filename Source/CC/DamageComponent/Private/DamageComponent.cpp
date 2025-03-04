@@ -307,8 +307,7 @@ bool UDamageComponent::DetectCollision(const FString& InSocketName)
 	TArray<AActor*> ActorsToIgnore;
 
 	ActorsToIgnore.Add(Me);
-	// UKismetSystemLibrary::SphereTraceSingle(GetWorld(), Start, Start, SphereRadius, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
-	UKismetSystemLibrary::BoxTraceSingle(GetWorld(), Start, End, FVector(25.0f, 25.0f, 100.0f), FRotator::ZeroRotator, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::None, HitResult, true);
+	UKismetSystemLibrary::BoxTraceSingleByProfile(GetWorld(), Start, End, FVector(20.0f, 20.0f, 100.0f), FRotator::ZeroRotator, TEXT("Player"), false, ActorsToIgnore, EDrawDebugTrace::None, HitResult, true);
 
 	if (!HitResult.bBlockingHit)
 	{
@@ -390,6 +389,11 @@ void UDamageComponent::UpdateHitInfo(ABaseCharacter* Target)
 			false    // 반복 여부(false = 한 번만 실행)
 		);
 	}
+	else
+	{
+		// HitStop
+		HitStop();
+	}
 	// 아래에 계속해서 추가적인 작업을 함. (HitReaction 등) 근데 죽음 이후에 아래의 처리를 하는 것이 과연 옳을까? 근데 상관 없음
 	// 왜냐하면 FSM의 우선순위를 두면 되기 때문임
 
@@ -399,8 +403,6 @@ void UDamageComponent::UpdateHitInfo(ABaseCharacter* Target)
 	SpawnHitLevelUI(MoveData);
 	UpdateHitInfoUI(MoveData);
 	UpdateHitReaction(Target, MoveData);
-	// HitStop
-	HitStop();
 	// 사운드 재생
 	UGameplayStatics::PlaySound2D(GetWorld(), HitSound, 0.2f, 1.0f, 0.0f, nullptr, nullptr);
 }
