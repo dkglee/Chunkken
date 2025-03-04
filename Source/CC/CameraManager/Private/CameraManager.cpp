@@ -32,6 +32,10 @@ ACameraManager::ACameraManager()
 	ZoomSpeed = 5.0f;
 	MaxCameraDistance = 1000.0f;
 	MinCameraDistance = 250.0f;
+
+	// 추적 상태
+	bIsSpecialMode = false;
+	bUseSpecialFocus = false;
 }
 
 void ACameraManager::RegisterPlayers(class ABaseCharacter* Left, class ABaseCharacter* Right)
@@ -102,6 +106,13 @@ void ACameraManager::Tick(float DeltaTime)
 	{
 		UpdateCameraZoom(DeltaTime);
 	}
+	//특수모드일때 위치로 카메라 이동
+	else if (bIsSpecialMode && bUseSpecialFocus)
+	{
+		FVector CurrentLocation = GetActorLocation();
+		FVector NewLocation = FMath::VInterpTo(CurrentLocation, SpecialFocusPoint, DeltaTime, 5.0f);
+		SetActorLocation(NewLocation);
+	}
 	UpdateCameraGameOver();
 }
 // 플레이어 중간 지점에 카메라 배치
@@ -133,6 +144,33 @@ void ACameraManager::UpdateCameraZoom(float DeltaTime)
 	float NewArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, TargetDistance, DeltaTime, ZoomSpeed);
 	SpringArm->TargetArmLength = NewArmLength;
 }
+
+
+
+// 이벤트 위치를 전달받아 특수 효과를 트리거하는 함수
+void ACameraManager::TriggerSpecialEffectAtLocation(const FVector& EventLocation)
+{
+	bIsSpecialMode = true;
+	bUseSpecialFocus = true;
+	SpecialFocusPoint = EventLocation;
+
+	SpringArm->TargetArmLength = 100.0f;  
+
+	TriggerStrongShake();
+
+	GetWorldTimerManager().SetTimer(SpecialTimerHandle, this, &ACameraManager::EndSpecialEffect, 1.0f, false);
+}
+
+void ACameraManager::EndSpecialEffect()
+{
+	//원래 상태로 복귀
+	bIsSpecialMode = false;
+	bUseSpecialFocus = false;
+	SpringArm->TargetArmLength = DefaultCameraDistance; 
+	UE_LOG(LogTemp, Log, TEXT("Special effect ended, returning to normal tracking."));
+}
+
+
 
 void ACameraManager::TriggerWeakShake(float Scale)
 {

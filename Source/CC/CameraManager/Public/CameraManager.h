@@ -57,6 +57,8 @@ public:
 
 	// 카메라 줌 조정
 	void UpdateCameraZoom(float DeltaTime);
+	void TriggerSpecialEffectAtLocation(const FVector& EventLocation);
+	void EndSpecialEffect();
 
 	// 카메라 기본 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -67,6 +69,23 @@ public:
 	float MaxCameraDistance;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MinCameraDistance;
+
+
+	// 특수 효과 모드
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="SpecialCamera")
+	bool bIsSpecialMode;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="SpecialCamera")
+	FVector SpecialFocusPoint;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="SpecialCamera")
+	bool bUseSpecialFocus;
+
+	FTimerHandle SpecialTimerHandle;
+
+	
+
+
 
 	//카메라 쉐이크
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraShake")
