@@ -46,7 +46,8 @@ void UHitReactionAirState::Enter()
 	// 최종 높이 설정
 	Location = Me->GetActorLocation();
 	// Location.Z = MaxHeight;
-	Location.Z = 10.0f;
+	// Location.Z = 10.0f;
+	Location.Z = FMath::Clamp(Location.Z + 50.0f, -90.0f, 10.0f);
 	Location.Y = bIsLeft ? Location.Y - 40.0f : Location.Y + 40.0f;
 
 	// 공중 상태로 변경
@@ -54,7 +55,7 @@ void UHitReactionAirState::Enter()
 	Me->GetCharacterMovement()->Velocity.Z = 0.0f;
 
 	// 애니메이션 재생
-	TekkenAnimInstance->PlayMontageModule(TEXT("AirBorn"), 1.0f, FName("Default"));
+	TekkenAnimInstance->PlayMontageModule(TEXT("AirBorn"), 0.2f, FName("Default"));
 }
 
 void UHitReactionAirState::Update()
@@ -71,6 +72,7 @@ void UHitReactionAirState::Update()
 		FVector InterpLocation = FMath::VInterpTo(Me->GetActorLocation(), Location, Delta, 2.0f);
 		if (FMath::IsNearlyEqual(InterpLocation.Z, Location.Z, 0.7f))
 		{
+			// TekkenAnimInstance->PlayMontageModule(TEXT("AirBorn"), 0.5f, FName("Jump"));
 			bMaxHeight = true;
 			// 바로 검사를 하면 땅에서 떨어뜨려도 처리가 안되므로 일단 true로 설정 최고 높이에서 false로 바꿀 예정
 			bIsGrounded = false;
