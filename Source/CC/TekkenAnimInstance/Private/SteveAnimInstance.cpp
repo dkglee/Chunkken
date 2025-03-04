@@ -107,4 +107,16 @@ USteveAnimInstance::USteveAnimInstance()
 	{
 		MontageMap.Add(TEXT("ConquerorComboRightHook1"), ConquerorComboRightHook1.Object);
 	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> UppercutMontage
+	(TEXT("/Game/Animations/Montages/Steve/STV_Uppercut_Montage.STV_Uppercut_Montage"));
+	if (UppercutMontage.Succeeded())
+	{
+		MontageMap.Add(TEXT("Uppercut"), UppercutMontage.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SteveBurstHammerMontage
+	(TEXT("/Game/Animations/Montages/Steve/STV_Attack_01_Seq_Montage.STV_Attack_01_Seq_Montage"));
+	if (SteveBurstHammerMontage.Succeeded())
+	{
+		MontageMap.Add(TEXT("BurstHammer"), SteveBurstHammerMontage.Object);
+	}
 }

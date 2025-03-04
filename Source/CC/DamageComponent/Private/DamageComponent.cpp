@@ -149,7 +149,13 @@ int32 UDamageComponent::TakeDamage(int32 Damage)
 		FFastLogger::LogConsole(TEXT("UpdateHP"));
 		MainUI->UpdateHP(HP, MaxHP, Me->IsLeftPlayer());
 	}
-	
+
+	if (HP > 0)
+	{
+		// HitStop
+		HitStop();
+	}
+
 	return HP;
 }
 
@@ -393,6 +399,8 @@ void UDamageComponent::UpdateHitInfo(ABaseCharacter* Target)
 	SpawnHitLevelUI(MoveData);
 	UpdateHitInfoUI(MoveData);
 	UpdateHitReaction(Target, MoveData);
+	// HitStop
+	HitStop();
 	// 사운드 재생
 	UGameplayStatics::PlaySound2D(GetWorld(), HitSound, 0.2f, 1.0f, 0.0f, nullptr, nullptr);
 }
@@ -500,4 +508,21 @@ void UDamageComponent::SpawnHitLevelUI(const FMoveDataStruct* MoveData)
 		false
 	);
 
+}
+
+void UDamageComponent::HitStop()
+{
+	Me->CustomTimeDilation = 0.1f;
+
+	TWeakObjectPtr<UDamageComponent> WeakThis = this;
+	GetWorld()->GetTimerManager().ClearTimer(HitStopTimer);
+	GetWorld()->GetTimerManager().SetTimer(HitStopTimer, FTimerDelegate::CreateLambda([WeakThis]()
+	{
+		if (!WeakThis.IsValid())
+		{
+			return;
+		}
+
+		WeakThis->Me->CustomTimeDilation = 1.0f;
+	}), 0.05f, false);
 }
