@@ -28,7 +28,7 @@ HitEffectID (PK),MoveID (FK),Condition,ExtraDamage,Launch,StunFrames,HitReaction
 27,1032,NormalHit,0,0,10,HitStun,Forward Left Punch NormalHit
 28,1033,NormalHit,0,1,0,Knockdown,Ignition Barrage NormalHit
 29,1034,NormalHit,0,0,10,HitStun,Forward Left Kick NormalHit
-30,1035,NormalHit,0,1,0,TailSpin,Peacekeeper NormalHit
+30,1035,NormalHit,0,1,0,HitStun,Peacekeeper NormalHit
 31,1036,NormalHit,0,0,10,HitStun,Down Left Punch NormalHit
 32,1037,NormalHit,0,0,10,HitStun,Down Right Punch NormalHit
 33,1038,NormalHit,0,0,10,HitStun,Down Left Kick NormalHit
@@ -40,7 +40,7 @@ HitEffectID (PK),MoveID (FK),Condition,ExtraDamage,Launch,StunFrames,HitReaction
 39,1044,NormalHit,0,0,10,HitStun,Up Left Punch NormalHit
 40,1045,NormalHit,0,1,0,Knockdown,Up Right Punch NormalHit
 41,1046,NormalHit,0,0,10,HitStun,Up Left Kick NormalHit
-42,1047,NormalHit,0,1,0,TailSpin,Up Right Kick NormalHit
+42,1047,NormalHit,0,1,0,HitStun,Up Right Kick NormalHit
 43,1048,NormalHit,0,0,10,HitStun,Forward Up Left Punch NormalHit
 44,1049,NormalHit,0,0,10,HitStun,Forward Up Right Punch NormalHit
 45,1050,NormalHit,0,0,10,HitStun,Forward Down Left Punch NormalHit
