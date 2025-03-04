@@ -5,7 +5,7 @@ HitEffectID (PK),MoveID (FK),Condition,ExtraDamage,Launch,StunFrames,HitReaction
 4,1008,NormalHit,0,0,5,HitStun,Left Uppercut NormalHit
 5,1009,NormalHit,0,0,6,HitStun,Crescent Hook NormalHit
 6,1010,NormalHit,0,0,0,NoAdvantage,Knee Blaster NormalHit (OnHit = -2 ? 0)
-7,1011,NormalHit,0,0,0,NoAdvantage,Wildman Combo1 NormalHit (OnHit = -5 ? 0)
+7,1011,NormalHit,0,0,0,HitStun,Wildman Combo1 NormalHit (OnHit = -5 ? 0)
 8,1012,NormalHit,0,0,1,HitStun,Knee Clipper NormalHit
 9,1013,NormalHit,0,0,0,None,Foot Stomp R. Hook1 NormalHit
 10,1014,NormalHit,0,0,2,HitStun,Quick Hook NormalHit

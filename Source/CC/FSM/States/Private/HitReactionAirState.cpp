@@ -48,6 +48,14 @@ void UHitReactionAirState::Enter()
 	// Location.Z = MaxHeight;
 	// Location.Z = 10.0f;
 	float Delta = Me->GetActorLocation().Z <= -145.0f ? 150.0f : 50.0f;
+	if (Delta == 150.0f)
+	{
+		CameraShakeManager->PlayerCameraShake(ECameraSequence::ECS_StrongHit, 1.5f);
+	}
+	else
+	{
+		CameraShakeManager->PlayerCameraShake(ECameraSequence::ECS_StrongHit, 0.8f);
+	}
 	FFastLogger::LogScreen(FColor::Red, TEXT("Position Z : %f , Delta : %f"), Me->GetActorLocation().Z, Delta);
 	Location.Z = FMath::Clamp(Location.Z + Delta, -90.0f, 10.0f);
 	Location.Y = bIsLeft ? Location.Y - 40.0f : Location.Y + 40.0f;
@@ -58,6 +66,7 @@ void UHitReactionAirState::Enter()
 
 	// 애니메이션 재생
 	TekkenAnimInstance->PlayMontageModule(TEXT("AirBorn"), 0.2f, FName("Default"));
+	// Camera Shake
 }
 
 void UHitReactionAirState::Update()
