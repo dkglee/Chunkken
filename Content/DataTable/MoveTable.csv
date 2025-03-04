@@ -27,13 +27,13 @@ MoveID,CharID,Command,RelativeID,AttackType,Damage,Hits,HitLevel,StartUp,ActiveF
 1026,101,f+DOWN+LP|RP|LP,0,Punch,32,2,High,13,2,10,-2,2,0,0,Uppercut Psyche-out Hook
 1027,101,f+RP|RP,0,Punch,26,2,Middle,21,2,16,-6,11,0,0,Conqueror Combination1
 1028,102,LP,0,Punch,5,1,High,10,2,10,1,8,1001,1,Jab
-1029,102,RP,0,Punch,12,1,High,12,2,14,-1,5,0,0,Right Jab
+1029,102,RP,0,Punch,12,1,Middle,12,2,14,-1,5,2006,2,Right Jab
 1030,102,LK,0,Kick,10,1,Middle,12,2,14,-1,5,2004,3,Left Kick
 1031,102,RK,0,Kick,15,1,High,14,2,16,-2,6,2001,4,Right Kick
 1032,102,f+LP,0,Punch,8,1,High,11,2,13,-1,6,0,0,Forward Left Punch
 1033,102,f+RP,0,Punch,14,1,Middle,13,2,16,-3,7,0,0,Ignition Barrage
 1034,102,f+LK,0,Kick,12,1,Middle,14,2,16,-3,7,2004,3,Forward Left Kick
-1035,102,f+RK,0,Kick,16,1,Middle,15,2,18,-4,8,0,0,Peacekeeper
+1035,102,f+RK,0,Kick,16,1,High,15,2,18,-4,8,2007,4,Peacekeeper
 1036,102,DOWN+LP,0,Punch,6,1,Low,10,2,12,0,5,0,0,Down Left Punch
 1037,102,DOWN+RP,0,Punch,8,1,Low,12,2,14,-1,6,0,0,Down Right Punch
 1038,102,DOWN+LK,0,Kick,10,1,Low,14,2,16,-2,6,0,0,Down Left Kick
@@ -45,7 +45,7 @@ MoveID,CharID,Command,RelativeID,AttackType,Damage,Hits,HitLevel,StartUp,ActiveF
 1044,102,UP+LP,0,Punch,9,1,High,12,2,14,-1,6,0,0,Up Left Punch
 1045,102,UP+RP,0,Punch,15,1,High,14,2,16,-2,7,0,0,Up Right Punch
 1046,102,UP+LK,0,Kick,13,1,Middle,16,2,18,-3,8,0,0,Up Left Kick
-1047,102,UP+RK,0,Kick,18,1,Middle,18,2,20,-4,9,0,0,Up Right Kick
+1047,102,UP+RK,0,Kick,18,1,High,18,2,20,-4,9,2008,4,Up Right Kick
 1048,102,f+UP+LP,0,Punch,10,1,High,13,2,15,-1,6,0,0,Forward Up Left Punch
 1049,102,f+UP+RP,0,Punch,16,1,Middle,15,2,17,-2,7,0,0,Forward Up Right Punch
 1050,102,f+UP+LK,0,Kick,11,1,Middle,28,2,30,-6,-7,0,0,Hunting Hawk1
