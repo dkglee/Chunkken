@@ -131,4 +131,10 @@ USteveAnimInstance::USteveAnimInstance()
 	{
 		MontageMap.Add(TEXT("WildmanCombo1"), WildmanMontage.Object);
 	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> QuickHookMontage
+	(TEXT("/Game/Animations/Montages/Steve/STV_Frank_FS3_Punch03_Montage.STV_Frank_FS3_Punch03_Montage"));
+	if (QuickHookMontage.Succeeded())
+	{
+		MontageMap.Add(TEXT("QuickHook"), QuickHookMontage.Object);
+	}
 }
