@@ -80,8 +80,8 @@ void UHitReactionAirState::Update()
 		// Me->SetActorLocation(InterpLocation, true);
 		FFastLogger::LogConsole(TEXT("CurrentFrameAirBorne : %d, Me: %s, Target: %s"), CurrentFrameAirBorne, *Me->GetActorLocation().ToString(), *Location.ToString());
 		float Delta = (float)CurrentFrameAirBorne / (float)MaxFrameAirBorne;
-		FVector InterpLocation = FMath::VInterpTo(Me->GetActorLocation(), Location, Delta, 2.0f);
-		if (FMath::IsNearlyEqual(InterpLocation.Z, Location.Z, 0.7f))
+		FVector InterpLocation = FMath::VInterpTo(Me->GetActorLocation(), Location, Delta, 1.5f);
+		if (FMath::IsNearlyEqual(InterpLocation.Z, Location.Z, 0.5f))
 		{
 			// TekkenAnimInstance->PlayMontageModule(TEXT("AirBorn"), 0.5f, FName("Jump"));
 			bMaxHeight = true;
