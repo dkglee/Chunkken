@@ -89,4 +89,17 @@ UHwoarangAnimInstance::UHwoarangAnimInstance()
 	{
 		MontageMap.Add(TEXT("RightKick3"), RightKickMontage3.Object);
 	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> RightKickMontage4
+	(TEXT("/Game/Animations/Montages/Hwoarang/HWR_Frank_FS3_Kick08_Montage.HWR_Frank_FS3_Kick08_Montage"));
+	if (RightKickMontage4.Succeeded())
+	{
+		MontageMap.Add(TEXT("RightKick4"), RightKickMontage4.Object);
+	}
+	
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> LeftKickMontage
+	(TEXT("/Game/Animations/Montages/Hwoarang/HWR_Mma_KickL_Montage.HWR_Mma_KickL_Montage"));
+	if (LeftKickMontage.Succeeded())
+	{
+		MontageMap.Add(TEXT("LeftKick"), LeftKickMontage.Object);
+	}
 }
