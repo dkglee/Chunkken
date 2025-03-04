@@ -57,51 +57,87 @@ UDamageComponent::UDamageComponent()
 
 void UDamageComponent::SpawnHitEffect(const FMoveDataStruct* MoveData)
 {
-	int32 Index = 0;
-	UNiagaraComponent* HitNS = nullptr;
-	for (UNiagaraComponent* Effect : HitEffectsComponents)
-	{
-		if (!Effect->IsActive())
-		{
-			HitNS = Effect;
-			break;
-		}
-		Index++;
-	}
+	UNiagaraComponent* HitNS1 = nullptr;
+    UNiagaraComponent* HitNS2 = nullptr;
+    int32 Index1 = -1, Index2 = -1;
 
-	if (HitNS)
-	{
-		HitNS->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+    // 비활성화된 이펙트 2개 찾기
+    for (int32 i = 0; i < HitEffectsComponents.Num(); ++i)
+    {
+        if (!HitEffectsComponents[i]->IsActive())
+        {
+            if (!HitNS1)
+            {
+                HitNS1 = HitEffectsComponents[i];
+                Index1 = i;
+            }
+            else
+            {
+                HitNS2 = HitEffectsComponents[i];
+                Index2 = i;
+                break; // 두 개 찾았으면 루프 종료
+            }
+        }
+    }
 
-		HitNS->SetUsingAbsoluteLocation(true);
-		HitNS->SetUsingAbsoluteRotation(true);
-		HitNS->SetUsingAbsoluteScale(true);
+    if (HitNS1 && HitNS2)
+    {
+        FVector Location = Me->GetMesh()->GetSocketLocation(*SocketName);
 
-		FVector Location = Me->GetMesh()->GetSocketLocation(*SocketName);
-		FRotator Rotation = Me->CharacterState.AttackDirection.Rotation();
-		Rotation.Pitch -= 90.0f;
+        // 공격 방향을 기준으로 2개의 이펙트를 회전시킴
+        FRotator BaseRotation = Me->CharacterState.AttackDirection.Rotation();
+        FRotator Rotation1 = BaseRotation;
+        FRotator Rotation2 = BaseRotation;
+        
+        Rotation1.Pitch -= 90.0f;  // 첫 번째 이펙트
 
-		HitNS->SetWorldLocation(Location);
-		HitNS->SetWorldRotation(Rotation);
+        // 첫 번째 이펙트 설정
+        HitNS1->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+        HitNS1->SetUsingAbsoluteLocation(true);
+        HitNS1->SetUsingAbsoluteRotation(true);
+        HitNS1->SetUsingAbsoluteScale(true);
+        HitNS1->SetWorldLocation(Location);
+        HitNS1->SetWorldRotation(Rotation1);
+        ChangeColor(HitNS1, MoveData);
+        HitNS1->Activate();
 
-		ChangeColor(HitNS, MoveData);
+        // 두 번째 이펙트 설정
+        HitNS2->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+        HitNS2->SetUsingAbsoluteLocation(true);
+        HitNS2->SetUsingAbsoluteRotation(true);
+        HitNS2->SetUsingAbsoluteScale(true);
+        HitNS2->SetWorldLocation(Location);
+        HitNS2->SetWorldRotation(Rotation2);
+        ChangeColor(HitNS2, MoveData);
+        HitNS2->Activate();
 
-		HitNS->Activate();
+        // 2초 후 비활성화 (각각의 인덱스를 이용)
+        TWeakObjectPtr<UNiagaraComponent> WeakHitNS1 = HitNS1;
+        TWeakObjectPtr<UNiagaraComponent> WeakHitNS2 = HitNS2;
+        TWeakObjectPtr<UDamageComponent> WeakThis = this;
 
-		// 0.5초 후에 비활성화
-		TWeakObjectPtr<UNiagaraComponent> WeakHitNS = HitNS;
-		TWeakObjectPtr<UDamageComponent> WeakThis = this;
-		GetWorld()->GetTimerManager().SetTimer(HitEffectTimers[Index], FTimerDelegate::CreateLambda([WeakThis, WeakHitNS, Index]()
-		{
-			UNiagaraComponent* StrongHitNS = WeakHitNS.Get();
-			UDamageComponent* StrongThis = WeakThis.Get();
-			if (!(StrongHitNS && StrongThis))
-			{
-				return;
-			}
-			StrongThis->ReleaseEffect(StrongHitNS, Index);
-		}), 2.0f, false);
-	}
+        GetWorld()->GetTimerManager().SetTimer(HitEffectTimers[Index1], FTimerDelegate::CreateLambda([WeakThis, WeakHitNS1, Index1]()
+        {
+            if (UDamageComponent* StrongThis = WeakThis.Get())
+            {
+                if (UNiagaraComponent* StrongHitNS = WeakHitNS1.Get())
+                {
+                    StrongThis->ReleaseEffect(StrongHitNS, Index1);
+                }
+            }
+        }), 2.0f, false);
+
+        GetWorld()->GetTimerManager().SetTimer(HitEffectTimers[Index2], FTimerDelegate::CreateLambda([WeakThis, WeakHitNS2, Index2]()
+        {
+            if (UDamageComponent* StrongThis = WeakThis.Get())
+            {
+                if (UNiagaraComponent* StrongHitNS = WeakHitNS2.Get())
+                {
+                    StrongThis->ReleaseEffect(StrongHitNS, Index2);
+                }
+            }
+        }), 2.0f, false);
+    }
 }
 
 int32 UDamageComponent::TakeDamage(int32 Damage)
@@ -307,8 +343,7 @@ bool UDamageComponent::DetectCollision(const FString& InSocketName)
 	TArray<AActor*> ActorsToIgnore;
 
 	ActorsToIgnore.Add(Me);
-	// UKismetSystemLibrary::SphereTraceSingle(GetWorld(), Start, Start, SphereRadius, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
-	UKismetSystemLibrary::BoxTraceSingle(GetWorld(), Start, End, FVector(25.0f, 25.0f, 100.0f), FRotator::ZeroRotator, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::None, HitResult, true);
+	UKismetSystemLibrary::BoxTraceSingleByProfile(GetWorld(), Start, End, FVector(20.0f, 20.0f, 100.0f), FRotator::ZeroRotator, TEXT("Player"), false, ActorsToIgnore, EDrawDebugTrace::None, HitResult, true);
 
 	if (!HitResult.bBlockingHit)
 	{
@@ -390,6 +425,11 @@ void UDamageComponent::UpdateHitInfo(ABaseCharacter* Target)
 			false    // 반복 여부(false = 한 번만 실행)
 		);
 	}
+	else
+	{
+		// HitStop
+		HitStop();
+	}
 	// 아래에 계속해서 추가적인 작업을 함. (HitReaction 등) 근데 죽음 이후에 아래의 처리를 하는 것이 과연 옳을까? 근데 상관 없음
 	// 왜냐하면 FSM의 우선순위를 두면 되기 때문임
 
@@ -399,8 +439,6 @@ void UDamageComponent::UpdateHitInfo(ABaseCharacter* Target)
 	SpawnHitLevelUI(MoveData);
 	UpdateHitInfoUI(MoveData);
 	UpdateHitReaction(Target, MoveData);
-	// HitStop
-	HitStop();
 	// 사운드 재생
 	UGameplayStatics::PlaySound2D(GetWorld(), HitSound, 0.2f, 1.0f, 0.0f, nullptr, nullptr);
 }

@@ -52,7 +52,7 @@ USteveAnimInstance::USteveAnimInstance()
 		MontageMap.Add(TEXT("BodyHitRight"), BodyHitRight.Object);
 	}
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> AirBornMontage
-	(TEXT("/Game/Animations/Montages/Steve/STV_Tekken_Hit_Airborne.STV_Tekken_Hit_Airborne"));
+	(TEXT("/Game/Animations/Montages/Steve/STV_HWR_Tekken_Hit_Airborne.STV_HWR_Tekken_Hit_Airborne"));
 	if (AirBornMontage.Succeeded())
 	{
 		MontageMap.Add(TEXT("AirBorn"), AirBornMontage.Object);

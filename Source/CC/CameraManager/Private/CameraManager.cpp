@@ -106,13 +106,13 @@ void ACameraManager::Tick(float DeltaTime)
 	{
 		UpdateCameraZoom(DeltaTime);
 	}
-	//특수모드일때 위치로 카메라 이동
-	else if (bIsSpecialMode && bUseSpecialFocus)
-	{
-		FVector CurrentLocation = GetActorLocation();
-		FVector NewLocation = FMath::VInterpTo(CurrentLocation, SpecialFocusPoint, DeltaTime, 5.0f);
-		SetActorLocation(NewLocation);
-	}
+	// //특수모드일때 위치로 카메라 이동
+	// else if (bIsSpecialMode && bUseSpecialFocus)
+	// {
+	// 	FVector CurrentLocation = GetActorLocation();
+	// 	FVector NewLocation = FMath::VInterpTo(CurrentLocation, SpecialFocusPoint, DeltaTime, 5.0f);
+	// 	SetActorLocation(NewLocation);
+	// }
 	UpdateCameraGameOver();
 }
 // 플레이어 중간 지점에 카메라 배치

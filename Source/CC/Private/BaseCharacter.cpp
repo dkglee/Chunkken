@@ -76,6 +76,10 @@ void ABaseCharacter::Update(uint64 FrameIndex)
 	
 	// Update FSM
 	TekkenFSM->Update(FrameIndex);
+
+	FVector NewLocation = GetActorLocation();
+	NewLocation.X = 810.0f;
+	SetActorLocation(NewLocation);
 }
 
 UBaseState* ABaseCharacter::GetCurrentState()
