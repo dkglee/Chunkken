@@ -12,6 +12,13 @@ void UKoFSM::Enter(int32 ChildID)
 
 	TekkenAnimInstance->PlayMontageModule(TEXT("KO"), 1.0f, FName("Default"));
 	CameraManager->PlayerCameraShake(ECameraSequence::ECS_KO, 1.0f);
+
+	FVector LaunchDirection = {0.0f, 500.0f, 40.0f};
+	if (Me->IsLeftPlayer())
+	{
+		LaunchDirection *= -1.0f;
+	}
+	Me->LaunchCharacter(LaunchDirection, true, true);
 }
 
 void UKoFSM::Update()

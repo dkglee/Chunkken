@@ -29,11 +29,12 @@ protected:
 	void ResetHitCombo();
 	void ChangeColor(UNiagaraComponent* HitNS, const FMoveDataStruct* MoveData);
 	void SpawnHitEffect(const FMoveDataStruct* MoveData);
-	void UpdateHitInfo(const FMoveDataStruct* MoveData);
 	void UpdateHitInfoUI(const FMoveDataStruct* MoveData);
 	void UpdateHitReaction(class ABaseCharacter* Target, const FMoveDataStruct* MoveData);
 	void SpawnHitLevelUI(const FMoveDataStruct* MoveData);
 	void UpdateHitInfo(class ABaseCharacter* Target);
+
+	void HitStop();
 
 	UPROPERTY()
 	class ABaseCharacter* Me = nullptr;
@@ -87,4 +88,7 @@ protected:
 	class USoundCue* HitSound = nullptr;
 	UPROPERTY()
 	class USoundCue* KOSound = nullptr;
+
+	UPROPERTY()
+	FTimerHandle HitStopTimer;
 };

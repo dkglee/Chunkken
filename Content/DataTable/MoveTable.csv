@@ -6,7 +6,7 @@ MoveID,CharID,Command,RelativeID,AttackType,Damage,Hits,HitLevel,StartUp,ActiveF
 1005,101,f+RP,0,Punch,11,1,Middle,21,2,17,-6,5,1004,2,Ducking Body Blow
 1006,101,f+LK,1003,None,0,0,None,0,0,0,0,0,0,0,Ducking Left
 1007,101,f+RK,1004,None,0,0,None,0,0,0,0,0,0,0,Ducking Right
-1008,101,f+DOWN+LP,0,Punch,12,1,Middle,13,2,14,-2,5,0,0,Left Uppercut
+1008,101,f+DOWN+LP,0,Punch,12,1,Middle,13,2,14,-2,5,1007,1,Left Uppercut
 1009,101,f+DOWN+RP,0,Punch,10,1,Middle,16,2,24,-11,6,0,0,Crescent Hook
 1010,101,DOWN+LP,0,Kick,12,1,Low,16,2,20,-13,-2,0,0,Knee Blaster
 1011,101,DOWN+RP,0,Punch,11,1,Low,17,2,23,-18,-5,0,0,Wildman Combo1
@@ -17,8 +17,8 @@ MoveID,CharID,Command,RelativeID,AttackType,Damage,Hits,HitLevel,StartUp,ActiveF
 1016,101,b+UP+RP,0,Punch,17,1,High,17,2,14,3,14,0,0,Bounty Hunter
 1017,101,b+UP+LK,0,None,0,0,None,0,0,0,0,0,0,0,Outfox
 1018,101,f+UP+LP,0,Punch,18,1,Middle,19,2,17,-6,5,0,0,Over the Top
-1019,101,f+UP+RP,0,Punch,20,1,Middle,22,2,20,-14,52,0,0,Burst Hammer
-1020,101,UP+RP,1019,Punch,20,1,Middle,22,2,20,-14,52,0,0,Burst Hammer
+1019,101,f+UP+RP,0,Punch,20,1,Middle,22,2,20,-14,52,1008,2,Burst Hammer
+1020,101,UP+RP,1019,Punch,20,1,Middle,22,2,20,-14,52,1008,2,Burst Hammer
 1021,101,f+UP+LK,0,Kick,20,1,Low,36,2,21,-12,9,0,0,Jump-in Foot Stomp Right Hook1
 1022,101,UP+LK,1021,Kick,20,1,Low,36,2,21,-12,9,0,0,Jump-in Foot Stomp Right Hook1
 1023,101,f+UP+RK,0,Kick,20,1,Middle,23,2,18,-9,D,0,0,Jumping Duck Kick
