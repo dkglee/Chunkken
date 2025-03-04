@@ -102,4 +102,25 @@ UHwoarangAnimInstance::UHwoarangAnimInstance()
 	{
 		MontageMap.Add(TEXT("LeftKick"), LeftKickMontage.Object);
 	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> RightJab
+	(TEXT("/Game/Animations/Montages/Hwoarang/HWR_RightJab_Montage.HWR_RightJab_Montage"));
+	if (RightJab.Succeeded())
+	{
+		MontageMap.Add(TEXT("RightJab"), RightJab.Object);
+	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Peacekeeper
+	(TEXT("/Game/Animations/Montages/Hwoarang/HWR_Peacekeeper_Montage.HWR_Peacekeeper_Montage"));
+	if (Peacekeeper.Succeeded())
+	{
+		MontageMap.Add(TEXT("Peacekeeper"), Peacekeeper.Object);
+	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> UpRightKick
+	(TEXT("/Game/Animations/Montages/Hwoarang/HWR_UpRightKick_Montage.HWR_UpRightKick_Montage"));
+	if (UpRightKick.Succeeded())
+	{
+		MontageMap.Add(TEXT("UpRightKick"), UpRightKick.Object);
+	}
 }
