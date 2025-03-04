@@ -150,8 +150,11 @@ int32 UDamageComponent::TakeDamage(int32 Damage)
 		MainUI->UpdateHP(HP, MaxHP, Me->IsLeftPlayer());
 	}
 
-	// HitStop
-	HitStop();
+	if (HP > 0)
+	{
+		// HitStop
+		HitStop();
+	}
 
 	return HP;
 }

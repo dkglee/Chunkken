@@ -9,6 +9,7 @@
 #include "MoveDataStruct.h"
 #include "MoveParser.h"
 #include "SocketParser.h"
+#include "TekkenAnimIntance.h"
 
 FString UAttackActiveState::StateName = TEXT("ATTACK_ACTIVE");
 
@@ -52,6 +53,16 @@ void UAttackActiveState::Enter()
 		FFastLogger::LogConsole(TEXT("MoveData is nullptr"));
 		return;
 	}
+
+	UAnimMontage* Montage = TekkenAnimInstance->GetMontageFromName(ExecutingMove.AnimationRef);
+	if (!Montage)
+	{
+		FFastLogger::LogConsole(TEXT("Animation: %s"), *ExecutingMove.AnimationRef);
+		FFastLogger::LogConsole(TEXT("Montage is nullptr"));
+		Me->CharacterState.bFrameOver = true;
+		return;
+	}
+	
 	EndFrame = MoveData->ActiveFrames;
 }
 
