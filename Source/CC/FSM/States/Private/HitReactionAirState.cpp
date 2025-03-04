@@ -47,7 +47,9 @@ void UHitReactionAirState::Enter()
 	Location = Me->GetActorLocation();
 	// Location.Z = MaxHeight;
 	// Location.Z = 10.0f;
-	Location.Z = FMath::Clamp(Location.Z + 50.0f, -90.0f, 10.0f);
+	float Delta = Me->GetActorLocation().Z <= -145.0f ? 150.0f : 50.0f;
+	FFastLogger::LogScreen(FColor::Red, TEXT("Position Z : %f , Delta : %f"), Me->GetActorLocation().Z, Delta);
+	Location.Z = FMath::Clamp(Location.Z + Delta, -90.0f, 10.0f);
 	Location.Y = bIsLeft ? Location.Y - 40.0f : Location.Y + 40.0f;
 
 	// 공중 상태로 변경

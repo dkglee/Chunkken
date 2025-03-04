@@ -114,7 +114,7 @@ USteveAnimInstance::USteveAnimInstance()
 		MontageMap.Add(TEXT("Uppercut"), UppercutMontage.Object);
 	}
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> SteveBurstHammerMontage
-	(TEXT("/Game/Animations/Montages/Steve/STV_Attack_01_Seq_Montage.STV_Attack_01_Seq_Montage"));
+	(TEXT("/Game/Animations/Montages/Steve/STV_Frank_FS2_Punch_PowerSmash_Inplace_Montage.STV_Frank_FS2_Punch_PowerSmash_Inplace_Montage"));
 	if (SteveBurstHammerMontage.Succeeded())
 	{
 		MontageMap.Add(TEXT("BurstHammer"), SteveBurstHammerMontage.Object);
