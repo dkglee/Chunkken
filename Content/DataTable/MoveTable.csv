@@ -7,13 +7,13 @@ MoveID,CharID,Command,RelativeID,AttackType,Damage,Hits,HitLevel,StartUp,ActiveF
 1006,101,f+LK,1003,None,0,0,None,0,0,0,0,0,0,0,Ducking Left
 1007,101,f+RK,1004,None,0,0,None,0,0,0,0,0,0,0,Ducking Right
 1008,101,f+DOWN+LP,0,Punch,12,1,Middle,13,2,14,-2,5,1007,1,Left Uppercut
-1009,101,f+DOWN+RP,0,Punch,10,1,Middle,16,2,24,-11,6,0,0,Crescent Hook
+1009,101,f+DOWN+RP,0,Punch,10,1,Middle,16,2,24,-11,6,1009,2,Crescent Hook
 1010,101,DOWN+LP,0,Kick,12,1,Low,16,2,20,-13,-2,0,0,Knee Blaster
-1011,101,DOWN+RP,0,Punch,11,1,Low,17,2,23,-18,-5,0,0,Wildman Combo1
+1011,101,DOWN+RP,0,Punch,11,1,Middle,17,2,23,-18,-5,1010,2,Wildman Combo1
 1012,101,b+DOWN+RP,0,Kick,21,1,Low,26,2,19,-12,1,0,0,Knee Clipper
 1013,101,b+DOWN+LK,0,Kick,10,1,Low,16,2,20,-13,0,0,0,Foot Stomp Right Hook1
-1014,101,b+LP,0,Punch,10,1,High,13,2,18,-14,2,0,0,Quick Hook
-1015,101,b+RP,0,Punch,20,1,Middle,17,2,20,-13,14,0,0,Body Bomb
+1014,101,b+LP,0,Punch,10,1,High,13,2,18,-14,2,1011,1,Quick Hook
+1015,101,b+RP,0,Punch,20,1,Middle,17,2,20,-13,14,1012,2,Body Bomb
 1016,101,b+UP+RP,0,Punch,17,1,High,17,2,14,3,14,0,0,Bounty Hunter
 1017,101,b+UP+LK,0,None,0,0,None,0,0,0,0,0,0,0,Outfox
 1018,101,f+UP+LP,0,Punch,18,1,Middle,19,2,17,-6,5,0,0,Over the Top
