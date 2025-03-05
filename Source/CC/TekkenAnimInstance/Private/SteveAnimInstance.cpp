@@ -114,9 +114,33 @@ USteveAnimInstance::USteveAnimInstance()
 		MontageMap.Add(TEXT("Uppercut"), UppercutMontage.Object);
 	}
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> SteveBurstHammerMontage
-	(TEXT("/Game/Animations/Montages/Steve/STV_Attack_01_Seq_Montage.STV_Attack_01_Seq_Montage"));
+	(TEXT("/Game/Animations/Montages/Steve/STV_Frank_FS2_Punch_PowerSmash_Inplace_Montage.STV_Frank_FS2_Punch_PowerSmash_Inplace_Montage"));
 	if (SteveBurstHammerMontage.Succeeded())
 	{
 		MontageMap.Add(TEXT("BurstHammer"), SteveBurstHammerMontage.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> CrescentHookMontage 
+	(TEXT("/Game/Animations/Montages/Steve/STV_Frank_FS2_Punch_Right_UpperCut_Inplace_Montage.STV_Frank_FS2_Punch_Right_UpperCut_Inplace_Montage"));
+	if (CrescentHookMontage.Succeeded())
+	{
+		MontageMap.Add(TEXT("CrescentHook"), CrescentHookMontage.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> WildmanMontage
+	(TEXT("/Game/Animations/Montages/Steve/STV_Tekken_ConquerorComb1_Montage.STV_Tekken_ConquerorComb1_Montage"));
+	if (WildmanMontage.Succeeded())
+	{
+		MontageMap.Add(TEXT("WildmanCombo1"), WildmanMontage.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> QuickHookMontage
+	(TEXT("/Game/Animations/Montages/Steve/STV_Frank_FS3_Punch03_Montage.STV_Frank_FS3_Punch03_Montage"));
+	if (QuickHookMontage.Succeeded())
+	{
+		MontageMap.Add(TEXT("QuickHook"), QuickHookMontage.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> BodyBombMontage
+	(TEXT("/Game/Animations/Montages/Steve/STV_Frank_FS3_Punch04_Montage.STV_Frank_FS3_Punch04_Montage"));
+	if (BodyBombMontage.Succeeded())
+	{
+		MontageMap.Add(TEXT("BodyBomb"), BodyBombMontage.Object);
 	}
 }

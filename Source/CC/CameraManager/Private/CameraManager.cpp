@@ -58,7 +58,7 @@ void ACameraManager::UpdateCameraGameOver()
 	if (bZoom)
 	{
 		// Closeup Camera
-		float InterpFOV = FMath::FInterpTo(Camera->FieldOfView, 60.0f, GetWorld()->GetDeltaSeconds(), 3.0f);
+		float InterpFOV = FMath::FInterpTo(Camera->FieldOfView, 60.0f, GetWorld()->GetDeltaSeconds(), 3.5f);
 		Camera->SetFieldOfView(InterpFOV);
 		if (Camera->FieldOfView <= 61.0f && !DoOnce)
 		{
